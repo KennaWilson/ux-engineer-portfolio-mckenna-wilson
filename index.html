@@ -38,6 +38,16 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); ov
 /* Cursor */
 .cursor { width: 18px; height: 18px; background: var(--coral); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.15s, background 0.2s; mix-blend-mode: multiply; }
 .cursor-dot { width: 6px; height: 6px; background: var(--ink); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000; }
+#loader:not(.hide) ~ .cursor {
+  mix-blend-mode: normal;
+  background: var(--lemon);
+  border: 2px solid var(--cream);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.35), 0 0 14px rgba(255,225,69,0.55);
+}
+#loader:not(.hide) ~ .cursor-dot {
+  background: var(--cream);
+  box-shadow: 0 0 6px rgba(255,248,240,0.9);
+}
 
 /* Doodle BG */
 .doodle-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0.055; }
@@ -139,7 +149,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 14px 40
 
 /* Skills */
 .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-.skill-card { background: #fff; border: var(--border-w) solid var(--ink); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; cursor: none; position: relative; overflow: hidden; }
+.skill-card { background: #fff; border: var(--border-w) solid var(--ink); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; cursor: none; position: relative; overflow: hidden; display: flex; flex-direction: column; height: 100%; }
 .skill-card:hover { transform: translate(-3px,-3px); box-shadow: var(--shadow-xl); }
 .skill-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; }
 .sc-1::before { background: var(--coral); }
@@ -153,7 +163,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 14px 40
 .skill-card .sc-desc { font-size: 13px; line-height: 1.65; opacity: 0.6; margin-bottom: 16px; }
 .skill-card .sc-tools { display: flex; flex-wrap: wrap; gap: 6px; }
 .tool-chip { font-family: var(--mono); font-size: 10px; padding: 3px 9px; border-radius: 6px; border: 1.5px solid var(--ink); background: var(--cream); }
-.sc-xp { margin-top: 16px; }
+.sc-xp { margin-top: auto; padding-top: 16px; }
 .sc-xp-label { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.4; margin-bottom: 6px; }
 .sc-xp-track { height: 8px; background: rgba(0,0,0,0.06); border-radius: 4px; border: 1.5px solid var(--ink); overflow: hidden; }
 .sc-xp-fill { height: 100%; border-radius: 2px; width: 0; transition: width 1.4s cubic-bezier(.16,1,.3,1); }
@@ -264,6 +274,196 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 14px 40
 .toast-icon { font-size: 28px; flex-shrink: 0; }
 .toast-title { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
 .toast-sub { font-size: 11px; opacity: 0.65; font-weight: 600; color: var(--cream); }
+
+/* Agent guide */
+.agent-widget {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 850;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+.agent-widget.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.agent-orb {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: var(--border-w) solid var(--ink);
+  background: linear-gradient(145deg, #fff 0%, #f3ebff 100%);
+  box-shadow: var(--shadow-lg), 0 0 28px rgba(200,168,249,0.45);
+  cursor: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.agent-orb-glow {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 2px solid rgba(200,168,249,0.4);
+  animation: agentPulse 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes agentPulse {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+.agent-orb:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-xl), 0 0 36px rgba(200,168,249,0.55); }
+.agent-orb-icon { font-size: 22px; position: relative; z-index: 1; }
+.agent-panel {
+  position: absolute;
+  bottom: 0;
+  left: calc(100% + 14px);
+  width: min(340px, calc(100vw - 140px));
+  max-height: calc(100vh - 88px);
+  max-height: calc(100dvh - 88px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background: #fff;
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xl), 0 0 32px rgba(200,168,249,0.22);
+  padding: 16px;
+  transform: translateX(-8px) rotate(-1deg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(.34,1.56,.64,1);
+}
+.agent-panel::-webkit-scrollbar { display: none; }
+.agent-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: var(--lilac);
+}
+.agent-widget.open .agent-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) rotate(-1deg);
+}
+.agent-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px 8px;
+  margin-bottom: 10px;
+  padding-top: 2px;
+}
+.agent-panel-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 900;
+  flex: 1;
+}
+.agent-panel-sub {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+.agent-close {
+  font-size: 22px;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  border: var(--border-w) solid var(--ink);
+  border-radius: 8px;
+  background: var(--cream);
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: none;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+.agent-close:hover { transform: translate(-1px,-1px); }
+.agent-question {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--sky);
+  min-height: 16px;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+.agent-answer {
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 600;
+  min-height: 44px;
+  margin-bottom: 12px;
+}
+.agent-answer a { color: var(--coral); font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
+.agent-answer a:hover { color: var(--ink); }
+.agent-cursor { display: inline-block; color: var(--lilac); font-size: 10px; vertical-align: middle; animation: cursorBlink 0.6s step-end infinite; }
+.agent-presets { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.agent-preset {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 100px;
+  border: var(--border-w) solid var(--ink);
+  background: var(--cream);
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: none;
+  text-align: left;
+  transition: transform 0.15s, background 0.15s;
+}
+.agent-preset:hover { transform: translate(-1px,-1px); background: var(--lilac); }
+.agent-preset.active { background: var(--lilac); box-shadow: var(--shadow); }
+.agent-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.agent-chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1.5px solid var(--ink);
+  background: #fff;
+  cursor: none;
+  transition: transform 0.15s, background 0.15s;
+}
+.agent-chip:hover { transform: translate(-1px,-1px); background: var(--lemon); }
+.agent-chip.active { background: var(--lemon); box-shadow: 2px 2px 0 var(--ink); }
+.agent-next {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 8px 14px;
+  border: var(--border-w) solid var(--ink);
+  border-radius: 8px;
+  background: var(--mint);
+  box-shadow: var(--shadow);
+  cursor: none;
+  width: 100%;
+  transition: transform 0.15s;
+}
+.agent-next:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+@media (max-width: 520px) {
+  .agent-widget { left: 16px; bottom: 16px; right: 16px; }
+  .agent-panel {
+    bottom: calc(100% + 14px);
+    left: 0;
+    width: 100%;
+    max-height: calc(100vh - 174px);
+    max-height: calc(100dvh - 174px);
+    transform: translateY(8px) rotate(-1deg);
+  }
+  .agent-widget.open .agent-panel { transform: translateY(0) rotate(-1deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-orb-glow { animation: none; opacity: 0.7; }
+  .agent-widget, .agent-panel { transition: none; }
+}
 
 /* Footer */
 footer { position: relative; z-index: 1; text-align: center; padding: 40px; border-top: var(--border-w) solid var(--ink); font-size: 13px; font-weight: 700; opacity: 0.38; font-family: var(--mono); }
@@ -690,6 +890,10 @@ function dismissLoader() {
   loader.classList.add('hide');
   document.body.style.overflow = '';
   setTimeout(() => loader.remove(), 700);
+  setTimeout(() => {
+    const agent = document.getElementById('agentWidget');
+    if (agent) agent.classList.add('visible');
+  }, 1000);
 }
 </script>
 <!-- ══ /LOADER ══ -->
@@ -727,10 +931,7 @@ function dismissLoader() {
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">
-    ✦ McKenna Wilson
-    <span class="logo-badge">lvl 100</span>
-  </a>
+  <a href="#" class="nav-logo">✦ McKenna Wilson</a>
   <div class="nav-links">
     <a href="#skills">Skills</a>
     <a href="#projects">Work</a>
@@ -977,8 +1178,8 @@ function dismissLoader() {
   <div class="ach-grid">
     <div class="ach-card reveal"><span class="ach-rarity r-legendary">★ Legend</span><span class="ach-icon">🏆</span><div class="ach-name">Design Thinker</div><div class="ach-desc">100+ user research sessions completed</div></div>
     <div class="ach-card reveal" style="transition-delay:.06s"><span class="ach-rarity r-legendary">★ Legend</span><span class="ach-icon">🌉</span><div class="ach-name">President of ProdUX</div><div class="ach-desc">President of ProdUX, the largest product design community at UVU with 260+ members</div></div>
-    <div class="ach-card reveal" style="transition-delay:.12s"><span class="ach-rarity r-epic">◆ Epic</span><span class="ach-icon">⚡</span><div class="ach-name">Scholastic Honor Roll</div><div class="ach-desc">3.95 GPA on the Dean's List</div></div>
-    <div class="ach-card reveal" style="transition-delay:.18s"><span class="ach-rarity r-epic">◆ Epic</span><span class="ach-icon">🧩</span><div class="ach-name">Internship</div><div class="ach-desc">Interned at Bamboo HR, a Saas company in Silcon Slopes Valley, Utah</div></div>
+    <div class="ach-card reveal" style="transition-delay:.12s"><span class="ach-rarity r-epic">◆ Epic</span><span class="ach-icon">⚡</span><div class="ach-name">Scholastic Honor Roll</div><div class="ach-desc">3.97 GPA on the Dean's List</div></div>
+    <div class="ach-card reveal" style="transition-delay:.18s"><span class="ach-rarity r-epic">◆ Epic</span><span class="ach-icon">🧩</span><div class="ach-name">Experience</div><div class="ach-desc">Product Designer at Bamboo HR, a Saas HR company in Silcon Slopes Valley, Utah</div></div>
     <div class="ach-card reveal" style="transition-delay:.24s"><span class="ach-rarity r-rare">◇ Rare</span><span class="ach-icon">🧑‍💻</span><div class="ach-name">Freelance</div><div class="ach-desc">Completed freelance projects for clients in my free time</div></div>
 </div>
 
@@ -1013,10 +1214,30 @@ function dismissLoader() {
   <div class="section-label reveal">✦ 05 — Initiate Contact</div>
   <h2 class="section-title ul-coral reveal">Let's <span>build something</span> together</h2>
   <div class="contact-grid">
-    <a href="mailto:hello@yourname.com" class="contact-card cc-1 reveal"><div class="cc-icon">📧</div><div><div class="cc-label">Email</div><div class="cc-value">mckennawilson1824@gmail.com</div></div></a>
-    <a href="#" class="contact-card cc-2 reveal" style="transition-delay:.08s"><div class="cc-icon">💼</div><div><div class="cc-label">LinkedIn</div><div class="cc-value">www.linkedin.com/in/mckenna-wilson-3404402a2</div></div></a>
+    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mckennawilson1824@gmail.com" target="_blank" rel="noopener noreferrer" class="contact-card cc-1 reveal"><div class="cc-icon">📧</div><div><div class="cc-label">Email</div><div class="cc-value">mckennawilson1824@gmail.com</div></div></a>
+    <a href="https://www.linkedin.com/in/mckenna-wilson-3404402a2" target="_blank" rel="noopener noreferrer" class="contact-card cc-2 reveal" style="transition-delay:.08s"><div class="cc-icon">💼</div><div><div class="cc-label">LinkedIn</div><div class="cc-value">www.linkedin.com/in/mckenna-wilson-3404402a2</div></div></a>
     <a href="#" class="contact-card cc-3 reveal" style="transition-delay:.16s"><div class="cc-icon">🐙</div><div><div class="cc-label">GitHub</div><div class="cc-value">https://github.com/KennaWilson</div></div></a>
   </div>
+</div>
+
+<!-- Agent guide -->
+<div class="agent-widget" id="agentWidget">
+  <div class="agent-panel" id="agentPanel" role="dialog" aria-modal="true" aria-labelledby="agentTitle" aria-hidden="true">
+    <div class="agent-panel-header">
+      <div class="agent-panel-title" id="agentTitle">Player Guide</div>
+      <div class="agent-panel-sub">GUIDE_AI :: ONLINE</div>
+      <button type="button" class="agent-close" id="agentClose" aria-label="Close guide">×</button>
+    </div>
+    <div class="agent-question" id="agentQuestion"></div>
+    <div class="agent-answer" id="agentAnswer"></div>
+    <div class="agent-presets" id="agentPresets"></div>
+    <div class="agent-chips" id="agentChips"></div>
+    <button type="button" class="agent-next" id="agentNext">Next fact →</button>
+  </div>
+  <button type="button" class="agent-orb" id="agentOrb" aria-label="Open McKenna's guide" aria-expanded="false" aria-controls="agentPanel">
+    <span class="agent-orb-glow" aria-hidden="true"></span>
+    <span class="agent-orb-icon" aria-hidden="true">✦</span>
+  </button>
 </div>
 
 <footer><p>Designed &amp; hand-coded ✦ by McKenna Wilson · 2026</p></footer>
@@ -1035,7 +1256,7 @@ document.addEventListener('mousemove', e => {
   cur.style.left=cx-9+'px'; cur.style.top=cy-9+'px';
   requestAnimationFrame(lerp);
 })();
-document.querySelectorAll('a,button,.skill-card,.project-card,.ach-card:not(.locked),.astat,.contact-card,.htag,.vis-card').forEach(el=>{
+document.querySelectorAll('a,button,.skill-card,.project-card,.ach-card:not(.locked),.astat,.contact-card,.htag,.vis-card,.agent-orb,.agent-close,.agent-preset,.agent-chip,.agent-next').forEach(el=>{
   el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2.2)';cur.style.background='var(--lemon)';});
   el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';cur.style.background='var(--coral)';});
 });
@@ -1099,6 +1320,210 @@ function toggleProject(id,btn){
   btn.classList.toggle('open');
   btn.childNodes[0].textContent=open?'Close case study ':'Read the case study ';
 }
+
+// Agent guide
+(function(){
+  const widget = document.getElementById('agentWidget');
+  const panel = document.getElementById('agentPanel');
+  const orb = document.getElementById('agentOrb');
+  const closeBtn = document.getElementById('agentClose');
+  const questionEl = document.getElementById('agentQuestion');
+  const answerEl = document.getElementById('agentAnswer');
+  const presetsEl = document.getElementById('agentPresets');
+  const chipsEl = document.getElementById('agentChips');
+  const nextBtn = document.getElementById('agentNext');
+  if (!widget) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CHAR_SPEED = reducedMotion ? 0 : 18;
+
+  const agentFacts = [
+    { category: 'work', text: 'McKenna is a Design Engineer — a UX designer who codes and a frontend developer who empathises.' },
+    { category: 'work', text: 'She was a Product Designer at Bamboo HR, a SaaS HR company in Silicon Slopes, Utah.' },
+    { category: 'work', text: 'She\'s open to work and remote friendly — building products people actually enjoy using.' },
+    { category: 'work', text: '4 years building digital products across health, home, and services.' },
+    { category: 'skills', text: 'She writes the markup she designs — Figma to production, no translation layer needed.' },
+    { category: 'skills', text: 'Her skill tree covers visual design, UX research, front-end dev, design systems, and CSS animation.' },
+    { category: 'skills', text: '100+ user research sessions completed — empathy maps, interviews, usability testing, and more.' },
+    { category: 'skills', text: 'Tools include Figma, React, TypeScript, VS Code, Cursor, Claude, Webflow, and Spline.' },
+    { category: 'fun', text: 'President of ProdUX at UVU — one of the largest product design communities there, with 260+ members.' },
+    { category: 'fun', text: '3.97 GPA on the Dean\'s List — Scholastic Honor Roll achievement unlocked.' },
+    { category: 'fun', text: 'Off-screen: fly fishing, hiking, backpacking, pickleball, running, acrylic/oil painting, and good movies.' },
+    { category: 'fun', text: '∞ browser tabs open at any given moment — it\'s a feature, not a bug.' },
+    { category: 'contact', text: 'Email her at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mckennawilson1824@gmail.com" target="_blank" rel="noopener noreferrer">mckennawilson1824@gmail.com</a>.' },
+    { category: 'contact', text: 'Connect on <a href="https://www.linkedin.com/in/mckenna-wilson-3404402a2" target="_blank" rel="noopener noreferrer">LinkedIn</a>.' },
+    { category: 'contact', text: 'See her code on <a href="https://github.com/KennaWilson" target="_blank" rel="noopener noreferrer">GitHub</a>.' },
+  ];
+
+  const agentPresets = [
+    {
+      question: 'What does McKenna do?',
+      answer: 'She\'s a Design Engineer — UX designer who codes. She builds products people actually enjoy using, from research through to production-ready UI.'
+    },
+    {
+      question: 'Is she open to work?',
+      answer: 'Yes — open to work and remote friendly. Head to the <a href="#contact">contact section</a> to reach out via email or LinkedIn.'
+    },
+    {
+      question: 'What\'s her background?',
+      answer: 'Product Designer at Bamboo HR, President of ProdUX at UVU (260+ members), Dean\'s List with a 3.97 GPA, and 4+ years shipping digital products.'
+    },
+    {
+      question: 'What tools does she use?',
+      answer: 'Figma, React, TypeScript, HTML/CSS, VS Code, Cursor, Claude, Webflow, Adobe CC, and more — check the Skill Tree in <a href="#skills">section 01</a>.'
+    },
+    {
+      question: 'How do I contact her?',
+      answer: 'Email <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mckennawilson1824@gmail.com" target="_blank" rel="noopener noreferrer">mckennawilson1824@gmail.com</a>, connect on <a href="https://www.linkedin.com/in/mckenna-wilson-3404402a2" target="_blank" rel="noopener noreferrer">LinkedIn</a>, or browse her work in <a href="#projects">Quest Log</a>.'
+    },
+  ];
+
+  const chipLabels = { work: 'Work', skills: 'Skills', fun: 'Fun', contact: 'Contact', random: 'Random' };
+  const factIndices = { work: 0, skills: 0, fun: 0, contact: 0, random: 0 };
+  let activeCategory = 'work';
+  let typeTimer = null;
+  let firstOpen = true;
+
+  function clearTypeTimer() {
+    if (typeTimer) { clearTimeout(typeTimer); typeTimer = null; }
+  }
+
+  function typewrite(el, html, speed, onDone) {
+    clearTypeTimer();
+    if (speed === 0) {
+      el.innerHTML = html;
+      if (onDone) onDone();
+      return;
+    }
+    const segments = [];
+    const re = /(<[^>]+>)|([^<]+)/g;
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      if (m[1]) segments.push({ type: 'tag', content: m[1] });
+      else segments.push({ type: 'text', content: m[2] });
+    }
+    let built = '';
+    let si = 0, ci = 0;
+    function tick() {
+      if (si >= segments.length) { if (onDone) onDone(); return; }
+      const seg = segments[si];
+      if (seg.type === 'tag') {
+        built += seg.content; si++; ci = 0;
+        el.innerHTML = built + '<span class="agent-cursor">▌</span>';
+        tick();
+      } else {
+        built += seg.content[ci];
+        ci++;
+        el.innerHTML = built + '<span class="agent-cursor">▌</span>';
+        if (ci >= seg.content.length) { si++; ci = 0; }
+        typeTimer = setTimeout(tick, speed);
+      }
+    }
+    tick();
+  }
+
+  function clearPresetHighlight() {
+    presetsEl.querySelectorAll('.agent-preset').forEach(b => b.classList.remove('active'));
+  }
+
+  function clearChipHighlight() {
+    chipsEl.querySelectorAll('.agent-chip').forEach(b => b.classList.remove('active'));
+  }
+
+  function highlightChip(category) {
+    const btn = chipsEl.querySelector('[data-category="' + category + '"]');
+    if (btn) btn.classList.add('active');
+  }
+
+  function showAnswer(html, questionText) {
+    questionEl.textContent = questionText || '';
+    typewrite(answerEl, html, CHAR_SPEED);
+  }
+
+  function showFact(category, advance) {
+    activeCategory = category;
+    clearPresetHighlight();
+    clearChipHighlight();
+    highlightChip(category);
+
+    if (category === 'random') {
+      const fact = agentFacts[Math.floor(Math.random() * agentFacts.length)];
+      showAnswer(fact.text);
+      return;
+    }
+
+    const pool = agentFacts.filter(f => f.category === category);
+    if (!pool.length) return;
+
+    const idx = factIndices[category] || 0;
+    showAnswer(pool[idx % pool.length].text);
+    if (advance !== false) factIndices[category] = (idx + 1) % pool.length;
+  }
+
+  function showPreset(preset, btn) {
+    clearChipHighlight();
+    clearPresetHighlight();
+    if (btn) btn.classList.add('active');
+    showAnswer(preset.answer, 'YOU: ' + preset.question);
+  }
+
+  agentPresets.forEach(preset => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'agent-preset';
+    btn.textContent = preset.question;
+    btn.addEventListener('click', () => showPreset(preset, btn));
+    presetsEl.appendChild(btn);
+  });
+
+  Object.keys(chipLabels).forEach(key => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'agent-chip';
+    btn.dataset.category = key;
+    btn.textContent = chipLabels[key];
+    btn.addEventListener('click', () => showFact(key));
+    chipsEl.appendChild(btn);
+  });
+
+  nextBtn.addEventListener('click', () => showFact(activeCategory));
+
+  function openPanel() {
+    widget.classList.add('open');
+    orb.setAttribute('aria-expanded', 'true');
+    panel.setAttribute('aria-hidden', 'false');
+    if (firstOpen) {
+      firstOpen = false;
+      showAnswer('Hi — I\'m your Player Guide. Ask a question below or browse facts by topic.');
+    }
+  }
+
+  function closePanel() {
+    widget.classList.remove('open');
+    orb.setAttribute('aria-expanded', 'false');
+    panel.setAttribute('aria-hidden', 'true');
+    orb.focus();
+  }
+
+  function togglePanel() {
+    if (widget.classList.contains('open')) closePanel();
+    else openPanel();
+  }
+
+  orb.addEventListener('click', togglePanel);
+  closeBtn.addEventListener('click', closePanel);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && widget.classList.contains('open')) closePanel();
+  });
+
+  document.addEventListener('click', e => {
+    if (!widget.classList.contains('open')) return;
+    if (!widget.contains(e.target)) closePanel();
+  });
+
+  panel.addEventListener('click', e => e.stopPropagation());
+})();
 </script>
 </body>
 </html>
