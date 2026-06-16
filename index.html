@@ -166,7 +166,14 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 14px 40
 .sc-xp { margin-top: auto; padding-top: 16px; }
 .sc-xp-label { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.4; margin-bottom: 6px; }
 .sc-xp-track { height: 8px; background: rgba(0,0,0,0.06); border-radius: 4px; border: 1.5px solid var(--ink); overflow: hidden; }
-.sc-xp-fill { height: 100%; border-radius: 2px; width: 0; transition: width 1.4s cubic-bezier(.16,1,.3,1); }
+.sc-xp-fill { height: 100%; border-radius: 2px; width: 100%; transform: scaleX(0); transform-origin: left; transition: transform 1.4s cubic-bezier(.16,1,.3,1); }
+.sc-1 .sc-xp-fill { background: var(--coral); }
+.sc-2 .sc-xp-fill { background: var(--sky); }
+.sc-3 .sc-xp-fill { background: var(--mint); }
+.sc-4 .sc-xp-fill { background: var(--lilac); }
+.sc-5 .sc-xp-fill { background: var(--lemon); }
+.sc-6 .sc-xp-fill { background: var(--peach); }
+.reveal.in .sc-xp-fill { transform: scaleX(1); }
 
 /* Projects */
 .projects-list { display: flex; flex-direction: column; gap: 28px; }
@@ -1010,7 +1017,7 @@ function dismissLoader() {
       <div class="sc-tools"><span class="tool-chip">Figma</span><span class="tool-chip">Webflow</span><span class="tool-chip">Adobe Creative Cloud</span></div>
       <div class="sc-xp">
         <div class="sc-xp-label"><span>Mastery</span><span>100 / 100</span></div>
-        <div class="sc-xp-track"><div class="sc-xp-fill" data-w="100" style="background:var(--coral)"></div></div>
+        <div class="sc-xp-track"><div class="sc-xp-fill"></div></div>
       </div>
     </div>
     <div class="skill-card sc-2 reveal" style="transition-delay:.07s">
@@ -1020,7 +1027,7 @@ function dismissLoader() {
       <div class="sc-tools"><span class="tool-chip">UserTesting</span><span class="tool-chip">Eye Tracking</span><span class="tool-chip">Data Analysis</span></div>
       <div class="sc-xp">
         <div class="sc-xp-label"><span>Mastery</span><span>100 / 100</span></div>
-        <div class="sc-xp-track"><div class="sc-xp-fill" data-w="100" style="background:var(--sky)"></div></div>
+        <div class="sc-xp-track"><div class="sc-xp-fill"></div></div>
       </div>
     </div>
     <div class="skill-card sc-3 reveal" style="transition-delay:.14s">
@@ -1030,7 +1037,7 @@ function dismissLoader() {
       <div class="sc-tools"><span class="tool-chip">HTML</span><span class="tool-chip">CSS</span><span class="tool-chip">JavaScript</span><span class="tool-chip">TypeScript</span><span class="tool-chip">Next.js</span><span class="tool-chip">React</span></div>
       <div class="sc-xp">
         <div class="sc-xp-label"><span>Mastery</span><span>100 / 100</span></div>
-        <div class="sc-xp-track"><div class="sc-xp-fill" data-w="100" style="background:var(--mint)"></div></div>
+        <div class="sc-xp-track"><div class="sc-xp-fill"></div></div>
       </div>
     </div>
     <div class="skill-card sc-4 reveal" style="transition-delay:.21s">
@@ -1040,7 +1047,7 @@ function dismissLoader() {
       <div class="sc-tools"><span class="tool-chip">Component Libraries</span><span class="tool-chip">Documentaion and Principles</span><span class="tool-chip">Pattern Libraries</span></div>
       <div class="sc-xp">
         <div class="sc-xp-label"><span>Mastery</span><span>100 / 100</span></div>
-        <div class="sc-xp-track"><div class="sc-xp-fill" data-w="100" style="background:var(--lilac)"></div></div>
+        <div class="sc-xp-track"><div class="sc-xp-fill"></div></div>
       </div>
     </div>
     <div class="skill-card sc-5 reveal" style="transition-delay:.28s">
@@ -1050,7 +1057,7 @@ function dismissLoader() {
       <div class="sc-tools"><span class="tool-chip">CSS</span><span class="tool-chip">Parallax</span><span class="tool-chip">GSAP</span></div>
       <div class="sc-xp">
         <div class="sc-xp-label"><span>Mastery</span><span>100 / 100</span></div>
-        <div class="sc-xp-track"><div class="sc-xp-fill" data-w="100" style="background:var(--lemon)"></div></div>
+        <div class="sc-xp-track"><div class="sc-xp-fill"></div></div>
       </div>
     </div>
     <div class="skill-card sc-6 reveal" style="transition-delay:.35s">
@@ -1060,7 +1067,7 @@ function dismissLoader() {
       <div class="sc-tools"><span class="tool-chip">Figma</span><span class="tool-chip">VS Code</span><span class="tool-chip">Adobe CC</span><span class="tool-chip">Claude</span><span class="tool-chip">Github</span><span class="tool-chip">Cursor</span><span class="tool-chip">Spline</span><span class="tool-chip">Webflow</span></div>
       <div class="sc-xp">
         <div class="sc-xp-label"><span>Mastery</span><span>100 / 100</span></div>
-        <div class="sc-xp-track"><div class="sc-xp-fill" data-w="100" style="background:var(--peach)"></div></div>
+        <div class="sc-xp-track"><div class="sc-xp-fill"></div></div>
       </div>
     </div>
   </div>
@@ -1275,12 +1282,6 @@ const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
 },{threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
-// XP bars
-const xpObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.w+'%';xpObs.unobserve(e.target);}});
-},{threshold:0.3});
-document.querySelectorAll('.sc-xp-fill').forEach(b=>xpObs.observe(b));
 
 // Toast
 const toastEl=document.getElementById('toast');
