@@ -25,8 +25,6 @@ function initAgentGuide(options) {
     { category: 'skills', text: 'Her skill tree covers visual design, UX research, front-end dev, design systems, and CSS animation.' },
     { category: 'skills', text: '100+ user research sessions completed — empathy maps, interviews, usability testing, and more.' },
     { category: 'skills', text: 'Tools include Figma, React, TypeScript, VS Code, Cursor, Claude, Webflow, and Spline.' },
-    { category: 'fun', text: 'President of ProdUX at UVU — one of the largest product design communities there, with 260+ members.' },
-    { category: 'fun', text: '3.97 GPA on the Dean\'s List — Scholastic Honor Roll achievement unlocked.' },
     { category: 'fun', text: 'Off-screen: fly fishing, hiking, backpacking, pickleball, running, acrylic/oil painting, and good movies.' },
     { category: 'fun', text: '∞ browser tabs open at any given moment — it\'s a feature, not a bug.' },
     { category: 'contact', text: 'Email her at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mckennawilson1824@gmail.com" target="_blank" rel="noopener noreferrer">mckennawilson1824@gmail.com</a>.' },
@@ -45,7 +43,7 @@ function initAgentGuide(options) {
     },
     {
       question: 'What\'s her background?',
-      answer: 'Product Designer at Bamboo HR, President of ProdUX at UVU (260+ members), Dean\'s List with a 3.97 GPA, and 4+ years shipping digital products.'
+      answer: 'Product Designer at Bamboo HR with 4+ years shipping digital products across health, home, and services.'
     },
     {
       question: 'What tools does she use?',
