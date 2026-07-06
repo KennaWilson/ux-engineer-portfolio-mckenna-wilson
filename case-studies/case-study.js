@@ -1,5 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const homeLinks = document.querySelectorAll('a[href="../index.html?skipLoader=1#projects"]');
+function initCaseStudyHomeTransition() {
+  const homeLinks = Array.from(document.querySelectorAll('a[href]')).filter(link => {
+    const url = new URL(link.getAttribute('href'), window.location.href);
+    return url.pathname.endsWith('/index.html') && url.searchParams.has('skipLoader');
+  });
   if (!homeLinks.length) return;
 
   const overlay = document.createElement('div');
@@ -21,9 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.add('home-transitioning');
       overlay.classList.add('show');
 
-      window.setTimeout(() => {
-        window.location.href = link.href;
-      }, 420);
+      requestAnimationFrame(() => {
+        window.setTimeout(() => {
+          window.location.href = link.href;
+        }, 650);
+      });
     });
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCaseStudyHomeTransition);
+} else {
+  initCaseStudyHomeTransition();
+}
