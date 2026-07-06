@@ -187,6 +187,73 @@ h1 {
   flex-wrap: wrap;
 }
 
+.home-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  background: rgba(253, 248, 240, 0.86);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease;
+}
+
+.home-transition.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.home-transition-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateY(8px) rotate(-1deg);
+  transition: transform 0.18s cubic-bezier(.34,1.56,.64,1);
+}
+
+.home-transition.show .home-transition-card {
+  transform: translateY(0) rotate(-1deg);
+}
+
+.home-transition-spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--ink);
+  border-top-color: var(--coral);
+  border-radius: 50%;
+  animation: homeTransitionSpin 0.45s linear infinite;
+}
+
+body.home-transitioning {
+  overflow: hidden;
+}
+
+@keyframes homeTransitionSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-transition,
+  .home-transition-card {
+    transition: none;
+  }
+
+  .home-transition-spinner {
+    animation: none;
+  }
+}
+
 @media (max-width: 900px) {
   .meta-grid { grid-template-columns: 1fr 1fr; }
   .content-grid { grid-template-columns: 1fr; }

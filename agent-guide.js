@@ -166,7 +166,7 @@ function initAgentGuide(options) {
   nextBtn.addEventListener('click', () => showFact(activeCategory));
 
   function openPanel() {
-    widget.classList.add('open');
+    widget.classList.add('open', 'hint-dismissed');
     orb.setAttribute('aria-expanded', 'true');
     panel.setAttribute('aria-hidden', 'false');
     if (firstOpen) {

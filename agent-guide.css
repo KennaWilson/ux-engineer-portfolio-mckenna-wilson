@@ -10,6 +10,43 @@
   transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1);
 }
 .agent-widget.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.agent-hint {
+  position: absolute;
+  left: calc(100% + 12px);
+  bottom: 8px;
+  width: 190px;
+  padding: 8px 12px;
+  border: var(--border-w) solid var(--ink);
+  border-radius: 14px;
+  background: var(--lemon);
+  box-shadow: var(--shadow);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  transform: rotate(-2deg);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.agent-hint::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  bottom: 14px;
+  width: 12px;
+  height: 12px;
+  background: var(--lemon);
+  border-left: var(--border-w) solid var(--ink);
+  border-bottom: var(--border-w) solid var(--ink);
+  transform: rotate(45deg);
+}
+.agent-widget.open .agent-hint,
+.agent-widget.hint-dismissed .agent-hint {
+  opacity: 0;
+  transform: translateX(-4px) rotate(-2deg);
+}
 .agent-orb {
   position: relative;
   width: 56px;
@@ -180,6 +217,12 @@
 .agent-next:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
 @media (max-width: 520px) {
   .agent-widget { left: 16px; bottom: 16px; right: 16px; }
+  .agent-hint {
+    left: 70px;
+    bottom: 6px;
+    width: calc(100vw - 112px);
+    max-width: 220px;
+  }
   .agent-panel {
     bottom: calc(100% + 14px);
     left: 0;
