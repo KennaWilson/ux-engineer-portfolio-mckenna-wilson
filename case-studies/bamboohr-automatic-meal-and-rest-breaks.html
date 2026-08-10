@@ -24,6 +24,38 @@
       max-width: 100%;
       height: auto;
     }
+    .domus-gallery video {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto 22px;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      background: #fff;
+    }
+    .prototype-action {
+      margin-top: 18px;
+    }
+    .prototype-link {
+      display: inline-block;
+      text-decoration: none;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 18px;
+      padding: 14px 28px;
+      background: var(--coral);
+      color: #fff;
+      box-shadow: 8px 8px 0 var(--ink);
+      font-size: 18px;
+      font-weight: 900;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    .prototype-link:hover {
+      background: #ff5c39;
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
     .domus-links a {
       display: block;
       width: fit-content;
@@ -43,20 +75,23 @@
   <nav>
     <a class="nav-logo" href="../index.html?skipLoader=1#projects">✦ McKenna Wilson</a>
     <div class="nav-actions">
-      <a class="btn btn-outline" href="bambooai.html">← Prev Case</a>
-      <a class="btn btn-fill" href="edas-site-redesign.html">Next Case →</a>
+      <a class="btn btn-outline" href="time-attendance-onboarding-ai.html">← Prev Case</a>
+      <a class="btn btn-fill" href="wildhorse-ranch-outfitters.html">Next Case →</a>
     </div>
   </nav>
 
   <main class="page">
     <section class="hero">
-      <div class="eyebrow">Case 05</div>
+      <div class="eyebrow">Case 02</div>
       <h1>BambooHR Automatic Meal and Rest Breaks</h1>
       <p class="subtitle">Designed a new automated meal and rest break deduction feature for BambooHR, creating an intuitive experience for both HR managers and employees.</p>
       <div class="meta-grid">
         <div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">UX + Frontend + Research + Design</div></div>
         <div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">4 weeks</div></div>
         <div class="meta-item"><div class="meta-label">Tools</div><div class="meta-value">Figma, Claude Code, Maze, & Dovetail.</div></div>
+      </div>
+      <div class="prototype-action">
+        <a class="prototype-link" href="https://automatic-breaks-handoff.netlify.app" target="_blank" rel="noopener noreferrer">View prototype ↗</a>
       </div>
     </section>
 
@@ -100,6 +135,11 @@
 
     <article class="panel domus-gallery">
       <h2>BambooHR Automatic Meal and Rest Breaks</h2>
+      <video class="autoplay-gallery-video" controls autoplay muted loop playsinline preload="auto" poster="../assets/clock-in.png">
+        <source src="../assets/automatic-breaks-handoff-demo.mp4" type="video/mp4">
+        <source src="../assets/automatic-breaks-handoff-demo.mov" type="video/quicktime">
+        Your browser does not support the video tag.
+      </video>
       <img src="../assets/clock-in.png" alt="Phase 1">
       <img src="../assets/automatic-break.png" alt="Phase 2">
       <img src="../assets/timesup-tswidget.png" alt="Phase 3">
@@ -109,6 +149,35 @@
     </article>
 
   </main>
+  <script>
+    const galleryVideo = document.querySelector('.autoplay-gallery-video');
+    if (galleryVideo) {
+      galleryVideo.muted = true;
+      galleryVideo.defaultMuted = true;
+
+      const playGalleryVideo = () => {
+        galleryVideo.play().catch(() => {
+          const retry = () => {
+            galleryVideo.play().finally(() => {
+              window.removeEventListener('click', retry);
+              window.removeEventListener('touchstart', retry);
+            });
+          };
+          window.addEventListener('click', retry, { once: true });
+          window.addEventListener('touchstart', retry, { once: true });
+        });
+      };
+
+      galleryVideo.load();
+      galleryVideo.addEventListener('canplay', playGalleryVideo, { once: true });
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', playGalleryVideo);
+      } else {
+        playGalleryVideo();
+      }
+    }
+  </script>
   <script src="case-study.js?v=2"></script>
 </body>
 </html>
