@@ -1689,6 +1689,13 @@
       transition: width 0.1s linear;
     }
 
+    .vibe-credit {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      opacity: 0.4;
+    }
+
     @keyframes vinylSpin {
       to { transform: rotate(360deg); }
     }
@@ -3063,7 +3070,8 @@
         <div class="vibe-progress" aria-hidden="true">
           <div class="vibe-progress-fill" id="vibeProgressFill"></div>
         </div>
-        <audio id="vibeAudio" preload="metadata" loop></audio>
+        <audio id="vibeAudio" preload="metadata"></audio>
+        <p class="vibe-credit">Royalty-free instrumentals · SoundHelix demos</p>
       </div>
     </div>
   </div>
@@ -3716,26 +3724,26 @@
         const tracks = [
           {
             title: 'Focus Flow',
-            meta: 'Calm focus for deep work',
-            src: 'assets/vibes/focus-flow.ogg',
+            meta: 'Instrumental · calm focus for deep work',
+            src: 'assets/vibes/focus-flow.mp3',
             color: 'var(--coral)'
           },
           {
             title: 'Creative Spark',
-            meta: 'Bright energy for ideation',
-            src: 'assets/vibes/creative-spark.ogg',
+            meta: 'Instrumental · bright energy for ideation',
+            src: 'assets/vibes/creative-spark.mp3',
             color: 'var(--lemon)'
           },
           {
             title: 'Late Night Code',
-            meta: 'Low-key loops for after dark',
-            src: 'assets/vibes/late-night-code.ogg',
+            meta: 'Instrumental · low-key after-dark groove',
+            src: 'assets/vibes/late-night-code.mp3',
             color: 'var(--lilac)'
           },
           {
             title: 'Sunny Build',
-            meta: 'Upbeat groove for shipping',
-            src: 'assets/vibes/sunny-build.ogg',
+            meta: 'Instrumental · upbeat groove for shipping',
+            src: 'assets/vibes/sunny-build.mp3',
             color: 'var(--mint)'
           }
         ];
@@ -3826,8 +3834,7 @@
         });
 
         audio.addEventListener('ended', () => {
-          // loop attribute handles repeat; keep UI in sync
-          setPlayingUI(true);
+          loadTrack(index + 1, { autoplay: true });
         });
         audio.addEventListener('pause', () => {
           if (!audio.ended) setPlayingUI(false);
