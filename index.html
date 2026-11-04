@@ -432,7 +432,7 @@
 
       body { cursor: auto; }
       .cursor, .cursor-dot, .cursor-trail { display: none !important; }
-      a, button, .skill-card, .project-card, .ach-card, .astat, .contact-card, .htag, .vis-card, .nav-toggle, .agent-orb, .agent-close, .agent-preset, .agent-chip, .agent-next, .pc-xp-badge:not(.collected), .vibe-btn, .vibe-track { cursor: pointer; }
+      a, button, .skill-card, .project-card, .ach-card, .astat, .contact-card, .htag, .vis-card, .nav-toggle, .agent-orb, .agent-close, .agent-preset, .agent-chip, .agent-next, .pc-xp-badge:not(.collected), .vibe-btn, .vibe-track, #xpGameStart { cursor: pointer; }
     }
 
     /* Hero */
@@ -2110,6 +2110,123 @@
       font-family: var(--mono);
     }
 
+    /* Bonus game */
+    .bonus-game {
+      position: relative;
+      z-index: 1;
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 20px var(--page-gutter) 80px;
+      opacity: 0;
+      transform: translateY(28px);
+      pointer-events: none;
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .bonus-game.is-unlocked {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    .bonus-game-shell {
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+    }
+
+    .bonus-game-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 18px;
+      border-bottom: var(--border-w) solid var(--ink);
+      background: var(--cream);
+    }
+
+    .bonus-game-stat {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bonus-game-stat strong {
+      background: var(--ink);
+      color: var(--lemon);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1.5px solid var(--ink);
+    }
+
+    .bonus-game-stage {
+      position: relative;
+      background:
+        linear-gradient(180deg, #fff8ea 0%, var(--cream) 100%);
+      min-height: 360px;
+    }
+
+    #xpGameCanvas {
+      display: block;
+      width: 100%;
+      height: 360px;
+      cursor: none;
+      touch-action: none;
+    }
+
+    .bonus-game-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+      background: rgba(253, 248, 240, 0.88);
+      transition: opacity 0.2s ease;
+    }
+
+    .bonus-game-overlay[hidden] {
+      display: none;
+    }
+
+    .bonus-game-overlay h3 {
+      font-family: var(--display);
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .bonus-game-overlay p {
+      max-width: 360px;
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.65;
+    }
+
+    .bonus-game-tip {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      opacity: 0.45;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      #xpGameCanvas {
+        cursor: auto;
+        height: 320px;
+      }
+    }
+
     /* Reveal */
     .reveal {
       opacity: 0;
@@ -3218,6 +3335,27 @@
       <p>Designed &amp; hand-coded ✦ by McKenna Wilson · 2026</p>
     </footer>
 
+    <section class="bonus-game" id="bonusGame" aria-label="Bonus XP catcher game">
+      <div class="section-label">✦ Bonus Level</div>
+      <h2 class="section-title ul-coral" style="margin-bottom: 24px;">Catch the <span>XP</span></h2>
+      <div class="bonus-game-shell">
+        <div class="bonus-game-hud">
+          <div class="bonus-game-stat">Score <strong id="xpGameScore">0</strong></div>
+          <div class="bonus-game-stat">Best <strong id="xpGameBest">0</strong></div>
+          <div class="bonus-game-stat">Lives <strong id="xpGameLives">3</strong></div>
+        </div>
+        <div class="bonus-game-stage">
+          <canvas id="xpGameCanvas" width="900" height="360" aria-label="Catch falling XP stars, avoid bugs"></canvas>
+          <div class="bonus-game-overlay" id="xpGameOverlay">
+            <h3 id="xpGameOverlayTitle">Secret level unlocked</h3>
+            <p id="xpGameOverlayText">Move to catch ✦ XP. Avoid 🐛 bugs. Survive as long as you can.</p>
+            <button type="button" class="btn btn-fill" id="xpGameStart">Press Start</button>
+          </div>
+        </div>
+      </div>
+      <p class="bonus-game-tip">Mouse / touch to move · or ← → keys</p>
+    </section>
+
     <script>
       // Cursor (desktop only)
       if (window.matchMedia('(min-width: 821px)').matches) {
@@ -3699,6 +3837,7 @@
         toastEl.classList.add('show');
         tt = setTimeout(() => toastEl.classList.remove('show'), 3200);
       }
+      window.showToast = showToast;
       document.querySelectorAll('.section-wrap[id]').forEach(sec => {
         new IntersectionObserver(entries => {
           entries.forEach(e => {
@@ -3862,6 +4001,280 @@
         dismissAgentHintPastProjects();
         window.addEventListener('scroll', dismissAgentHintPastProjects, { passive: true });
       }
+
+      // Bonus XP catcher game (unlocks at page bottom)
+      (function initXpCatcherGame() {
+        const section = document.getElementById('bonusGame');
+        const canvas = document.getElementById('xpGameCanvas');
+        const overlay = document.getElementById('xpGameOverlay');
+        const startBtn = document.getElementById('xpGameStart');
+        const scoreEl = document.getElementById('xpGameScore');
+        const bestEl = document.getElementById('xpGameBest');
+        const livesEl = document.getElementById('xpGameLives');
+        const overlayTitle = document.getElementById('xpGameOverlayTitle');
+        const overlayText = document.getElementById('xpGameOverlayText');
+        if (!section || !canvas || !overlay || !startBtn) return;
+
+        const ctx = canvas.getContext('2d');
+        const BEST_KEY = 'mckenna_xp_catcher_best';
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let best = Number(localStorage.getItem(BEST_KEY) || 0);
+        bestEl.textContent = String(best);
+
+        let unlocked = false;
+        let running = false;
+        let raf = 0;
+        let width = 900;
+        let height = 360;
+        let dpr = 1;
+        let score = 0;
+        let lives = 3;
+        let spawnTimer = 0;
+        let items = [];
+        let paddle = { x: 450, y: 320, w: 86, h: 18 };
+        let keys = { left: false, right: false };
+        let pointerX = null;
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          width = Math.max(320, Math.floor(rect.width));
+          height = Math.max(280, Math.floor(rect.height));
+          canvas.width = Math.floor(width * dpr);
+          canvas.height = Math.floor(height * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          paddle.y = height - 40;
+          paddle.x = Math.min(Math.max(paddle.x, paddle.w / 2), width - paddle.w / 2);
+        }
+
+        function unlockGame() {
+          if (unlocked) return;
+          unlocked = true;
+          section.classList.add('is-unlocked');
+          if (typeof window.showToast === 'function') {
+            window.showToast('🎮', 'SECRET LEVEL UNLOCKED!', 'Catch the XP below the credits');
+          }
+          resize();
+        }
+
+        function resetRound() {
+          score = 0;
+          lives = 3;
+          items = [];
+          spawnTimer = 0;
+          paddle.x = width / 2;
+          scoreEl.textContent = '0';
+          livesEl.textContent = '3';
+        }
+
+        function spawnItem() {
+          const isBug = Math.random() < Math.min(0.18 + score * 0.002, 0.38);
+          const size = isBug ? 22 : 18 + Math.random() * 10;
+          items.push({
+            x: 24 + Math.random() * (width - 48),
+            y: -30,
+            r: size / 2,
+            vy: (isBug ? 2.1 : 1.6) + Math.random() * 1.6 + score * 0.015,
+            bug: isBug,
+            rot: Math.random() * Math.PI,
+            vr: (Math.random() - 0.5) * 0.12
+          });
+        }
+
+        function roundedRectPath(x, y, w, h, r) {
+          const radius = Math.min(r, w / 2, h / 2);
+          ctx.beginPath();
+          ctx.moveTo(x + radius, y);
+          ctx.arcTo(x + w, y, x + w, y + h, radius);
+          ctx.arcTo(x + w, y + h, x, y + h, radius);
+          ctx.arcTo(x, y + h, x, y, radius);
+          ctx.arcTo(x, y, x + w, y, radius);
+          ctx.closePath();
+        }
+
+        function drawPaddle() {
+          const x = paddle.x - paddle.w / 2;
+          const y = paddle.y;
+          ctx.fillStyle = '#1a1207';
+          ctx.fillRect(x + 3, y + 3, paddle.w, paddle.h);
+          ctx.fillStyle = '#ffe145';
+          ctx.strokeStyle = '#1a1207';
+          ctx.lineWidth = 2.5;
+          roundedRectPath(x, y, paddle.w, paddle.h, 8);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = '#1a1207';
+          ctx.font = '700 11px Nunito, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('CATCH', paddle.x, y + paddle.h / 2 + 1);
+        }
+
+        function drawItem(item) {
+          ctx.save();
+          ctx.translate(item.x, item.y);
+          ctx.rotate(item.rot);
+          ctx.font = `${item.r * 2.1}px serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(item.bug ? '🐛' : '✦', 0, 0);
+          ctx.restore();
+        }
+
+        function drawScene() {
+          ctx.clearRect(0, 0, width, height);
+          // soft grid
+          ctx.strokeStyle = 'rgba(26,18,7,0.05)';
+          ctx.lineWidth = 1;
+          for (let x = 0; x < width; x += 28) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+          }
+          items.forEach(drawItem);
+          drawPaddle();
+        }
+
+        function hitTest(item) {
+          const nearestX = Math.max(paddle.x - paddle.w / 2, Math.min(item.x, paddle.x + paddle.w / 2));
+          const nearestY = Math.max(paddle.y, Math.min(item.y, paddle.y + paddle.h));
+          const dx = item.x - nearestX;
+          const dy = item.y - nearestY;
+          return (dx * dx + dy * dy) <= (item.r * item.r);
+        }
+
+        function endGame() {
+          running = false;
+          cancelAnimationFrame(raf);
+          if (score > best) {
+            best = score;
+            localStorage.setItem(BEST_KEY, String(best));
+            bestEl.textContent = String(best);
+          }
+          overlayTitle.textContent = 'Run complete';
+          overlayText.textContent = `You banked ${score} XP. Best: ${best}. Ready for another round?`;
+          startBtn.textContent = 'Play again';
+          overlay.hidden = false;
+        }
+
+        function tick() {
+          if (!running) return;
+
+          const speed = (keys.left ? -1 : 0) + (keys.right ? 1 : 0);
+          if (pointerX != null) {
+            paddle.x += (pointerX - paddle.x) * 0.28;
+          } else if (speed) {
+            paddle.x += speed * 7.5;
+          }
+          paddle.x = Math.min(Math.max(paddle.x, paddle.w / 2 + 4), width - paddle.w / 2 - 4);
+
+          spawnTimer--;
+          if (spawnTimer <= 0) {
+            spawnItem();
+            spawnTimer = Math.max(18, 48 - Math.floor(score / 8));
+          }
+
+          const next = [];
+          for (const item of items) {
+            item.y += item.vy;
+            item.rot += item.vr;
+            if (hitTest(item)) {
+              if (item.bug) {
+                lives -= 1;
+                livesEl.textContent = String(lives);
+                if (lives <= 0) {
+                  drawScene();
+                  endGame();
+                  return;
+                }
+              } else {
+                score += 10;
+                scoreEl.textContent = String(score);
+              }
+              continue;
+            }
+            if (item.y - item.r < height + 30) next.push(item);
+            else if (!item.bug) {
+              // missed XP
+              lives -= 1;
+              livesEl.textContent = String(lives);
+              if (lives <= 0) {
+                items = next;
+                drawScene();
+                endGame();
+                return;
+              }
+            }
+          }
+          items = next;
+          drawScene();
+          raf = requestAnimationFrame(tick);
+        }
+
+        function startGame() {
+          resize();
+          resetRound();
+          overlay.hidden = true;
+          running = true;
+          cancelAnimationFrame(raf);
+          if (prefersReducedMotion) {
+            // Still playable, just no request for fancy extras
+          }
+          raf = requestAnimationFrame(tick);
+        }
+
+        function setPointerFromEvent(e) {
+          const rect = canvas.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          pointerX = ((clientX - rect.left) / rect.width) * width;
+        }
+
+        startBtn.addEventListener('click', startGame);
+        window.addEventListener('resize', () => {
+          if (!unlocked) return;
+          resize();
+          if (!running) drawScene();
+        });
+
+        canvas.addEventListener('mousemove', e => {
+          if (!running) return;
+          setPointerFromEvent(e);
+        });
+        canvas.addEventListener('touchstart', e => {
+          if (!running) return;
+          setPointerFromEvent(e);
+        }, { passive: true });
+        canvas.addEventListener('touchmove', e => {
+          if (!running) return;
+          setPointerFromEvent(e);
+        }, { passive: true });
+        canvas.addEventListener('mouseleave', () => { pointerX = null; });
+
+        window.addEventListener('keydown', e => {
+          if (!running) return;
+          if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+          if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+        });
+        window.addEventListener('keyup', e => {
+          if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+          if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+        });
+
+        const unlockObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) unlockGame();
+          });
+        }, { threshold: 0.55 });
+        unlockObserver.observe(document.querySelector('footer'));
+
+        // Also unlock if user is already at bottom (e.g. refresh with anchor)
+        window.addEventListener('scroll', () => {
+          if (unlocked) return;
+          const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 120;
+          if (nearBottom) unlockGame();
+        }, { passive: true });
+      })();
     </script>
 </body>
 
