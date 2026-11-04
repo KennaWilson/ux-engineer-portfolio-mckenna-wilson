@@ -497,6 +497,7 @@
     }
 
     .htag {
+      font-family: var(--sans);
       font-size: 12px;
       font-weight: 700;
       padding: 6px 14px;
@@ -505,6 +506,10 @@
       box-shadow: 3px 3px 0 var(--ink);
       transition: transform 0.15s, box-shadow 0.15s;
       cursor: none;
+      appearance: none;
+      -webkit-appearance: none;
+      color: inherit;
+      line-height: 1.2;
     }
 
     .htag:hover {
@@ -954,6 +959,158 @@
 
     .sc-6 .sc-xp-fill {
       background: var(--peach);
+    }
+
+    /* Skill modal */
+    .skill-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .skill-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .skill-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(26, 18, 7, 0.55);
+    }
+
+    .skill-modal-dialog {
+      position: relative;
+      z-index: 1;
+      width: min(440px, 100%);
+      transform: translateY(12px) scale(0.96);
+      transition: transform 0.22s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .skill-modal.open .skill-modal-dialog {
+      transform: none;
+    }
+
+    .skill-modal-close {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: var(--border-w) solid var(--ink);
+      background: var(--lemon);
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+      box-shadow: var(--shadow);
+      cursor: none;
+      display: grid;
+      place-items: center;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .skill-modal-close:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .skill-modal-card {
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-modal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+    }
+
+    .skill-modal-card.sc-1::before { background: var(--coral); }
+    .skill-modal-card.sc-2::before { background: var(--sky); }
+    .skill-modal-card.sc-3::before { background: var(--mint); }
+    .skill-modal-card.sc-4::before { background: var(--lilac); }
+    .skill-modal-card.sc-5::before { background: var(--lemon); border-bottom: 1.5px solid var(--ink); }
+    .skill-modal-card.sc-6::before { background: var(--peach); }
+
+    .skill-modal-card .sc-icon {
+      font-size: 40px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .skill-modal-card .sc-title {
+      font-family: var(--display);
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .skill-modal-card .sc-desc {
+      font-size: 15px;
+      line-height: 1.65;
+      opacity: 0.65;
+      margin-bottom: 18px;
+    }
+
+    .skill-modal-card .sc-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .skill-modal-card .sc-xp-track {
+      height: 10px;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 4px;
+      border: 1.5px solid var(--ink);
+      overflow: hidden;
+    }
+
+    .skill-modal-card .sc-xp-fill {
+      height: 100%;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.9s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .skill-modal-card.sc-1 .sc-xp-fill { background: var(--coral); }
+    .skill-modal-card.sc-2 .sc-xp-fill { background: var(--sky); }
+    .skill-modal-card.sc-3 .sc-xp-fill { background: var(--mint); }
+    .skill-modal-card.sc-4 .sc-xp-fill { background: var(--lilac); }
+    .skill-modal-card.sc-5 .sc-xp-fill { background: var(--lemon); }
+    .skill-modal-card.sc-6 .sc-xp-fill { background: var(--peach); }
+
+    .skill-modal-card.is-ready .sc-xp-fill {
+      transform: scaleX(1);
+    }
+
+    body.skill-modal-open {
+      overflow: hidden;
+    }
+
+    .htag[aria-pressed="true"] {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--ink);
     }
 
     .reveal.in .sc-xp-fill {
@@ -2351,12 +2508,12 @@
         Building products people actually enjoy using.
       </p>
       <div class="hero-tags">
-        <span class="htag htag-1">Visual Design</span>
-        <span class="htag htag-2">UX Research</span>
-        <span class="htag htag-3">Front End Development</span>
-        <span class="htag htag-4">Design Systems</span>
-        <span class="htag htag-5">3D &amp; Animation</span>
-        <span class="htag htag-6">My Design Tools</span>
+        <button type="button" class="htag htag-1" data-skill="sc-1" aria-haspopup="dialog">Visual Design</button>
+        <button type="button" class="htag htag-2" data-skill="sc-2" aria-haspopup="dialog">UX Research</button>
+        <button type="button" class="htag htag-3" data-skill="sc-3" aria-haspopup="dialog">Front End Development</button>
+        <button type="button" class="htag htag-4" data-skill="sc-4" aria-haspopup="dialog">Design Systems</button>
+        <button type="button" class="htag htag-5" data-skill="sc-5" aria-haspopup="dialog">3D &amp; Animation</button>
+        <button type="button" class="htag htag-6" data-skill="sc-6" aria-haspopup="dialog">My Design Tools</button>
       </div>
       <div class="hero-btns">
         <a href="#projects" class="btn btn-fill">See my work ↓</a>
@@ -2612,7 +2769,7 @@
     <div class="section-label reveal">✦ 02 — Skill Tree</div>
     <h2 class="section-title ul-coral reveal">What I bring <span>to the table</span></h2>
     <div class="skills-grid">
-      <div class="skill-card sc-1 reveal">
+      <div class="skill-card sc-1 reveal" id="skill-sc-1" data-skill="sc-1">
         <span class="sc-icon">🎨</span>
         <div class="sc-title">Visual Design</div>
         <div class="sc-desc">Crafting interfaces that feel polished, intentional, and delightful. Typography, layout,
@@ -2625,7 +2782,7 @@
           </div>
         </div>
       </div>
-      <div class="skill-card sc-2 reveal" style="transition-delay:.07s">
+      <div class="skill-card sc-2 reveal" style="transition-delay:.07s" id="skill-sc-2" data-skill="sc-2">
         <span class="sc-icon">🔬</span>
         <div class="sc-title">UX Research</div>
         <div class="sc-desc">User interviews, journey maps, empathy mapping, usability testing, synthesising insights
@@ -2638,7 +2795,7 @@
           </div>
         </div>
       </div>
-      <div class="skill-card sc-3 reveal" style="transition-delay:.14s">
+      <div class="skill-card sc-3 reveal" style="transition-delay:.14s" id="skill-sc-3" data-skill="sc-3">
         <span class="sc-icon">⚛️</span>
         <div class="sc-title">Front End Development</div>
         <div class="sc-desc">Building fast, accessible, component-driven UIs. I write the markup I design — no
@@ -2652,7 +2809,7 @@
           </div>
         </div>
       </div>
-      <div class="skill-card sc-4 reveal" style="transition-delay:.21s">
+      <div class="skill-card sc-4 reveal" style="transition-delay:.21s" id="skill-sc-4" data-skill="sc-4">
         <span class="sc-icon">🧩</span>
         <div class="sc-title">Design Systems</div>
         <div class="sc-desc">Tokens, components, documentation — bridging design and engineering at scale.</div>
@@ -2664,9 +2821,9 @@
           </div>
         </div>
       </div>
-      <div class="skill-card sc-5 reveal" style="transition-delay:.28s">
+      <div class="skill-card sc-5 reveal" style="transition-delay:.28s" id="skill-sc-5" data-skill="sc-5">
         <span class="sc-icon">✨</span>
-        <div class="sc-title">CSS & Animation</div>
+        <div class="sc-title">3D &amp; Animation</div>
         <div class="sc-desc">Micro-interactions, scroll-driven animations, CSS Variables, CSS Grid, and transitions that
           elevate without distracting Making the web more beautiful and functional.</div>
         <div class="sc-tools"><span class="tool-chip">CSS</span><span class="tool-chip">Parallax</span><span
@@ -2677,7 +2834,7 @@
           </div>
         </div>
       </div>
-      <div class="skill-card sc-6 reveal" style="transition-delay:.35s">
+      <div class="skill-card sc-6 reveal" style="transition-delay:.35s" id="skill-sc-6" data-skill="sc-6">
         <span class="sc-icon">🧰</span>
         <div class="sc-title">My Design Tools</div>
         <div class="sc-desc">Figma, Webflow, Adobe Creative Cloud, Claude, Cursor, VS Code, Github, Dribble, Spline,
@@ -2798,6 +2955,15 @@
             <div class="cc-value">https://github.com/KennaWilson</div>
           </div>
         </a>
+      </div>
+    </div>
+
+    <!-- Skill detail modal -->
+    <div class="skill-modal" id="skillModal" hidden>
+      <div class="skill-modal-backdrop" data-skill-close tabindex="-1"></div>
+      <div class="skill-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="skillModalTitle">
+        <button type="button" class="skill-modal-close" id="skillModalClose" aria-label="Close skill details">×</button>
+        <div class="skill-modal-card" id="skillModalCard"></div>
       </div>
     </div>
 
@@ -3193,6 +3359,76 @@
           replaySkillBar(card);
           setTimeout(() => card.classList.remove('skill-pop'), 520);
         });
+      });
+
+      // Hero skill badge → modal
+      const skillModal = document.getElementById('skillModal');
+      const skillModalCard = document.getElementById('skillModalCard');
+      const skillModalClose = document.getElementById('skillModalClose');
+      let skillModalLastFocus = null;
+
+      function closeSkillModal() {
+        if (!skillModal || !skillModal.classList.contains('open')) return;
+        skillModal.classList.remove('open');
+        document.body.classList.remove('skill-modal-open');
+        document.querySelectorAll('.htag[aria-pressed="true"]').forEach(tag => {
+          tag.setAttribute('aria-pressed', 'false');
+        });
+        setTimeout(() => {
+          if (!skillModal.classList.contains('open')) {
+            skillModal.hidden = true;
+            if (skillModalCard) {
+              skillModalCard.classList.remove('is-ready');
+              skillModalCard.innerHTML = '';
+              skillModalCard.className = 'skill-modal-card';
+            }
+          }
+        }, 200);
+        if (skillModalLastFocus && typeof skillModalLastFocus.focus === 'function') {
+          skillModalLastFocus.focus();
+        }
+      }
+
+      function openSkillModal(skillId, triggerEl) {
+        const source = document.getElementById('skill-' + skillId);
+        if (!skillModal || !skillModalCard || !source) return;
+
+        skillModalLastFocus = triggerEl || document.activeElement;
+        const icon = source.querySelector('.sc-icon')?.textContent?.trim() || '';
+        const title = source.querySelector('.sc-title')?.innerHTML || '';
+        const desc = source.querySelector('.sc-desc')?.innerHTML || '';
+        const tools = source.querySelector('.sc-tools')?.innerHTML || '';
+
+        skillModalCard.className = 'skill-modal-card ' + skillId;
+        skillModalCard.innerHTML =
+          '<span class="sc-icon">' + icon + '</span>' +
+          '<div class="sc-title" id="skillModalTitle">' + title + '</div>' +
+          '<div class="sc-desc">' + desc + '</div>' +
+          '<div class="sc-tools">' + tools + '</div>' +
+          '<div class="sc-xp"><div class="sc-xp-track"><div class="sc-xp-fill"></div></div></div>';
+
+        document.querySelectorAll('.htag[data-skill]').forEach(tag => {
+          tag.setAttribute('aria-pressed', tag.dataset.skill === skillId ? 'true' : 'false');
+        });
+
+        skillModal.hidden = false;
+        document.body.classList.add('skill-modal-open');
+        requestAnimationFrame(() => {
+          skillModal.classList.add('open');
+          requestAnimationFrame(() => skillModalCard.classList.add('is-ready'));
+        });
+        skillModalClose?.focus();
+      }
+
+      document.querySelectorAll('.htag[data-skill]').forEach(tag => {
+        tag.setAttribute('aria-pressed', 'false');
+        tag.addEventListener('click', () => openSkillModal(tag.dataset.skill, tag));
+      });
+
+      skillModalClose?.addEventListener('click', closeSkillModal);
+      skillModal?.querySelector('[data-skill-close]')?.addEventListener('click', closeSkillModal);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeSkillModal();
       });
 
       // Toast
