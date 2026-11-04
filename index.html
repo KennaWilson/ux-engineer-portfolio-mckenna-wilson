@@ -413,8 +413,15 @@
 
       .pc-top {
         flex-direction: column;
+        align-items: stretch;
         padding: 24px;
         gap: 16px;
+      }
+
+      .pc-expand-btn {
+        align-self: stretch;
+        justify-content: center;
+        width: 100%;
       }
 
       .contact-card {
@@ -981,7 +988,7 @@
       display: flex;
       gap: 28px;
       padding: 32px;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .pc-emoji {
@@ -1197,26 +1204,34 @@
     }
 
     .pc-expand-btn {
-      width: 100%;
-      background: var(--lemon);
-      border: none;
-      border-top: var(--border-w) solid var(--ink);
-      padding: 14px 32px;
-      text-align: left;
+      flex-shrink: 0;
+      align-self: center;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 12px;
+      padding: 12px 18px;
       font-family: var(--sans);
       font-size: 13px;
       font-weight: 800;
       cursor: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       color: var(--ink);
       text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    .project-card:hover .pc-expand-btn {
-      background: var(--sky);
+    .pc-expand-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pc-expand-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--ink);
     }
 
     .pc-expand-btn[aria-busy="true"] {
@@ -1225,12 +1240,8 @@
     }
 
     .pc-chevron {
-      transition: transform 0.3s;
       font-size: 16px;
-    }
-
-    .pc-expand-btn.open .pc-chevron {
-      transform: rotate(180deg);
+      line-height: 1;
     }
 
     .pc-details {
@@ -2412,9 +2423,9 @@
             <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-claude">Claude Code</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/time-attendance-onboarding-ai.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/time-attendance-onboarding-ai.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" id="p2">
@@ -2434,9 +2445,9 @@
                 class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-res">User Research</span><span
                 class="pc-tag pct-test">Usability Testing</span><span class="pc-tag pct-claude">Claude Code</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/bamboohr-automatic-meal-and-rest-breaks.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/bamboohr-automatic-meal-and-rest-breaks.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.1s" id="p6">
@@ -2455,9 +2466,9 @@
             <div class="pc-tags"><span class="pc-tag pct-js">JavaScript</span><span
                 class="pc-tag pct-ux">UX Design</span><span class="pc-tag pct-react">React</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/wildhorse-ranch-outfitters.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/wildhorse-ranch-outfitters.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" id="p3">
@@ -2476,9 +2487,9 @@
             <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-res">User Research</span><span class="pc-tag pct-react">React</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/domus-home-hub.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/domus-home-hub.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.1s" id="p5">
@@ -2498,9 +2509,9 @@
             <div class="pc-tags"><span class="pc-tag pct-ds">Design System</span><span
                 class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-test">Usability Testing</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/agriculture-ai-integration.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/agriculture-ai-integration.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" id="p1">
@@ -2520,9 +2531,9 @@
                 class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-res">User Research</span><span
                 class="pc-tag pct-claude">Claude Code</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/bambooai.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/bambooai.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.3s" id="p7">
@@ -2542,9 +2553,9 @@
             <div class="pc-tags"><span class="pc-tag pct-html">HTML</span><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-next">Next.js</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/edas-site-redesign.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/edas-site-redesign.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" id="p4">
@@ -2562,9 +2573,9 @@
             <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-type">Typography/Color</span><span class="pc-tag pct-ds">Design System</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/kinship-website.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/kinship-website.html">Check Out Work <span
           class="pc-chevron">→</span></a>
+        </div>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.3s" id="p8">
@@ -2584,9 +2595,9 @@
             <div class="pc-tags"><span class="pc-tag pct-html">HTML</span><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-next">Next.js</span></div>
           </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/aol-site-redesign.html">Check Out Work <span
+          <a class="pc-expand-btn" href="case-studies/aol-site-redesign.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+        </div>
       </div>
 
     </div>
