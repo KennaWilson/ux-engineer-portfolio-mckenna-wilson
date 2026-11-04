@@ -432,7 +432,7 @@
 
       body { cursor: auto; }
       .cursor, .cursor-dot, .cursor-trail { display: none !important; }
-      a, button, .skill-card, .project-card, .ach-card, .astat, .contact-card, .htag, .vis-card, .nav-toggle, .agent-orb, .agent-close, .agent-preset, .agent-chip, .agent-next, .pc-xp-badge:not(.collected) { cursor: pointer; }
+      a, button, .skill-card, .project-card, .ach-card, .astat, .contact-card, .htag, .vis-card, .nav-toggle, .agent-orb, .agent-close, .agent-preset, .agent-chip, .agent-next, .pc-xp-badge:not(.collected), .vibe-btn, .vibe-track { cursor: pointer; }
     }
 
     /* Hero */
@@ -1450,6 +1450,265 @@
       font-size: 13px;
       line-height: 1.55;
       font-weight: 600;
+    }
+
+    /* Vibe / Record player */
+    .vibe-deck {
+      display: grid;
+      grid-template-columns: minmax(240px, 320px) 1fr;
+      gap: 36px;
+      align-items: center;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 32px;
+    }
+
+    .vibe-player {
+      position: relative;
+      width: min(100%, 280px);
+      margin: 0 auto;
+      aspect-ratio: 1;
+    }
+
+    .vibe-platter {
+      position: absolute;
+      inset: 8%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, #2a2118 0 12%, transparent 12.5%),
+        repeating-radial-gradient(circle at 50% 50%,
+          #1a1207 0 2px,
+          #2c241c 2px 4px,
+          #1a1207 4px 7px);
+      border: var(--border-w) solid var(--ink);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+    }
+
+    .vibe-platter.is-spinning {
+      animation: vinylSpin 3.6s linear infinite;
+    }
+
+    .vibe-label {
+      width: 42%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: var(--border-w) solid var(--ink);
+      background: var(--vibe-color, var(--coral));
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 2px 2px 0 var(--ink);
+      z-index: 1;
+    }
+
+    .vibe-label-text {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+    }
+
+    .vibe-arm {
+      position: absolute;
+      top: 6%;
+      right: 10%;
+      width: 12px;
+      height: 46%;
+      transform-origin: 50% 8%;
+      transform: rotate(-18deg);
+      transition: transform 0.35s ease;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .vibe-deck.is-playing .vibe-arm {
+      transform: rotate(18deg);
+    }
+
+    .vibe-arm-pivot {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--lemon);
+      border: var(--border-w) solid var(--ink);
+      transform: translate(-50%, -30%);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .vibe-arm-shaft {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      width: 6px;
+      height: 78%;
+      background: var(--ink);
+      transform: translateX(-50%);
+      border-radius: 3px;
+    }
+
+    .vibe-arm-head {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 18px;
+      height: 24px;
+      background: var(--coral);
+      border: var(--border-w) solid var(--ink);
+      border-radius: 4px;
+      transform: translateX(-50%);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .vibe-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .vibe-now {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .vibe-now-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.45;
+    }
+
+    .vibe-now-title {
+      font-family: var(--display);
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .vibe-now-meta {
+      font-size: 14px;
+      opacity: 0.55;
+    }
+
+    .vibe-transport {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .vibe-btn {
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: var(--border-w) solid var(--ink);
+      background: #fff;
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      cursor: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .vibe-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .vibe-btn:active,
+    .vibe-btn[aria-pressed="true"] {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--ink);
+    }
+
+    .vibe-btn-play {
+      background: var(--ink);
+      color: var(--lemon);
+    }
+
+    .vibe-tracks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .vibe-track {
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: var(--border-w) solid var(--ink);
+      background: var(--cream);
+      color: var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      cursor: none;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .vibe-track:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+
+    .vibe-track.is-active {
+      background: var(--vibe-color, var(--lemon));
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--ink);
+    }
+
+    .vibe-progress {
+      height: 10px;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    .vibe-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--vibe-color, var(--coral));
+      transition: width 0.1s linear;
+    }
+
+    @keyframes vinylSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 760px) {
+      .vibe-deck {
+        grid-template-columns: 1fr;
+        padding: 24px;
+        gap: 24px;
+      }
+
+      .vibe-player {
+        width: min(100%, 240px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .vibe-platter.is-spinning {
+        animation: none;
+      }
     }
 
     /* Achievements */
@@ -2478,6 +2737,7 @@
     <div class="nav-menu" id="navMenu">
       <div class="nav-links">
         <a href="#projects">Work</a>
+        <a href="#vibe">Vibe</a>
         <a href="#achievements">Badges</a>
         <a href="#about">About</a>
         <a href="#contact" class="contact-btn">Contact Me</a>
@@ -2763,9 +3023,56 @@
 
   <div class="stripe-band"></div>
 
+  <!-- VIBE -->
+  <div class="section-wrap" id="vibe">
+    <div class="section-label reveal">✦ 02 — Soundtrack</div>
+    <h2 class="section-title ul-lemon reveal">Pick your <span>vibe</span></h2>
+    <div class="vibe-deck reveal" id="vibeDeck" style="--vibe-color: var(--coral)">
+      <div class="vibe-player" aria-hidden="true">
+        <div class="vibe-platter" id="vibePlatter">
+          <div class="vibe-label">
+            <span class="vibe-label-text" id="vibeLabelText">Focus Flow</span>
+          </div>
+        </div>
+        <div class="vibe-arm">
+          <span class="vibe-arm-pivot"></span>
+          <span class="vibe-arm-shaft"></span>
+          <span class="vibe-arm-head"></span>
+        </div>
+      </div>
+      <div class="vibe-controls">
+        <div class="vibe-now">
+          <span class="vibe-now-label">Now spinning</span>
+          <div class="vibe-now-title" id="vibeNowTitle">Focus Flow</div>
+          <div class="vibe-now-meta" id="vibeNowMeta">Calm focus for deep work</div>
+        </div>
+        <div class="vibe-tracks" role="listbox" aria-label="Choose a vibe">
+          <button type="button" class="vibe-track is-active" role="option" aria-selected="true" data-vibe="0" style="--vibe-color: var(--coral)">Focus Flow</button>
+          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="1" style="--vibe-color: var(--lemon)">Creative Spark</button>
+          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="2" style="--vibe-color: var(--lilac)">Late Night Code</button>
+          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="3" style="--vibe-color: var(--mint)">Sunny Build</button>
+        </div>
+        <div class="vibe-transport">
+          <button type="button" class="vibe-btn vibe-btn-play" id="vibePlay" aria-pressed="false">
+            <span id="vibePlayIcon">▶</span>
+            <span id="vibePlayLabel">Play</span>
+          </button>
+          <button type="button" class="vibe-btn" id="vibePrev" aria-label="Previous vibe">⏮ Prev</button>
+          <button type="button" class="vibe-btn" id="vibeNext" aria-label="Next vibe">Next ⏭</button>
+        </div>
+        <div class="vibe-progress" aria-hidden="true">
+          <div class="vibe-progress-fill" id="vibeProgressFill"></div>
+        </div>
+        <audio id="vibeAudio" preload="metadata" loop></audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="stripe-band"></div>
+
   <!-- ACHIEVEMENTS -->
   <div class="section-wrap" id="achievements">
-    <div class="section-label reveal">✦ 02 — Badge Collection</div>
+    <div class="section-label reveal">✦ 03 — Badge Collection</div>
     <h2 class="section-title ul-sky reveal"><span>Deliverables</span> made for you</h2>
     <div class="ach-grid">
       <div class="ach-card reveal"><span class="ach-rarity r-legendary">★ Legend</span><span class="ach-icon">🖥️</span>
@@ -2798,7 +3105,7 @@
 
     <!-- ABOUT -->
     <div class="section-wrap" id="about">
-      <div class="section-label reveal">✦ 03 — Player Profile</div>
+      <div class="section-label reveal">✦ 04 — Player Profile</div>
       <h2 class="section-title ul-lemon reveal">A little <span>about me</span></h2>
       <div class="about-grid">
         <div class="about-blurb reveal">
@@ -2838,7 +3145,7 @@
 
     <!-- CONTACT -->
     <div class="section-wrap" id="contact">
-      <div class="section-label reveal">✦ 04 — Initiate Contact</div>
+      <div class="section-label reveal">✦ 05 — Initiate Contact</div>
       <h2 class="section-title ul-coral reveal">Let's <span>build something</span> together</h2>
       <div class="contact-grid">
         <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mckennawilson1824@gmail.com" target="_blank"
@@ -3369,6 +3676,7 @@
       const toastEl = document.getElementById('toast');
       const toastData = {
         projects: ['📜', 'QUEST LOG OPENED!', 'Case studies incoming'],
+        vibe: ['🎧', 'SOUNDTRACK UNLOCKED!', 'Pick your vibe'],
         achievements: ['🏆', 'BADGE ROOM ENTERED!', 'So many trophies...'],
         about: ['👾', 'PLAYER PROFILE LOADED!', 'Getting personal'],
         contact: ['💌', 'COMMS ARRAY ONLINE!', 'Let\'s collab'],
@@ -3402,6 +3710,131 @@
         btn.classList.toggle('open');
         btn.childNodes[0].textContent = open ? 'Close case study ' : 'Check Out Work ';
       }
+
+      // Vibe record player
+      (function initVibePlayer() {
+        const tracks = [
+          {
+            title: 'Focus Flow',
+            meta: 'Calm focus for deep work',
+            src: 'assets/vibes/focus-flow.ogg',
+            color: 'var(--coral)'
+          },
+          {
+            title: 'Creative Spark',
+            meta: 'Bright energy for ideation',
+            src: 'assets/vibes/creative-spark.ogg',
+            color: 'var(--lemon)'
+          },
+          {
+            title: 'Late Night Code',
+            meta: 'Low-key loops for after dark',
+            src: 'assets/vibes/late-night-code.ogg',
+            color: 'var(--lilac)'
+          },
+          {
+            title: 'Sunny Build',
+            meta: 'Upbeat groove for shipping',
+            src: 'assets/vibes/sunny-build.ogg',
+            color: 'var(--mint)'
+          }
+        ];
+
+        const deck = document.getElementById('vibeDeck');
+        const audio = document.getElementById('vibeAudio');
+        const platter = document.getElementById('vibePlatter');
+        const playBtn = document.getElementById('vibePlay');
+        const playIcon = document.getElementById('vibePlayIcon');
+        const playLabel = document.getElementById('vibePlayLabel');
+        const prevBtn = document.getElementById('vibePrev');
+        const nextBtn = document.getElementById('vibeNext');
+        const titleEl = document.getElementById('vibeNowTitle');
+        const metaEl = document.getElementById('vibeNowMeta');
+        const labelEl = document.getElementById('vibeLabelText');
+        const progressFill = document.getElementById('vibeProgressFill');
+        const trackBtns = Array.from(document.querySelectorAll('.vibe-track[data-vibe]'));
+        if (!deck || !audio || !playBtn || !trackBtns.length) return;
+
+        let index = 0;
+        let raf = 0;
+
+        function setPlayingUI(isPlaying) {
+          deck.classList.toggle('is-playing', isPlaying);
+          platter?.classList.toggle('is-spinning', isPlaying);
+          playBtn.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+          if (playIcon) playIcon.textContent = isPlaying ? '❚❚' : '▶';
+          if (playLabel) playLabel.textContent = isPlaying ? 'Pause' : 'Play';
+        }
+
+        function updateProgress() {
+          if (!audio.duration || !isFinite(audio.duration)) {
+            if (progressFill) progressFill.style.width = '0%';
+          } else if (progressFill) {
+            progressFill.style.width = ((audio.currentTime / audio.duration) * 100) + '%';
+          }
+          if (!audio.paused) raf = requestAnimationFrame(updateProgress);
+        }
+
+        function loadTrack(i, { autoplay = false } = {}) {
+          index = (i + tracks.length) % tracks.length;
+          const track = tracks[index];
+          const wasPlaying = autoplay || !audio.paused;
+          audio.src = track.src;
+          audio.load();
+          deck.style.setProperty('--vibe-color', track.color);
+          if (titleEl) titleEl.textContent = track.title;
+          if (metaEl) metaEl.textContent = track.meta;
+          if (labelEl) labelEl.textContent = track.title;
+          trackBtns.forEach((btn, btnIndex) => {
+            const active = btnIndex === index;
+            btn.classList.toggle('is-active', active);
+            btn.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          if (progressFill) progressFill.style.width = '0%';
+          if (wasPlaying) {
+            audio.play().then(() => {
+              setPlayingUI(true);
+              cancelAnimationFrame(raf);
+              raf = requestAnimationFrame(updateProgress);
+            }).catch(() => setPlayingUI(false));
+          } else {
+            setPlayingUI(false);
+          }
+        }
+
+        playBtn.addEventListener('click', () => {
+          if (audio.paused) {
+            if (!audio.src) loadTrack(index);
+            audio.play().then(() => {
+              setPlayingUI(true);
+              cancelAnimationFrame(raf);
+              raf = requestAnimationFrame(updateProgress);
+            }).catch(() => setPlayingUI(false));
+          } else {
+            audio.pause();
+            setPlayingUI(false);
+            cancelAnimationFrame(raf);
+          }
+        });
+
+        prevBtn?.addEventListener('click', () => loadTrack(index - 1, { autoplay: !audio.paused }));
+        nextBtn?.addEventListener('click', () => loadTrack(index + 1, { autoplay: !audio.paused }));
+        trackBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            loadTrack(Number(btn.dataset.vibe), { autoplay: true });
+          });
+        });
+
+        audio.addEventListener('ended', () => {
+          // loop attribute handles repeat; keep UI in sync
+          setPlayingUI(true);
+        });
+        audio.addEventListener('pause', () => {
+          if (!audio.ended) setPlayingUI(false);
+        });
+
+        loadTrack(0);
+      })();
 
     </script>
     <script src="agent-guide.js"></script>
