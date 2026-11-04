@@ -47,7 +47,7 @@ function initAgentGuide(options) {
     },
     {
       question: 'What tools does she use?',
-      answer: 'Figma, React, TypeScript, HTML/CSS, VS Code, Cursor, Claude, Webflow, Adobe CC, and more — check the Skill Tree in <a href="' + link('#skills') + '">section 01</a>.'
+      answer: 'Figma, React, TypeScript, HTML/CSS, VS Code, Cursor, Claude, Webflow, Adobe CC, and more — check the Skill Tree in <a href="' + link('#skills') + '">section 02</a>.'
     },
     {
       question: 'How do I contact her?',
