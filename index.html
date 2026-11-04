@@ -2129,12 +2129,128 @@
       pointer-events: auto;
     }
 
+    .dino-boot {
+      background: var(--ink);
+      color: var(--cream);
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      padding: 36px 28px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .dino-boot[hidden] {
+      display: none;
+    }
+
+    .dino-boot-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--lemon);
+      margin-bottom: 12px;
+    }
+
+    .dino-boot-title {
+      font-family: var(--display);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 18px;
+    }
+
+    .dino-boot-log {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.7;
+      min-height: 5.2em;
+      opacity: 0.85;
+      margin-bottom: 22px;
+    }
+
+    .dino-boot-log div {
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .dino-boot-log div.show {
+      opacity: 1;
+      transform: none;
+    }
+
+    .dino-boot-track {
+      height: 14px;
+      border: 2px solid var(--cream);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(253, 248, 240, 0.08);
+    }
+
+    .dino-boot-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--coral), var(--lemon), var(--mint));
+      transition: width 0.2s linear;
+    }
+
+    .dino-boot-pct {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--lemon);
+    }
+
+    .dino-boot-scan {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(253, 248, 240, 0.03) 3px,
+        rgba(253, 248, 240, 0.03) 4px
+      );
+    }
+
+    .dino-game-content {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .dino-game-content.is-ready {
+      opacity: 1;
+      transform: none;
+    }
+
+    .dino-game-content[hidden] {
+      display: none;
+    }
+
     .bonus-game-shell {
       background: #fff;
       border: var(--border-w) solid var(--ink);
       border-radius: var(--radius);
       box-shadow: var(--shadow-xl);
       overflow: hidden;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dino-boot-fill {
+        transition: none;
+      }
+
+      .dino-boot-log div {
+        transition: none;
+      }
+
+      .dino-game-content {
+        transition: none;
+      }
     }
 
     .bonus-game-hud {
@@ -3192,6 +3308,8 @@
     </div>
   </div>
 
+  <div class="stripe-band"></div>
+
   <!-- ACHIEVEMENTS -->
   <div class="section-wrap" id="achievements">
     <div class="section-label reveal">✦ 03 — Badge Collection</div>
@@ -3333,24 +3451,37 @@
     </footer>
 
     <section class="bonus-game" id="bonusGame" aria-label="Bonus hopping dino game">
-      <div class="section-label">✦ Bonus Level</div>
-      <h2 class="section-title ul-coral" style="margin-bottom: 24px;">Hopping <span>Dino</span></h2>
-      <div class="bonus-game-shell">
-        <div class="bonus-game-hud">
-          <div class="bonus-game-stat">Score <strong id="dinoGameScore">00000</strong></div>
-          <div class="bonus-game-stat">Best <strong id="dinoGameBest">00000</strong></div>
-          <div class="bonus-game-stat">Speed <strong id="dinoGameSpeed">1.0x</strong></div>
+      <div class="dino-boot" id="dinoBoot" hidden>
+        <div class="dino-boot-scan" aria-hidden="true"></div>
+        <div class="dino-boot-eyebrow">Bonus level // booting</div>
+        <div class="dino-boot-title">Loading Hopping Dino…</div>
+        <div class="dino-boot-log" id="dinoBootLog" aria-live="polite"></div>
+        <div class="dino-boot-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dinoBootBar">
+          <div class="dino-boot-fill" id="dinoBootFill"></div>
         </div>
-        <div class="bonus-game-stage">
-          <canvas id="dinoGameCanvas" width="900" height="220" aria-label="Hopping dino runner. Press space or tap to jump over cactus obstacles."></canvas>
-          <div class="bonus-game-overlay" id="dinoGameOverlay">
-            <h3 id="dinoGameOverlayTitle">Secret level unlocked</h3>
-            <p id="dinoGameOverlayText">A tiny endless runner — jump the cacti, keep hopping, chase a high score.</p>
-            <button type="button" class="btn btn-fill" id="dinoGameStart">Press Start</button>
+        <div class="dino-boot-pct" id="dinoBootPct">0%</div>
+      </div>
+
+      <div class="dino-game-content" id="dinoGameContent" hidden>
+        <div class="section-label">✦ Bonus Level</div>
+        <h2 class="section-title ul-coral" style="margin-bottom: 24px;">Hopping <span>Dino</span></h2>
+        <div class="bonus-game-shell">
+          <div class="bonus-game-hud">
+            <div class="bonus-game-stat">Score <strong id="dinoGameScore">00000</strong></div>
+            <div class="bonus-game-stat">Best <strong id="dinoGameBest">00000</strong></div>
+            <div class="bonus-game-stat">Speed <strong id="dinoGameSpeed">1.0x</strong></div>
+          </div>
+          <div class="bonus-game-stage">
+            <canvas id="dinoGameCanvas" width="900" height="220" aria-label="Hopping dino runner. Press space or tap to jump over cactus obstacles."></canvas>
+            <div class="bonus-game-overlay" id="dinoGameOverlay">
+              <h3 id="dinoGameOverlayTitle">Secret level unlocked</h3>
+              <p id="dinoGameOverlayText">A tiny endless runner — jump the cacti, keep hopping, chase a high score.</p>
+              <button type="button" class="btn btn-fill" id="dinoGameStart">Press Start</button>
+            </div>
           </div>
         </div>
+        <p class="bonus-game-tip">Space / ↑ / click / tap to jump</p>
       </div>
-      <p class="bonus-game-tip">Space / ↑ / click / tap to jump</p>
     </section>
 
     <script>
@@ -4002,6 +4133,12 @@
       // Bonus hopping dino runner (unlocks at page bottom)
       (function initHoppingDinoGame() {
         const section = document.getElementById('bonusGame');
+        const boot = document.getElementById('dinoBoot');
+        const bootLog = document.getElementById('dinoBootLog');
+        const bootFill = document.getElementById('dinoBootFill');
+        const bootPct = document.getElementById('dinoBootPct');
+        const bootBar = document.getElementById('dinoBootBar');
+        const gameContent = document.getElementById('dinoGameContent');
         const canvas = document.getElementById('dinoGameCanvas');
         const overlay = document.getElementById('dinoGameOverlay');
         const startBtn = document.getElementById('dinoGameStart');
@@ -4010,14 +4147,16 @@
         const speedEl = document.getElementById('dinoGameSpeed');
         const overlayTitle = document.getElementById('dinoGameOverlayTitle');
         const overlayText = document.getElementById('dinoGameOverlayText');
-        if (!section || !canvas || !overlay || !startBtn) return;
+        if (!section || !boot || !gameContent || !canvas || !overlay || !startBtn) return;
 
         const ctx = canvas.getContext('2d');
         const BEST_KEY = 'mckenna_dino_hop_best';
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let best = Number(localStorage.getItem(BEST_KEY) || 0);
         bestEl.textContent = String(best).padStart(5, '0');
 
         let unlocked = false;
+        let booting = false;
         let running = false;
         let raf = 0;
         let width = 900;
@@ -4032,6 +4171,15 @@
         let obstacles = [];
         let clouds = [];
         let dino = null;
+
+        const bootLines = [
+          '> scanning portfolio end…',
+          '> secret_level.exe found',
+          '> mounting desert biome…',
+          '> calibrating jump physics…',
+          '> spawning dino sprite…',
+          '> ready.'
+        ];
 
         function padScore(n) {
           return String(Math.floor(n)).padStart(5, '0');
@@ -4066,17 +4214,87 @@
           };
         }
 
+        function setBootProgress(pct) {
+          const value = Math.max(0, Math.min(100, Math.round(pct)));
+          if (bootFill) bootFill.style.width = value + '%';
+          if (bootPct) bootPct.textContent = value + '%';
+          if (bootBar) bootBar.setAttribute('aria-valuenow', String(value));
+        }
+
+        function revealGame() {
+          boot.hidden = true;
+          gameContent.hidden = false;
+          requestAnimationFrame(() => {
+            gameContent.classList.add('is-ready');
+            resize();
+            dino = makeDino();
+            seedClouds();
+            drawScene(false);
+          });
+          if (typeof window.showToast === 'function') {
+            window.showToast('🦕', 'SECRET LEVEL UNLOCKED!', 'Hopping Dino is ready');
+          }
+        }
+
+        function runBootSequence() {
+          if (booting) return;
+          booting = true;
+          boot.hidden = false;
+          gameContent.hidden = true;
+          gameContent.classList.remove('is-ready');
+          if (bootLog) bootLog.innerHTML = '';
+          setBootProgress(0);
+
+          if (prefersReducedMotion) {
+            bootLines.forEach(line => {
+              const row = document.createElement('div');
+              row.textContent = line;
+              row.classList.add('show');
+              bootLog?.appendChild(row);
+            });
+            setBootProgress(100);
+            setTimeout(revealGame, 120);
+            return;
+          }
+
+          const start = performance.now();
+          const duration = 2400;
+          let lineIndex = 0;
+          const lineEvery = duration / bootLines.length;
+
+          function step(now) {
+            const t = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - t, 3);
+            setBootProgress(eased * 100);
+
+            while (lineIndex < bootLines.length && (now - start) >= lineIndex * lineEvery) {
+              const row = document.createElement('div');
+              row.textContent = bootLines[lineIndex];
+              bootLog?.appendChild(row);
+              requestAnimationFrame(() => row.classList.add('show'));
+              lineIndex += 1;
+            }
+
+            if (t < 1) {
+              requestAnimationFrame(step);
+            } else {
+              setBootProgress(100);
+              setTimeout(revealGame, 280);
+            }
+          }
+
+          requestAnimationFrame(step);
+        }
+
         function unlockGame() {
           if (unlocked) return;
           unlocked = true;
           section.classList.add('is-unlocked');
-          if (typeof window.showToast === 'function') {
-            window.showToast('🦕', 'SECRET LEVEL UNLOCKED!', 'Hopping Dino is waiting below');
-          }
-          resize();
-          dino = makeDino();
-          seedClouds();
-          drawScene(false);
+          // Scroll a bit so the boot panel is in view
+          requestAnimationFrame(() => {
+            section.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+          });
+          runBootSequence();
         }
 
         function seedClouds() {
@@ -4278,7 +4496,12 @@
           raf = requestAnimationFrame(tick);
         }
 
+        function isGameReady() {
+          return unlocked && gameContent && !gameContent.hidden && !!boot?.hidden;
+        }
+
         function startGame() {
+          if (!isGameReady()) return;
           resize();
           resetRound();
           overlay.hidden = true;
@@ -4292,8 +4515,9 @@
             if (!(e.code === 'Space' || e.key === 'ArrowUp' || e.key === ' ')) return;
             e.preventDefault();
           }
+          if (!isGameReady()) return;
           if (!running) {
-            if (unlocked && overlay && !overlay.hidden && (e.type === 'keydown')) startGame();
+            if (overlay && !overlay.hidden && e.type === 'keydown') startGame();
             return;
           }
           jump();
@@ -4301,7 +4525,7 @@
 
         startBtn.addEventListener('click', startGame);
         canvas.addEventListener('pointerdown', e => {
-          if (!unlocked) return;
+          if (!isGameReady()) return;
           if (!running) {
             startGame();
             return;
