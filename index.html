@@ -2859,8 +2859,8 @@
     <a href="#home" class="nav-logo">✦ McKenna Wilson</a>
     <div class="nav-menu" id="navMenu">
       <div class="nav-links">
-        <a href="#projects">Work</a>
         <a href="#vibe">Vibe</a>
+        <a href="#projects">Work</a>
         <a href="#achievements">Badges</a>
         <a href="#about">About</a>
         <a href="#contact" class="contact-btn">Contact Me</a>
@@ -2941,9 +2941,57 @@
 
   <div class="stripe-band full-bleed"></div>
 
+  <!-- VIBE -->
+  <div class="section-wrap" id="vibe">
+    <div class="section-label reveal">✦ 01 — Soundtrack</div>
+    <h2 class="section-title ul-lemon reveal">Pick your <span>vibe</span></h2>
+    <div class="vibe-deck reveal" id="vibeDeck" style="--vibe-color: var(--coral)">
+      <div class="vibe-player" aria-hidden="true">
+        <div class="vibe-platter" id="vibePlatter">
+          <div class="vibe-label">
+            <span class="vibe-label-text" id="vibeLabelText">Focus Flow</span>
+          </div>
+        </div>
+        <div class="vibe-arm">
+          <span class="vibe-arm-pivot"></span>
+          <span class="vibe-arm-shaft"></span>
+          <span class="vibe-arm-head"></span>
+        </div>
+      </div>
+      <div class="vibe-controls">
+        <div class="vibe-now">
+          <span class="vibe-now-label">Now spinning</span>
+          <div class="vibe-now-title" id="vibeNowTitle">Focus Flow</div>
+          <div class="vibe-now-meta" id="vibeNowMeta">Calm focus for deep work</div>
+        </div>
+        <div class="vibe-tracks" role="listbox" aria-label="Choose a vibe">
+          <button type="button" class="vibe-track is-active" role="option" aria-selected="true" data-vibe="0" style="--vibe-color: var(--coral)">Focus Flow</button>
+          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="1" style="--vibe-color: var(--lemon)">Creative Spark</button>
+          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="2" style="--vibe-color: var(--lilac)">Late Night Code</button>
+          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="3" style="--vibe-color: var(--mint)">Sunny Build</button>
+        </div>
+        <div class="vibe-transport">
+          <button type="button" class="vibe-btn vibe-btn-play" id="vibePlay" aria-pressed="false">
+            <span id="vibePlayIcon">▶</span>
+            <span id="vibePlayLabel">Play</span>
+          </button>
+          <button type="button" class="vibe-btn" id="vibePrev" aria-label="Previous vibe">⏮ Prev</button>
+          <button type="button" class="vibe-btn" id="vibeNext" aria-label="Next vibe">Next ⏭</button>
+        </div>
+        <div class="vibe-progress" aria-hidden="true">
+          <div class="vibe-progress-fill" id="vibeProgressFill"></div>
+        </div>
+        <audio id="vibeAudio" preload="metadata"></audio>
+        <p class="vibe-credit">Royalty-free instrumentals · SoundHelix demos</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stripe-band"></div>
+
   <!-- PROJECTS -->
   <div class="section-wrap" id="projects">
-    <div class="section-label reveal">✦ 01 — Quest Log</div>
+    <div class="section-label reveal">✦ 02 — Quest Log</div>
     <h2 class="section-title ul-mint reveal">Things I've <span>shipped</span></h2>
     <div class="projects-list">
 
@@ -3143,56 +3191,6 @@
 
     </div>
   </div>
-
-  <div class="stripe-band"></div>
-
-  <!-- VIBE -->
-  <div class="section-wrap" id="vibe">
-    <div class="section-label reveal">✦ 02 — Soundtrack</div>
-    <h2 class="section-title ul-lemon reveal">Pick your <span>vibe</span></h2>
-    <div class="vibe-deck reveal" id="vibeDeck" style="--vibe-color: var(--coral)">
-      <div class="vibe-player" aria-hidden="true">
-        <div class="vibe-platter" id="vibePlatter">
-          <div class="vibe-label">
-            <span class="vibe-label-text" id="vibeLabelText">Focus Flow</span>
-          </div>
-        </div>
-        <div class="vibe-arm">
-          <span class="vibe-arm-pivot"></span>
-          <span class="vibe-arm-shaft"></span>
-          <span class="vibe-arm-head"></span>
-        </div>
-      </div>
-      <div class="vibe-controls">
-        <div class="vibe-now">
-          <span class="vibe-now-label">Now spinning</span>
-          <div class="vibe-now-title" id="vibeNowTitle">Focus Flow</div>
-          <div class="vibe-now-meta" id="vibeNowMeta">Calm focus for deep work</div>
-        </div>
-        <div class="vibe-tracks" role="listbox" aria-label="Choose a vibe">
-          <button type="button" class="vibe-track is-active" role="option" aria-selected="true" data-vibe="0" style="--vibe-color: var(--coral)">Focus Flow</button>
-          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="1" style="--vibe-color: var(--lemon)">Creative Spark</button>
-          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="2" style="--vibe-color: var(--lilac)">Late Night Code</button>
-          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="3" style="--vibe-color: var(--mint)">Sunny Build</button>
-        </div>
-        <div class="vibe-transport">
-          <button type="button" class="vibe-btn vibe-btn-play" id="vibePlay" aria-pressed="false">
-            <span id="vibePlayIcon">▶</span>
-            <span id="vibePlayLabel">Play</span>
-          </button>
-          <button type="button" class="vibe-btn" id="vibePrev" aria-label="Previous vibe">⏮ Prev</button>
-          <button type="button" class="vibe-btn" id="vibeNext" aria-label="Next vibe">Next ⏭</button>
-        </div>
-        <div class="vibe-progress" aria-hidden="true">
-          <div class="vibe-progress-fill" id="vibeProgressFill"></div>
-        </div>
-        <audio id="vibeAudio" preload="metadata"></audio>
-        <p class="vibe-credit">Royalty-free instrumentals · SoundHelix demos</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="stripe-band"></div>
 
   <!-- ACHIEVEMENTS -->
   <div class="section-wrap" id="achievements">
