@@ -1,16 +1,13 @@
-Complete Netlify deploy package (full site including case-study demo videos)
+Updated portfolio deploy packages (latest branch changes)
 
-Because GitHub blocks single files over 100MB, the zip is split into parts.
+1) portfolio-github-pages.zip  (recommended for GitHub Pages)
+   - Full site WITHOUT large demo videos (Pages timed out on those)
+   - Download, unzip, push to McKenna-Wilson-UX-Product-Engineer
 
-On your Mac (Terminal):
+2) portfolio-netlify-complete.zip.part0 + part1
+   - Complete site INCLUDING demo mp4 videos
+   - Reassemble on Mac:
+       cat portfolio-netlify-complete.zip.part0 portfolio-netlify-complete.zip.part1 > portfolio-netlify-complete.zip
+       open portfolio-netlify-complete.zip
 
-  cd ~/Downloads
-  # after downloading both part files into Downloads:
-  cat portfolio-netlify-complete.zip.part0 portfolio-netlify-complete.zip.part1 > portfolio-netlify-complete.zip
-
-  # verify, then unzip:
-  unzip -t portfolio-netlify-complete.zip
-  open portfolio-netlify-complete.zip
-
-Then deploy the unzipped folder with Netlify UI or:
-  netlify deploy --prod --dir .
+Includes: “Set the vibe” headline, Deliverables padding fix, slower story reel (7s), soundtrack continuity fixes, Concentration track.
