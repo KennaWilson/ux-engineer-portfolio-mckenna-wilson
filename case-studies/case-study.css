@@ -31,15 +31,15 @@ nav.case-nav {
   top: 0;
   z-index: 10;
   padding: 14px var(--page-gutter);
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  column-gap: 16px;
   background: var(--cream);
   border-bottom: var(--border-w) solid var(--ink);
 }
 
-.nav-logo {
+nav.case-nav .nav-logo {
   text-decoration: none;
   font-family: var(--display);
   font-size: 22px;
@@ -47,19 +47,21 @@ nav.case-nav {
   font-weight: 900;
   color: var(--ink);
   white-space: nowrap;
-  flex-shrink: 0;
+  justify-self: start;
 }
 
-.nav-menu {
-  display: contents;
+nav.case-nav .nav-menu {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
 }
 
 nav.case-nav .nav-links {
   display: flex;
   gap: 6px;
   align-items: center;
-  flex: 1;
   justify-content: center;
+  flex-wrap: nowrap;
 }
 
 nav.case-nav .nav-links a {
@@ -99,7 +101,7 @@ nav.case-nav .nav-actions {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-shrink: 0;
+  justify-self: end;
 }
 
 nav.case-nav .nav-score {
@@ -339,41 +341,51 @@ body.home-transitioning {
   .content-grid { grid-template-columns: 1fr; }
 
   nav.case-nav {
-    flex-wrap: wrap;
-  }
-
-  nav.case-nav .nav-menu {
-    display: block;
-    width: 100%;
-    order: 3;
-  }
-
-  nav.case-nav .nav-links {
-    justify-content: center;
-    width: 100%;
-  }
-
-  nav.case-nav .nav-actions {
-    margin-left: auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-}
-
-@media (max-width: 720px) {
-  nav.case-nav .nav-actions .btn,
-  .nav-footer .btn {
-    font-size: 12px;
-    padding: 9px 12px;
+    padding: 12px 16px;
+    column-gap: 10px;
   }
 
   nav.case-nav .nav-logo {
     font-size: 18px;
   }
 
+  nav.case-nav .nav-links {
+    gap: 2px;
+  }
+
+  nav.case-nav .nav-links a {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
   nav.case-nav .nav-score {
     font-size: 11px;
     padding: 6px 12px;
+  }
+}
+
+@media (max-width: 720px) {
+  nav.case-nav {
+    grid-template-columns: 1fr auto;
+    row-gap: 10px;
+  }
+
+  nav.case-nav .nav-menu {
+    grid-column: 1 / -1;
+    order: 3;
+    width: 100%;
+  }
+
+  nav.case-nav .nav-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  nav.case-nav .nav-actions .btn,
+  .nav-footer .btn {
+    font-size: 12px;
+    padding: 9px 12px;
   }
 }
 
