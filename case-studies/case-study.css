@@ -80,6 +80,21 @@ nav.case-nav .nav-links a:hover {
   transform: translateY(-2px);
 }
 
+nav.case-nav .nav-links .contact-btn {
+  background: var(--coral);
+  color: #fff;
+  border-color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+nav.case-nav .nav-links .contact-btn:hover {
+  background: #ff5c39;
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
 nav.case-nav .nav-actions {
   display: flex;
   align-items: center;
