@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="case-study.css">
+  <link rel="stylesheet" href="case-study.css?v=16">
   <style>
     .wildhorse-gallery {
       margin-top: 26px;
@@ -25,7 +25,10 @@
       height: auto;
       object-fit: contain;
       margin: 0 auto;
-      border-radius: 10px;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      background: #fff;
     }
     .wildhorse-gallery img + img {
       margin-top: 16px;
@@ -50,6 +53,74 @@
     .hero-actions .btn-live:hover {
       background: #ff5c39;
     }
+
+    /* Wildhorse story visuals */
+    .scene-problem .nav-mess {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .scene-problem .nav-mess span {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #fff;
+      opacity: 0.55;
+      transform: rotate(-2deg);
+    }
+    .scene-problem .nav-mess span:nth-child(2) { transform: rotate(3deg); opacity: 0.7; }
+    .scene-problem .nav-mess span:nth-child(3) { transform: rotate(-4deg); }
+    .scene-problem .dropoff {
+      margin-top: 10px;
+      height: 10px;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+    .scene-problem .dropoff > i {
+      display: block;
+      height: 100%;
+      width: 38%;
+      background: var(--coral);
+      font-style: normal;
+    }
+    .scene-outcome .phone {
+      border: var(--border-w) solid var(--ink);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      max-width: 160px;
+      margin: 0 auto;
+      animation: popAsk 2s ease-in-out infinite;
+    }
+    .scene-outcome .phone .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--ink);
+      opacity: 0.15;
+      margin-bottom: 8px;
+    }
+    .scene-outcome .phone .cta {
+      margin-top: 10px;
+      text-align: center;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--coral);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 7px 8px;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    @media (max-width: 820px) {
+      .content-grid .panel > div { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -60,18 +131,36 @@
     </svg>
   </div>
 
-  <nav>
-    <a class="nav-logo" href="../index.html?skipLoader=1#projects">✦ McKenna Wilson</a>
+  <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+  <nav class="case-nav" id="caseNav" aria-label="Case study navigation">
+    <a class="nav-logo" href="../index.html?skipLoader=1&v=cassette3">✦ McKenna Wilson</a>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-links">
+        <a href="../index.html?skipLoader=1&v=cassette3#vibe">Soundtrack</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#projects">Work</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#achievements">Badges</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#about">About</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#contact" class="contact-btn">Contact Me</a>
+      </div>
+    </div>
     <div class="nav-actions">
-      <a class="btn btn-outline" href="bamboohr-automatic-meal-and-rest-breaks.html">← Prev Case</a>
-      <a class="btn btn-fill" href="domus-home-hub.html">Next Case →</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
     </div>
   </nav>
 
   <main class="page">
-    <section class="hero">
-      <div class="eyebrow" style="background:var(--peach)">Case 03</div>
+        <section class="case-title-bar">
+      <a class="btn btn-outline" href="bambooai.html">← Previous</a>
       <h1>Wildhorse Creek Ranch Outfitters Website</h1>
+      <a class="btn btn-fill" href="domus-home-hub.html">Case 05 →</a>
+    </section>
+
+    <section class="hero">
+      <div class="eyebrow" style="background:var(--peach)">Case 04</div>
       <p class="subtitle">A conversion-focused website redesign that clarified offerings, improved trust, and simplified the booking experience.</p>
       <div class="meta-grid">
         <div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">UX + Frontend</div></div>
@@ -86,38 +175,117 @@
       </div>
     </section>
 
+    <section class="story-reel" id="storyReel" aria-label="Project story animation">
+      <div class="story-reel-header">
+        <h2>How it unfolded</h2>
+        <span class="story-reel-hint">Auto-plays on scroll · click to jump</span>
+      </div>
+
+      <div class="story-tabs" role="tablist" aria-label="Story stages">
+        <button type="button" class="story-tab is-active" role="tab" aria-selected="true" data-step="0">1 · Problem</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="1">2 · Approach</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="2">3 · Outcome</button>
+        <button type="button" class="story-pause" id="storyPauseBtn" aria-pressed="false" aria-label="Pause story">
+          <span class="pause-icon" aria-hidden="true">❚❚</span>
+          <span class="pause-label">Pause</span>
+        </button>
+      </div>
+
+      <div class="story-stage">
+        <div class="story-scene scene-problem is-active" data-step="0" role="tabpanel">
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card hr-panel">
+              <div class="viz-label">Old site friction</div>
+              <div class="nav-mess">
+                <span>Home?</span>
+                <span>Trips??</span>
+                <span>Book...</span>
+                <span>Contact</span>
+              </div>
+              <div class="toggle-row"><span>Visual hierarchy</span><span style="font-size:11px;opacity:.6">inconsistent</span></div>
+              <div class="toggle-row"><span>Checkout path</span><span style="color:var(--coral);font-size:11px">drop-off</span></div>
+              <div class="dropoff" title="Booking completion"><i></i></div>
+            </div>
+            <div class="confused">?</div>
+            <div class="mismatch">lost before checkout</div>
+          </div>
+          <div class="story-copy">
+            <h3>Problem</h3>
+            <p>The previous site had unclear navigation, inconsistent visual hierarchy, and a booking flow that caused drop-off before checkout.</p>
+          </div>
+        </div>
+
+        <div class="story-scene scene-approach" data-step="1" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <span class="spark">✦</span>
+            <div class="stack">
+              <div class="chip">Audit booking journey friction</div>
+              <div class="chip">Rebuild IA + package comparison</div>
+              <div class="chip">Mobile-first pages + clearer CTAs</div>
+            </div>
+            <div class="count-up">
+              <div class="stat"><strong>IA</strong><span>intent-led</span></div>
+              <div class="stat"><strong>UI</strong><span>trust + photo</span></div>
+              <div class="stat"><strong>CTA</strong><span>book / inquire</span></div>
+            </div>
+          </div>
+          <div class="story-copy">
+            <h3>Approach</h3>
+            <p>I rebuilt the information architecture around user intent, created a clearer package comparison, and refined trust signals with stronger social proof and photography placement.</p>
+            <ul>
+              <li>Audited booking journey and identified high-friction steps.</li>
+              <li>Redesigned key pages for readability and mobile use.</li>
+              <li>Implemented cleaner CTA strategy for inquiries and bookings.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="story-scene scene-outcome" data-step="2" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <div class="sync-row">
+              <div class="viz-card">
+                <div class="viz-label">Clear path</div>
+                <div class="toggle-row"><span>Packages</span><span class="toggle on"></span></div>
+                <div class="toggle-row"><span>Social proof</span><span class="toggle on"></span></div>
+                <div class="toggle-row"><span>Direct book</span><span class="toggle on"></span></div>
+              </div>
+              <div class="bridge">→</div>
+              <div class="phone">
+                <div class="bar"></div>
+                <div class="bar" style="width:70%"></div>
+                <div class="bar" style="width:55%"></div>
+                <div class="cta">Book trip</div>
+              </div>
+            </div>
+            <div class="ai-bubble">Mobile visitors can find a trip and act — without getting lost.</div>
+            <div class="check"><i>✓</i> More discoverable · more direct bookings</div>
+          </div>
+          <div class="story-copy">
+            <h3>Outcome</h3>
+            <p>The new site improved discoverability and made booking actions much more direct, especially for mobile visitors planning trips on the go.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
+    </section>
+
     <section class="content-grid">
-      <article class="panel">
-        <h2>Problem</h2>
-        <p>The previous site had unclear navigation, inconsistent visual hierarchy, and a booking flow that caused drop-off before checkout.</p>
-
-        <h2>Approach</h2>
-        <p>I rebuilt the information architecture around user intent, created a clearer package comparison, and refined trust signals with stronger social proof and photography placement.</p>
-        <ul>
-          <li>Audited booking journey and identified high-friction steps.</li>
-          <li>Redesigned key pages for readability and mobile use.</li>
-          <li>Implemented cleaner CTA strategy for inquiries and bookings.</li>
-        </ul>
-
-        <h2>Outcome</h2>
-        <p>The new site improved discoverability and made booking actions much more direct, especially for mobile visitors planning trips on the go.</p>
-      </article>
-
-     
-
-      <aside class="panel">
+      <aside class="panel" style="grid-column: 1 / -1;">
         <h2>Impact</h2>
-        <div class="kpi">
-          <div class="kpi-num" style="color:var(--sky)">44%</div>
-          <div class="kpi-label">Increase in booking starts</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-num" style="color:var(--coral)">27%</div>
-          <div class="kpi-label">Lower bounce rate</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-num" style="color:var(--mint)">2.1x</div>
-          <div class="kpi-label">More mobile inquiry submissions</div>
+        <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px;">
+          <div class="kpi" style="margin:0">
+            <div class="kpi-num" style="color:var(--sky)">44%</div>
+            <div class="kpi-label">Increase in booking starts</div>
+          </div>
+          <div class="kpi" style="margin:0">
+            <div class="kpi-num" style="color:var(--coral)">27%</div>
+            <div class="kpi-label">Lower bounce rate</div>
+          </div>
+          <div class="kpi" style="margin:0">
+            <div class="kpi-num" style="color:var(--mint)">2.1x</div>
+            <div class="kpi-label">More mobile inquiry submissions</div>
+          </div>
         </div>
       </aside>
     </section>
@@ -130,6 +298,7 @@
     </article>
 
   </main>
-  <script src="case-study.js?v=2"></script>
+  <script src="../assets/vibes/vibe-persist.js?v=20261105d"></script>
+  <script src="case-study.js?v=10"></script>
 </body>
 </html>

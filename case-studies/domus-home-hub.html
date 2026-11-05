@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="case-study.css">
+  <link rel="stylesheet" href="case-study.css?v=16">
   <style>
     .domus-gallery {
       margin-top: 26px;
@@ -23,6 +23,10 @@
       margin: 0 auto 22px;
       max-width: 100%;
       height: auto;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      background: #fff;
     }
     .domus-links {
       display: flex;
@@ -62,6 +66,48 @@
       opacity: 0.55;
       max-width: 420px;
     }
+
+    /* Domus story visuals */
+    .scene-problem .app-scatter {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .scene-problem .app-scatter span {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: 2px 2px 0 var(--ink);
+      animation: wobble 2s ease-in-out infinite;
+    }
+    .scene-problem .app-scatter span:nth-child(2) { animation-delay: 0.2s; background: var(--sky); }
+    .scene-problem .app-scatter span:nth-child(3) { animation-delay: 0.35s; background: var(--lemon); }
+    .scene-problem .app-scatter span:nth-child(4) { animation-delay: 0.5s; background: var(--lilac); }
+    .scene-outcome .hub-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .scene-outcome .hub-grid .tile {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .scene-outcome .hub-grid .tile:nth-child(1) { background: var(--mint); }
+    .scene-outcome .hub-grid .tile:nth-child(2) { background: var(--sky); }
+    .scene-outcome .hub-grid .tile:nth-child(3) { background: var(--lemon); }
+    .scene-outcome .hub-grid .tile:nth-child(4) { background: var(--peach); }
+    @media (max-width: 820px) {
+      .content-grid .panel > div { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -73,18 +119,36 @@
     </svg>
   </div>
 
-   <nav>
-    <a class="nav-logo" href="../index.html?skipLoader=1#projects">✦ McKenna Wilson</a>
+  <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+  <nav class="case-nav" id="caseNav" aria-label="Case study navigation">
+    <a class="nav-logo" href="../index.html?skipLoader=1&v=cassette3">✦ McKenna Wilson</a>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-links">
+        <a href="../index.html?skipLoader=1&v=cassette3#vibe">Soundtrack</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#projects">Work</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#achievements">Badges</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#about">About</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#contact" class="contact-btn">Contact Me</a>
+      </div>
+    </div>
     <div class="nav-actions">
-      <a class="btn btn-outline" href="wildhorse-ranch-outfitters.html">← Prev Case</a>
-      <a class="btn btn-fill" href="agriculture-ai-integration.html">Next Case →</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
     </div>
   </nav>
 
   <main class="page">
-    <section class="hero">
-      <div class="eyebrow">Case 04</div>
+        <section class="case-title-bar">
+      <a class="btn btn-outline" href="wildhorse-ranch-outfitters.html">← Previous</a>
       <h1>Domus Home Hub</h1>
+      <a class="btn btn-fill" href="agriculture-ai-integration.html">Case 06 →</a>
+    </section>
+
+    <section class="hero">
+      <div class="eyebrow">Case 05</div>
       <p class="subtitle">An in-kitchen dashboard that helps busy families coordinate schedules, chores, and shared reminders with less friction.</p>
       <div class="meta-grid">
         <div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">UX + Frontend + Backend</div></div>
@@ -102,38 +166,108 @@
       </div>
     </section>
 
+    <section class="story-reel" id="storyReel" aria-label="Project story animation">
+      <div class="story-reel-header">
+        <h2>How it unfolded</h2>
+        <span class="story-reel-hint">Auto-plays on scroll · click to jump</span>
+      </div>
+
+      <div class="story-tabs" role="tablist" aria-label="Story stages">
+        <button type="button" class="story-tab is-active" role="tab" aria-selected="true" data-step="0">1 · Problem</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="1">2 · Approach</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="2">3 · Outcome</button>
+        <button type="button" class="story-pause" id="storyPauseBtn" aria-pressed="false" aria-label="Pause story">
+          <span class="pause-icon" aria-hidden="true">❚❚</span>
+          <span class="pause-label">Pause</span>
+        </button>
+      </div>
+
+      <div class="story-stage">
+        <div class="story-scene scene-problem is-active" data-step="0" role="tabpanel">
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card hr-panel">
+              <div class="viz-label">Scattered family apps</div>
+              <div class="app-scatter">
+                <span>Calendar</span>
+                <span>Chores</span>
+                <span>Groceries</span>
+                <span>Reminders</span>
+              </div>
+            </div>
+            <div class="confused">!</div>
+            <div class="mismatch">easy to miss</div>
+          </div>
+          <div class="story-copy">
+            <h3>Problem</h3>
+            <p>Families were juggling multiple apps for tasks, calendars, and reminders. Critical home tasks were easy to miss, especially during school and work transitions. They were also overwhelmed by the amount of information they had to keep track of including chores, dinner plans, grocery lists, and family events.</p>
+          </div>
+        </div>
+
+        <div class="story-scene scene-approach" data-step="1" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <span class="spark">✦</span>
+            <div class="stack">
+              <div class="chip">Lo-fi wireframes → Figma hi-fi</div>
+              <div class="chip">Household interviews + patterns</div>
+              <div class="chip">Widgets, quick-add, parent/kid roles</div>
+            </div>
+            <div class="count-up">
+              <div class="stat"><strong>Lo</strong><span>wireframes</span></div>
+              <div class="stat"><strong>Hi</strong><span>Figma UI</span></div>
+              <div class="stat"><strong>UX</strong><span>usability</span></div>
+            </div>
+          </div>
+          <div class="story-copy">
+            <h3>Approach</h3>
+            <p>I began with making simple low fidelity wireframes and prototypes to test the UI and interactions. I then moved on to making the high fidelity prototypes in Figma. The final UI prioritized glanceable status, quick add actions, and role-based permissions for parents and kids.</p>
+            <ul>
+              <li>Interviewed households and analyzed pain-point patterns.</li>
+              <li>Built a modular component system for dashboard widgets.</li>
+              <li>Validated interactions through usability testing.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="story-scene scene-outcome" data-step="2" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card">
+              <div class="viz-label">One kitchen hub</div>
+              <div class="hub-grid">
+                <div class="tile">Chores ✓</div>
+                <div class="tile">Calendar</div>
+                <div class="tile">Dinner</div>
+                <div class="tile">Lists</div>
+              </div>
+            </div>
+            <div class="ai-bubble">Glanceable status + quick add — parents and kids on the same page.</div>
+            <div class="check"><i>✓</i> Fewer misses · one shared source of truth</div>
+          </div>
+          <div class="story-copy">
+            <h3>Outcome</h3>
+            <p>The shipped experience reduced missed chores and schedule conflicts while giving families a shared source of truth in one place.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
+    </section>
+
     <section class="content-grid">
-      <article class="panel">
-        <h2>Problem</h2>
-        <p>Families were juggling multiple apps for tasks, calendars, and reminders. Critical home tasks were easy to miss, especially during school and work transitions. They were also overwhelmed by the amount of information they had to keep track of including chores, dinner plans, grocery lists, and family events.</p>
-
-        <h2>Approach</h2>
-        <p> I began with making simple low fidelity wireframes and prototypes to test the UI and interactions. I then moved on to making the high fidelity prototypes in Figma. The final UI prioritized glanceable status, quick add actions, and role-based permissions for parents and kids.</p>
-        <ul>
-          <li>Interviewed households and analyzed pain-point patterns.</li>
-          <li>Built a modular component system for dashboard widgets.</li>
-          <li>Validated interactions through usability testing.</li>
-        </ul>
-
-        <h2>Outcome</h2>
-        <p>The shipped experience reduced missed chores and schedule conflicts while giving families a shared source of truth in one place.</p>
-
-     
-      </article>
-
-      <aside class="panel">
+      <aside class="panel" style="grid-column: 1 / -1;">
         <h2>Impact</h2>
-        <div class="kpi">
-          <div class="kpi-num" style="color:var(--coral)">40%</div>
-          <div class="kpi-label">Faster daily planning tasks</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-num" style="color:var(--mint)">28%</div>
-          <div class="kpi-label">Fewer missed reminders</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-num" style="color:var(--sky)">61</div>
-          <div class="kpi-label">Post-launch satisfaction score</div>
+        <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px;">
+          <div class="kpi" style="margin:0">
+            <div class="kpi-num" style="color:var(--coral)">40%</div>
+            <div class="kpi-label">Faster daily planning tasks</div>
+          </div>
+          <div class="kpi" style="margin:0">
+            <div class="kpi-num" style="color:var(--mint)">28%</div>
+            <div class="kpi-label">Fewer missed reminders</div>
+          </div>
+          <div class="kpi" style="margin:0">
+            <div class="kpi-num" style="color:var(--sky)">61</div>
+            <div class="kpi-label">Post-launch satisfaction score</div>
+          </div>
         </div>
       </aside>
     </section>
@@ -156,6 +290,7 @@
     </article>
 
   </main>
-  <script src="case-study.js?v=2"></script>
+  <script src="../assets/vibes/vibe-persist.js?v=20261105d"></script>
+  <script src="case-study.js?v=10"></script>
 </body>
 </html>

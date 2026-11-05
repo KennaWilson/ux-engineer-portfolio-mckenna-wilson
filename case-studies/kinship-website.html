@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="case-study.css">
+  <link rel="stylesheet" href="case-study.css?v=16">
   <style>
     .domus-gallery {
       margin-top: 26px;
@@ -23,12 +23,59 @@
       margin: 0 auto 22px;
       max-width: 100%;
       height: auto;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      background: #fff;
     }
-    .domus-links a {
-      display: block;
-      width: fit-content;
-      margin-top: 10px;
+
+    /* Kinship story visuals */
+    .scene-problem .emotion-stack {
+      display: grid;
+      gap: 8px;
     }
+    .scene-problem .emotion-stack span {
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #fff;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .scene-problem .emotion-stack span:nth-child(1) { background: var(--lilac); }
+    .scene-problem .emotion-stack span:nth-child(2) { background: var(--sky); }
+    .scene-problem .emotion-stack span:nth-child(3) { background: var(--peach); }
+    .scene-outcome .path-steps {
+      display: grid;
+      gap: 8px;
+    }
+    .scene-outcome .path-steps .step {
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 2px 2px 0 var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .scene-outcome .path-steps .step i {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background: var(--mint);
+      display: grid;
+      place-items: center;
+      font-style: normal;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .scene-outcome .path-steps .step:nth-child(2) i { background: var(--sky); }
+    .scene-outcome .path-steps .step:nth-child(3) i { background: var(--lemon); }
   </style>
 </head>
 <body>
@@ -40,18 +87,36 @@
     </svg>
   </div>
 
-  <nav>
-    <a class="nav-logo" href="../index.html?skipLoader=1#projects">✦ McKenna Wilson</a>
+  <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+  <nav class="case-nav" id="caseNav" aria-label="Case study navigation">
+    <a class="nav-logo" href="../index.html?skipLoader=1&v=cassette3">✦ McKenna Wilson</a>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-links">
+        <a href="../index.html?skipLoader=1&v=cassette3#vibe">Soundtrack</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#projects">Work</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#achievements">Badges</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#about">About</a>
+        <a href="../index.html?skipLoader=1&v=cassette3#contact" class="contact-btn">Contact Me</a>
+      </div>
+    </div>
     <div class="nav-actions">
-      <a class="btn btn-outline" href="edas-site-redesign.html">← Prev Case</a>
-      <a class="btn btn-fill" href="aol-site-redesign.html">Next Case →</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
     </div>
   </nav>
 
   <main class="page">
+        <section class="case-title-bar">
+      <a class="btn btn-outline" href="edas-site-redesign.html">← Previous</a>
+      <h1>Kinship Website</h1>
+      <a class="btn btn-fill" href="aol-site-redesign.html">Case 09 →</a>
+    </section>
+
     <section class="hero">
       <div class="eyebrow">Case 08</div>
-      <h1>Kinship Website</h1>
       <p class="subtitle">End-to-end design and development of a new website for Kinship, a digital end of life planning platform.</p>
       <div class="meta-grid">
         <div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">UX + Frontend + Design</div></div>
@@ -60,22 +125,88 @@
       </div>
     </section>
 
-    <section class="content-grid">
-      <article class="panel" style="grid-column:1/-1">
-        <h2>Problem</h2>
-        <p>End of life planning is a complex and emotional process. Kinship needed a new website that would help users plan for the end of their life in a way that is easy to understand and use while still being compassionate and empathetic.</p>
+    <section class="story-reel" id="storyReel" aria-label="Project story animation">
+      <div class="story-reel-header">
+        <h2>How it unfolded</h2>
+        <span class="story-reel-hint">Auto-plays on scroll · click to jump</span>
+      </div>
 
-        <h2>Approach</h2>
-        <p> Created a design system and website for Kinship that is easy to understand and use while still being compassionate and empathetic.</p>
-        <ul>
-          <li>Created a design system that is easy to understand and use while still being compassionate and empathetic.</li>
-          <li>Created a website that is easy to understand and use while still being compassionate and empathetic.</li>
-          <li>Tested the website with users to ensure it was easy to use and met their needs.</li>
-        </ul>
+      <div class="story-tabs" role="tablist" aria-label="Story stages">
+        <button type="button" class="story-tab is-active" role="tab" aria-selected="true" data-step="0">1 · Problem</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="1">2 · Approach</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="2">3 · Outcome</button>
+        <button type="button" class="story-pause" id="storyPauseBtn" aria-pressed="false" aria-label="Pause story">
+          <span class="pause-icon" aria-hidden="true">❚❚</span>
+          <span class="pause-label">Pause</span>
+        </button>
+      </div>
 
-        <h2>Outcome</h2>
-        <p>A compassionate and empathetic website that helps users plan for the end of their life in a way that is easy to understand and use.</p>
-      </article>
+      <div class="story-stage">
+        <div class="story-scene scene-problem is-active" data-step="0" role="tabpanel">
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card hr-panel">
+              <div class="viz-label">Planning feels heavy</div>
+              <div class="emotion-stack">
+                <span>Complex decisions</span>
+                <span>Emotional weight</span>
+                <span>Hard to know where to start</span>
+              </div>
+            </div>
+            <div class="confused">♡</div>
+            <div class="mismatch">needs care + clarity</div>
+          </div>
+          <div class="story-copy">
+            <h3>Problem</h3>
+            <p>End of life planning is a complex and emotional process. Kinship needed a new website that would help users plan for the end of their life in a way that is easy to understand and use while still being compassionate and empathetic.</p>
+          </div>
+        </div>
+
+        <div class="story-scene scene-approach" data-step="1" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <span class="spark">✦</span>
+            <div class="stack">
+              <div class="chip">Compassionate design system</div>
+              <div class="chip">Clear, calm website structure</div>
+              <div class="chip">Usability testing with real users</div>
+            </div>
+            <div class="count-up">
+              <div class="stat"><strong>DS</strong><span>system</span></div>
+              <div class="stat"><strong>UX</strong><span>clarity</span></div>
+              <div class="stat"><strong>Test</strong><span>validate</span></div>
+            </div>
+          </div>
+          <div class="story-copy">
+            <h3>Approach</h3>
+            <p>Created a design system and website for Kinship that is easy to understand and use while still being compassionate and empathetic.</p>
+            <ul>
+              <li>Created a design system that is easy to understand and use while still being compassionate and empathetic.</li>
+              <li>Created a website that is easy to understand and use while still being compassionate and empathetic.</li>
+              <li>Tested the website with users to ensure it was easy to use and met their needs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="story-scene scene-outcome" data-step="2" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card">
+              <div class="viz-label">A clearer path forward</div>
+              <div class="path-steps">
+                <div class="step"><i>1</i> Understand options</div>
+                <div class="step"><i>2</i> Plan at your pace</div>
+                <div class="step"><i>3</i> Feel supported</div>
+              </div>
+            </div>
+            <div class="ai-bubble">Easy to use — without losing warmth or empathy.</div>
+            <div class="check"><i>✓</i> Compassionate end-of-life planning experience</div>
+          </div>
+          <div class="story-copy">
+            <h3>Outcome</h3>
+            <p>A compassionate and empathetic website that helps users plan for the end of their life in a way that is easy to understand and use.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
     </section>
 
     <article class="panel domus-gallery">
@@ -87,6 +218,7 @@
 
    
   </main>
-  <script src="case-study.js?v=2"></script>
+  <script src="../assets/vibes/vibe-persist.js?v=20261105d"></script>
+  <script src="case-study.js?v=10"></script>
 </body>
 </html>

@@ -20,19 +20,357 @@ function initCaseStudyHomeTransition() {
     if (!isHomeReturn) return;
 
     event.preventDefault();
+    if (typeof window.persistVibeForNavigation === 'function') {
+      window.persistVibeForNavigation();
+    }
     document.body.classList.add('home-transitioning');
     overlay.classList.add('show');
 
     requestAnimationFrame(() => {
       window.setTimeout(() => {
+        if (typeof window.persistVibeForNavigation === 'function') {
+          window.persistVibeForNavigation();
+        }
         window.location.href = url.href;
       }, 900);
     });
   }, true);
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCaseStudyHomeTransition);
-} else {
+function initCaseStudyNavMenu() {
+  const nav = document.getElementById('caseNav');
+  const toggle = document.getElementById('navToggle');
+  const backdrop = document.getElementById('navBackdrop');
+  const menu = document.getElementById('navMenu');
+  if (!nav || !toggle) return;
+
+  function setOpen(open) {
+    nav.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if (backdrop) {
+      backdrop.classList.toggle('show', open);
+      backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+    }
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  toggle.addEventListener('click', () => {
+    setOpen(!nav.classList.contains('menu-open'));
+  });
+
+  if (backdrop) {
+    backdrop.addEventListener('click', () => setOpen(false));
+  }
+
+  if (menu) {
+    menu.addEventListener('click', event => {
+      if (event.target.closest('a')) setOpen(false);
+    });
+  }
+
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+}
+
+function initStoryReel() {
+  const reel = document.getElementById('storyReel');
+  if (!reel) return;
+
+  const tabs = Array.from(reel.querySelectorAll('.story-tab'));
+  const scenes = Array.from(reel.querySelectorAll('.story-scene'));
+  const progress = document.getElementById('storyProgressBar');
+  const pauseBtn = document.getElementById('storyPauseBtn');
+  const pauseLabel = pauseBtn ? pauseBtn.querySelector('.pause-label') : null;
+  const pauseIcon = pauseBtn ? pauseBtn.querySelector('.pause-icon') : null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STEP_MS = 7000;
+  let step = 0;
+  let timer = null;
+  let playing = false;
+  let paused = false;
+  let resumeTimer = null;
+  let inView = false;
+
+  function setPausedUI(isPaused) {
+    if (!pauseBtn) return;
+    pauseBtn.classList.toggle('is-paused', isPaused);
+    pauseBtn.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+    pauseBtn.setAttribute('aria-label', isPaused ? 'Play story' : 'Pause story');
+    if (pauseLabel) pauseLabel.textContent = isPaused ? 'Play' : 'Pause';
+    if (pauseIcon) pauseIcon.textContent = isPaused ? '▶' : '❚❚';
+  }
+
+  function setStep(next, { restartProgress = true } = {}) {
+    step = ((next % scenes.length) + scenes.length) % scenes.length;
+
+    tabs.forEach((tab, i) => {
+      const on = i === step;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+
+    scenes.forEach((scene, i) => {
+      const on = i === step;
+      scene.classList.toggle('is-active', on);
+      if (on) scene.removeAttribute('hidden');
+      else scene.setAttribute('hidden', '');
+    });
+
+    if (progress) {
+      const pct = ((step + 1) / scenes.length) * 100;
+      if (restartProgress && !paused) {
+        progress.style.transition = 'none';
+        progress.style.width = ((step / scenes.length) * 100) + '%';
+        void progress.offsetWidth;
+        progress.style.transition = 'width ' + (STEP_MS / 1000) + 's linear';
+        progress.style.width = pct + '%';
+      } else {
+        progress.style.transition = 'width 0.35s ease';
+        progress.style.width = pct + '%';
+      }
+    }
+  }
+
+  function stop() {
+    playing = false;
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+    if (resumeTimer) {
+      clearTimeout(resumeTimer);
+      resumeTimer = null;
+    }
+  }
+
+  function play() {
+    if (reduceMotion || playing || paused || !inView) return;
+    playing = true;
+    setStep(step, { restartProgress: true });
+    timer = setInterval(() => {
+      setStep(step + 1, { restartProgress: true });
+    }, STEP_MS);
+  }
+
+  function pauseStory() {
+    paused = true;
+    stop();
+    setPausedUI(true);
+    if (progress) progress.style.transition = 'none';
+  }
+
+  function resumeStory() {
+    paused = false;
+    setPausedUI(false);
+    play();
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      stop();
+      setStep(Number(tab.dataset.step), { restartProgress: false });
+      if (paused) return;
+      resumeTimer = window.setTimeout(play, 1600);
+    });
+  });
+
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', () => {
+      if (paused) resumeStory();
+      else pauseStory();
+    });
+  }
+
+  setStep(0, { restartProgress: false });
+  setPausedUI(false);
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        inView = entry.isIntersecting;
+        if (inView) play();
+        else stop();
+      });
+    }, { threshold: 0.35 });
+    io.observe(reel);
+  } else {
+    inView = true;
+    play();
+  }
+}
+
+function initVibeContinuePlayer() {
+  const persist = window.VibePersist;
+  if (!persist) return;
+
+  const state = persist.loadState();
+  if (!state || !state.loaded) return;
+
+  const track = persist.TRACKS[state.index];
+  if (!track) return;
+
+  const root = document.createElement('div');
+  root.className = 'vibe-continue';
+  root.id = 'vibeContinue';
+  root.innerHTML = [
+    '<audio id="vibeContinueAudio" preload="auto"></audio>',
+    '<button type="button" class="vibe-continue-toggle" id="vibeContinueToggle" aria-label="Pause soundtrack">❚❚</button>',
+    '<div class="vibe-continue-copy">',
+    '<span class="vibe-continue-label">Now playing</span>',
+    `<strong class="vibe-continue-title" id="vibeContinueTitle">${track.title}</strong>`,
+    '</div>',
+    '<button type="button" class="vibe-continue-next" id="vibeContinueNext" aria-label="Next tape">⏭</button>',
+    '<button type="button" class="vibe-continue-stop" id="vibeContinueStop" aria-label="Stop soundtrack">✕</button>',
+  ].join('');
+  document.body.appendChild(root);
+
+  const audio = root.querySelector('#vibeContinueAudio');
+  const toggleBtn = root.querySelector('#vibeContinueToggle');
+  const nextBtn = root.querySelector('#vibeContinueNext');
+  const stopBtn = root.querySelector('#vibeContinueStop');
+  const titleEl = root.querySelector('#vibeContinueTitle');
+  const labelEl = root.querySelector('.vibe-continue-label');
+  let index = state.index;
+  let wantPlaying = !!state.playing;
+  let clearGestureResume = null;
+
+  function srcFor(i) {
+    return persist.trackSrc(persist.TRACKS[i], '../assets/vibes');
+  }
+
+  function persistNow(overrides) {
+    persist.saveState(Object.assign({
+      index,
+      time: audio.currentTime || 0,
+      playing: wantPlaying,
+      loaded: true
+    }, overrides || {}));
+  }
+
+  function persistForNavigation() {
+    persist.saveState({
+      index,
+      time: audio.currentTime || 0,
+      playing: wantPlaying || !audio.paused,
+      loaded: true
+    });
+  }
+  window.persistVibeForNavigation = persistForNavigation;
+
+  function setToggleUI(playing) {
+    toggleBtn.textContent = playing ? '❚❚' : '▶';
+    toggleBtn.setAttribute('aria-label', playing ? 'Pause soundtrack' : 'Play soundtrack');
+    root.classList.toggle('is-playing', playing);
+    root.classList.toggle('needs-gesture', !playing && wantPlaying);
+    if (labelEl) {
+      labelEl.textContent = playing ? 'Now playing' : (wantPlaying ? 'Resuming…' : 'Paused');
+    }
+  }
+
+  function beginPlayback() {
+    wantPlaying = true;
+    return audio.play().then(() => {
+      setToggleUI(true);
+      persistNow({ playing: true });
+      if (typeof clearGestureResume === 'function') clearGestureResume();
+      clearGestureResume = null;
+    }).catch(() => {
+      setToggleUI(false);
+      persistNow({ playing: true });
+      if (typeof clearGestureResume === 'function') clearGestureResume();
+      clearGestureResume = persist.armGestureResume(audio, () => {
+        setToggleUI(true);
+        persistNow({ playing: true });
+      });
+    });
+  }
+
+  function loadTrack(i, options) {
+    const opts = options || {};
+    const autoplay = opts.autoplay !== false;
+    const startAt = opts.startAt || 0;
+    index = (i + persist.TRACKS.length) % persist.TRACKS.length;
+    const nextTrack = persist.TRACKS[index];
+    titleEl.textContent = nextTrack.title;
+    audio.src = srcFor(index);
+    audio.load();
+
+    const finish = () => {
+      if (startAt > 0 && isFinite(audio.duration)) {
+        try {
+          audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+        } catch (err) {}
+      }
+      if (autoplay) beginPlayback();
+      else {
+        wantPlaying = false;
+        setToggleUI(false);
+        persistNow({ playing: false, time: startAt || 0 });
+      }
+    };
+
+    if (audio.readyState >= 1) finish();
+    else audio.addEventListener('loadedmetadata', finish, { once: true });
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    if (audio.paused) beginPlayback();
+    else {
+      wantPlaying = false;
+      audio.pause();
+      setToggleUI(false);
+      persistNow({ playing: false });
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    loadTrack(index + 1, { autoplay: true, startAt: 0 });
+  });
+
+  stopBtn.addEventListener('click', () => {
+    wantPlaying = false;
+    audio.pause();
+    persist.clearState();
+    if (typeof clearGestureResume === 'function') clearGestureResume();
+    root.remove();
+  });
+
+  audio.addEventListener('ended', () => {
+    loadTrack(index + 1, { autoplay: true, startAt: 0 });
+  });
+  audio.addEventListener('play', () => {
+    wantPlaying = true;
+    persistNow({ playing: true });
+  });
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.paused) persistNow();
+  });
+  window.addEventListener('pagehide', persistForNavigation);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') persistForNavigation();
+  });
+
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+    persistForNavigation();
+  }, true);
+
+  loadTrack(index, { autoplay: !!state.playing, startAt: state.time || 0 });
+  requestAnimationFrame(() => root.classList.add('is-visible'));
+}
+
+function initCaseStudies() {
   initCaseStudyHomeTransition();
+  initCaseStudyNavMenu();
+  initStoryReel();
+  initVibeContinuePlayer();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCaseStudies);
+} else {
+  initCaseStudies();
 }

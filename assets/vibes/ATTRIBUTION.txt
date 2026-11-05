@@ -1,0 +1,11 @@
+Vibe tracks are royalty-free instrumentals by Kevin MacLeod
+(incompetech.com), licensed under Creative Commons BY 4.0:
+https://creativecommons.org/licenses/by/4.0/
+
+concentration.mp3    <- Concentration — Kevin MacLeod
+creative-spark.mp3   <- Wallpaper — Kevin MacLeod
+late-night-code.mp3  <- Lobby Time — Kevin MacLeod
+sunny-build.mp3      <- George Street Shuffle — Kevin MacLeod
+
+Source: https://incompetech.com/music/
+Edited for length / loudness for this portfolio player.

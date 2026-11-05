@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta name="vibe-ui" content="cassette-walkman">
   <title>✦ McKenna Wilson — UX Engineer</title>
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -413,6 +416,7 @@
 
       .pc-top {
         flex-direction: column;
+        align-items: stretch;
         padding: 24px;
         gap: 16px;
       }
@@ -431,7 +435,7 @@
 
       body { cursor: auto; }
       .cursor, .cursor-dot, .cursor-trail { display: none !important; }
-      a, button, .skill-card, .project-card, .ach-card, .astat, .contact-card, .htag, .vis-card, .nav-toggle, .agent-orb, .agent-close, .agent-preset, .agent-chip, .agent-next, .pc-xp-badge:not(.collected) { cursor: pointer; }
+      a, button, .skill-card, .project-card, .ach-card, .astat, .contact-card, .htag, .vis-card, .nav-toggle, .agent-orb, .agent-close, .agent-preset, .agent-chip, .agent-next, .pc-xp-badge:not(.collected), .vibe-btn, .tape-card, #dinoGameStart { cursor: pointer; }
     }
 
     /* Hero */
@@ -496,6 +500,7 @@
     }
 
     .htag {
+      font-family: var(--sans);
       font-size: 12px;
       font-weight: 700;
       padding: 6px 14px;
@@ -504,6 +509,10 @@
       box-shadow: 3px 3px 0 var(--ink);
       transition: transform 0.15s, box-shadow 0.15s;
       cursor: none;
+      appearance: none;
+      -webkit-appearance: none;
+      color: inherit;
+      line-height: 1.2;
     }
 
     .htag:hover {
@@ -530,6 +539,10 @@
 
     .htag-5 {
       background: var(--mint);
+    }
+
+    .htag-6 {
+      background: var(--peach);
     }
 
     .hero-btns {
@@ -951,6 +964,158 @@
       background: var(--peach);
     }
 
+    /* Skill modal */
+    .skill-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .skill-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .skill-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(26, 18, 7, 0.55);
+    }
+
+    .skill-modal-dialog {
+      position: relative;
+      z-index: 1;
+      width: min(440px, 100%);
+      transform: translateY(12px) scale(0.96);
+      transition: transform 0.22s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .skill-modal.open .skill-modal-dialog {
+      transform: none;
+    }
+
+    .skill-modal-close {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: var(--border-w) solid var(--ink);
+      background: var(--lemon);
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+      box-shadow: var(--shadow);
+      cursor: none;
+      display: grid;
+      place-items: center;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .skill-modal-close:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .skill-modal-card {
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-modal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+    }
+
+    .skill-modal-card.sc-1::before { background: var(--coral); }
+    .skill-modal-card.sc-2::before { background: var(--sky); }
+    .skill-modal-card.sc-3::before { background: var(--mint); }
+    .skill-modal-card.sc-4::before { background: var(--lilac); }
+    .skill-modal-card.sc-5::before { background: var(--lemon); border-bottom: 1.5px solid var(--ink); }
+    .skill-modal-card.sc-6::before { background: var(--peach); }
+
+    .skill-modal-card .sc-icon {
+      font-size: 40px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .skill-modal-card .sc-title {
+      font-family: var(--display);
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .skill-modal-card .sc-desc {
+      font-size: 15px;
+      line-height: 1.65;
+      opacity: 0.65;
+      margin-bottom: 18px;
+    }
+
+    .skill-modal-card .sc-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .skill-modal-card .sc-xp-track {
+      height: 10px;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 4px;
+      border: 1.5px solid var(--ink);
+      overflow: hidden;
+    }
+
+    .skill-modal-card .sc-xp-fill {
+      height: 100%;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.9s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .skill-modal-card.sc-1 .sc-xp-fill { background: var(--coral); }
+    .skill-modal-card.sc-2 .sc-xp-fill { background: var(--sky); }
+    .skill-modal-card.sc-3 .sc-xp-fill { background: var(--mint); }
+    .skill-modal-card.sc-4 .sc-xp-fill { background: var(--lilac); }
+    .skill-modal-card.sc-5 .sc-xp-fill { background: var(--lemon); }
+    .skill-modal-card.sc-6 .sc-xp-fill { background: var(--peach); }
+
+    .skill-modal-card.is-ready .sc-xp-fill {
+      transform: scaleX(1);
+    }
+
+    body.skill-modal-open {
+      overflow: hidden;
+    }
+
+    .htag[aria-pressed="true"] {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--ink);
+    }
+
     .reveal.in .sc-xp-fill {
       transform: scaleX(1);
     }
@@ -970,6 +1135,8 @@
       box-shadow: var(--shadow);
       transition: transform 0.15s, box-shadow 0.15s;
       cursor: none;
+      display: flex;
+      flex-direction: column;
     }
 
     .project-card:hover {
@@ -1003,6 +1170,7 @@
       width: 70%;
       height: 70%;
       object-fit: contain;
+      object-position: center;
       display: block;
     }
 
@@ -1197,26 +1365,34 @@
     }
 
     .pc-expand-btn {
-      width: 100%;
-      background: var(--lemon);
-      border: none;
-      border-top: var(--border-w) solid var(--ink);
-      padding: 14px 32px;
-      text-align: left;
+      margin-top: 16px;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 12px;
+      padding: 12px 18px;
       font-family: var(--sans);
       font-size: 13px;
       font-weight: 800;
       cursor: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       color: var(--ink);
       text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+      width: fit-content;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    .project-card:hover .pc-expand-btn {
-      background: var(--sky);
+    .pc-expand-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pc-expand-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--ink);
     }
 
     .pc-expand-btn[aria-busy="true"] {
@@ -1225,12 +1401,8 @@
     }
 
     .pc-chevron {
-      transition: transform 0.3s;
       font-size: 16px;
-    }
-
-    .pc-expand-btn.open .pc-chevron {
-      transform: rotate(180deg);
+      line-height: 1;
     }
 
     .pc-details {
@@ -1281,6 +1453,488 @@
       font-size: 13px;
       line-height: 1.55;
       font-weight: 600;
+    }
+
+    /* Vibe / Cassette player */
+    .vibe-deck {
+      display: grid;
+      gap: 28px;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 28px;
+    }
+
+    .vibe-stage {
+      display: grid;
+      grid-template-columns: minmax(260px, 380px) 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .cassette-deck {
+      --walkman: #3d463d;
+      --walkman-deep: #2b322b;
+      --walkman-accent: #ff5c39;
+      position: relative;
+      background: linear-gradient(165deg, #4a534a 0%, var(--walkman) 45%, var(--walkman-deep) 100%);
+      border: var(--border-w) solid var(--ink);
+      border-radius: 22px;
+      box-shadow: var(--shadow-lg);
+      padding: 14px 14px 16px;
+      overflow: hidden;
+    }
+
+    .walkman-top {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .walkman-top .vibe-btn {
+      flex: 1 1 0;
+      justify-content: center;
+      min-width: 0;
+      padding: 10px 6px;
+      border-radius: 8px;
+      background: #1a1207;
+      color: #fdf8f0;
+      font-size: 11px;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.35);
+    }
+
+    .walkman-top .vibe-btn:disabled {
+      opacity: 0.45;
+    }
+
+    .walkman-top .vibe-btn-play {
+      background: var(--walkman-accent);
+      color: #fff;
+      flex: 1.35 1 0;
+    }
+
+    .walkman-top #vibePlayLabel {
+      display: none;
+    }
+
+    @media (min-width: 420px) {
+      .walkman-top #vibePlayLabel {
+        display: inline;
+      }
+    }
+
+    .walkman-top .vibe-btn-eject {
+      background: #1a1207;
+      color: var(--lemon);
+    }
+
+    .cassette-slot {
+      position: relative;
+      min-height: 200px;
+      border: 10px solid #111;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #1c1c1c, #0d0d0d);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .cassette-slot.is-drop-target {
+      border-color: var(--walkman-accent);
+      box-shadow: inset 0 0 0 2px var(--lemon), 0 0 0 2px var(--walkman-accent);
+    }
+
+    .cassette-slot-empty {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(253,248,240,0.45);
+      text-align: center;
+      padding: 16px;
+      transition: opacity 0.25s;
+    }
+
+    .vibe-deck.has-tape .cassette-slot-empty {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .deck-cassette {
+      width: min(92%, 300px);
+      aspect-ratio: 1.62 / 1;
+      border: 2px solid rgba(26,18,7,0.55);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.08)),
+        repeating-linear-gradient(
+          180deg,
+          transparent 0 10px,
+          rgba(90,90,90,0.18) 10px 14px
+        ),
+        rgba(220, 220, 220, 0.55);
+      backdrop-filter: blur(1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+      position: relative;
+      padding: 12px 14px 10px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-120%) rotate(-4deg) scale(0.92);
+      transition: transform 0.45s cubic-bezier(.34,1.3,.64,1), opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .vibe-deck.has-tape .deck-cassette {
+      opacity: 1;
+      transform: translateY(0) rotate(0) scale(1);
+    }
+
+    .vibe-deck.is-ejecting .deck-cassette {
+      transform: translateY(-130%) rotate(3deg) scale(0.94);
+      opacity: 0;
+    }
+
+    .deck-cassette-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      color: #1a1207;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(26,18,7,0.35);
+      border-radius: 4px;
+      padding: 4px 8px;
+      width: fit-content;
+      justify-self: start;
+    }
+
+    .deck-cassette-window {
+      border: 1.5px solid rgba(26,18,7,0.35);
+      border-radius: 6px;
+      background: rgba(245,245,245,0.35);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      place-items: center;
+      padding: 12px 22px;
+      position: relative;
+    }
+
+    .deck-cassette-window::before,
+    .deck-cassette-window::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 18px;
+      height: 10px;
+      border: 1.5px solid rgba(26,18,7,0.35);
+      border-radius: 2px;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.35);
+    }
+
+    .deck-cassette-window::before { left: calc(50% - 28px); }
+    .deck-cassette-window::after { left: calc(50% + 10px); }
+
+    .cassette-reel {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2px solid #1a1207;
+      background:
+        radial-gradient(circle at 50% 50%, #1a1207 0 10%, transparent 11%),
+        repeating-conic-gradient(from 0deg, #1a1207 0 8deg, #3a3128 8deg 16deg);
+      box-shadow:
+        inset 0 0 0 7px rgba(120, 72, 36, 0.85),
+        inset 0 0 0 14px rgba(90, 55, 28, 0.55),
+        0 2px 4px rgba(0,0,0,0.25);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cassette-reel.reel-right {
+      box-shadow:
+        inset 0 0 0 4px rgba(120, 72, 36, 0.45),
+        inset 0 0 0 10px rgba(90, 55, 28, 0.25),
+        0 2px 4px rgba(0,0,0,0.25);
+    }
+
+    .vibe-deck.is-playing .cassette-reel {
+      animation: reelSpin 1.15s linear infinite;
+    }
+
+    .vibe-deck.is-playing .cassette-reel.reel-right {
+      animation-duration: 0.95s;
+      animation-direction: reverse;
+    }
+
+    .deck-cassette-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(26,18,7,0.7);
+    }
+
+    .vibe-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .vibe-now {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .vibe-now-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.45;
+    }
+
+    .vibe-now-title {
+      font-family: var(--display);
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .vibe-now-meta {
+      font-size: 14px;
+      opacity: 0.55;
+    }
+
+    .vibe-transport {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .vibe-btn {
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: var(--border-w) solid var(--ink);
+      background: #fff;
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      cursor: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .vibe-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .vibe-btn:active,
+    .vibe-btn[aria-pressed="true"] {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--ink);
+    }
+
+    .vibe-btn-play {
+      background: var(--ink);
+      color: var(--lemon);
+    }
+
+    .vibe-btn-eject {
+      background: var(--lemon);
+    }
+
+    .vibe-progress {
+      height: 10px;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    .vibe-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--vibe-color, var(--coral));
+      transition: width 0.1s linear;
+    }
+
+    .vibe-credit {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      opacity: 0.4;
+    }
+
+    .tape-rack-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      margin-bottom: 10px;
+    }
+
+    .tape-rack {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .tape-card {
+      appearance: none;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 12px;
+      background: var(--vibe-color, var(--cream));
+      box-shadow: var(--shadow);
+      padding: 10px;
+      cursor: grab;
+      text-align: left;
+      color: var(--ink);
+      display: grid;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.25s;
+      min-height: 118px;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .tape-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tape-card.is-dragging {
+      opacity: 0.35;
+      cursor: grabbing;
+    }
+
+    .tape-card.is-loaded {
+      outline: 3px solid var(--ink);
+      outline-offset: 2px;
+      opacity: 0.55;
+    }
+
+    .tape-drag-ghost {
+      position: fixed;
+      z-index: 9999;
+      width: 150px;
+      pointer-events: none;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 12px;
+      background: var(--vibe-color, var(--coral));
+      box-shadow: 8px 8px 0 var(--ink);
+      padding: 10px;
+      transform: rotate(-6deg);
+      opacity: 0.95;
+    }
+
+    .tape-drag-ghost .tape-card-shell {
+      min-height: 40px;
+    }
+
+    .tape-drag-ghost .tape-card-title {
+      font-size: 14px;
+    }
+
+    .tape-drag-ghost .tape-card-action {
+      display: none;
+    }
+
+    .tape-card-shell {
+      border: 2px solid rgba(26,18,7,0.55);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.2)),
+        repeating-linear-gradient(180deg, transparent 0 7px, rgba(90,90,90,0.16) 7px 10px);
+      padding: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      place-items: center;
+      min-height: 52px;
+    }
+
+    .tape-card-shell span {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background:
+        radial-gradient(circle at 50% 50%, #1a1207 0 18%, transparent 19%),
+        repeating-conic-gradient(from 0deg, #1a1207 0 10deg, #6b4a2e 10deg 20deg);
+    }
+
+    .tape-card-title {
+      font-family: var(--display);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .tape-card-meta {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    .tape-card-action {
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    @keyframes reelSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 900px) {
+      .vibe-stage {
+        grid-template-columns: 1fr;
+      }
+
+      .tape-rack {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .tape-rack {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .vibe-deck.is-playing .cassette-reel,
+      .deck-cassette {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .vibe-deck.has-tape .deck-cassette {
+        transform: none;
+      }
     }
 
     /* Achievements */
@@ -1673,6 +2327,221 @@
       font-weight: 700;
       opacity: 0.38;
       font-family: var(--mono);
+    }
+
+    /* Bonus game */
+    .bonus-game {
+      position: relative;
+      z-index: 1;
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 20px var(--page-gutter) 80px;
+      opacity: 0;
+      transform: translateY(28px);
+      pointer-events: none;
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .bonus-game.is-unlocked {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    .dino-boot {
+      display: grid;
+      place-items: center;
+      min-height: 180px;
+      padding: 28px;
+    }
+
+    .dino-boot[hidden] {
+      display: none;
+    }
+
+    .dino-spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid rgba(26, 18, 7, 0.15);
+      border-top-color: var(--coral);
+      animation: dinoSpin 0.75s linear infinite;
+    }
+
+    @keyframes dinoSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .dino-game-content {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .dino-game-content.is-ready {
+      opacity: 1;
+      transform: none;
+    }
+
+    .dino-game-content[hidden] {
+      display: none;
+    }
+
+    .bonus-game-frame {
+      position: relative;
+    }
+
+    .bonus-game-shell {
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      transition: filter 0.35s ease, opacity 0.35s ease;
+    }
+
+    .bonus-game-frame.is-locked .bonus-game-shell {
+      filter: grayscale(1);
+      opacity: 0.55;
+    }
+
+    .dino-lock-modal {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(26, 18, 7, 0.22);
+      border-radius: var(--radius);
+    }
+
+    .dino-lock-modal[hidden] {
+      display: none;
+    }
+
+    .dino-lock-card {
+      max-width: 360px;
+      width: 100%;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .dino-lock-card h3 {
+      font-family: var(--display);
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dino-spinner {
+        animation: none;
+        border-top-color: var(--ink);
+        opacity: 0.7;
+      }
+
+      .dino-game-content {
+        transition: none;
+      }
+
+      .bonus-game-shell {
+        transition: none;
+      }
+    }
+
+    .bonus-game-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 18px;
+      border-bottom: var(--border-w) solid var(--ink);
+      background: var(--cream);
+    }
+
+    .bonus-game-stat {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bonus-game-stat strong {
+      background: var(--ink);
+      color: var(--lemon);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1.5px solid var(--ink);
+    }
+
+    .bonus-game-stage {
+      position: relative;
+      background: #fff;
+      min-height: 220px;
+    }
+
+    #dinoGameCanvas {
+      display: block;
+      width: 100%;
+      height: 220px;
+      cursor: pointer;
+      touch-action: none;
+      background: #fff;
+    }
+
+    .bonus-game-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+      background: rgba(253, 248, 240, 0.88);
+      transition: opacity 0.2s ease;
+    }
+
+    .bonus-game-overlay[hidden] {
+      display: none;
+    }
+
+    .bonus-game-overlay h3 {
+      font-family: var(--display);
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .bonus-game-overlay p {
+      max-width: 360px;
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.65;
+    }
+
+    .bonus-game-tip {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      opacity: 0.45;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      #dinoGameCanvas {
+        height: 200px;
+      }
     }
 
     /* Reveal */
@@ -2142,12 +3011,26 @@
     }
 
     (function () {
+      // Guard against a stale cached homepage (old record-player UI) after case-study return.
+      function assertCassetteVibeUI() {
+        const deck = document.querySelector('[data-vibe-ui="cassette-walkman"]');
+        if (deck) return;
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('vibeui') === 'refresh') return;
+        url.searchParams.set('vibeui', 'refresh');
+        url.searchParams.set('skipLoader', '1');
+        window.location.replace(url.toString());
+      }
+      window.addEventListener('pageshow', assertCassetteVibeUI);
+      document.addEventListener('DOMContentLoaded', assertCassetteVibeUI);
+
       const params = new URLSearchParams(location.search);
       if (params.has('skipLoader')) {
         const loader = document.getElementById('loader');
         if (loader) loader.remove();
         document.body.style.overflow = '';
-        history.replaceState(null, '', location.pathname + (location.hash || '#home'));
+        const hash = location.hash || '#home';
+        history.replaceState(null, '', location.pathname + hash);
         window.__skipLoaderPending = true;
         return;
       }
@@ -2308,7 +3191,7 @@
     <a href="#home" class="nav-logo">✦ McKenna Wilson</a>
     <div class="nav-menu" id="navMenu">
       <div class="nav-links">
-        <a href="#skills">Skills</a>
+        <a href="#vibe">Soundtrack</a>
         <a href="#projects">Work</a>
         <a href="#achievements">Badges</a>
         <a href="#about">About</a>
@@ -2339,11 +3222,12 @@
         Building products people actually enjoy using.
       </p>
       <div class="hero-tags">
-        <span class="htag htag-1">UX Design</span>
-        <span class="htag htag-2">Frontend Dev</span>
-        <span class="htag htag-3">Figma → Code</span>
-        <span class="htag htag-4">Design Systems</span>
-        <span class="htag htag-5">Accessibility</span>
+        <button type="button" class="htag htag-1" data-skill="sc-1" aria-haspopup="dialog">Visual Design</button>
+        <button type="button" class="htag htag-2" data-skill="sc-2" aria-haspopup="dialog">UX Research</button>
+        <button type="button" class="htag htag-3" data-skill="sc-3" aria-haspopup="dialog">Front End Development</button>
+        <button type="button" class="htag htag-4" data-skill="sc-4" aria-haspopup="dialog">Design Systems</button>
+        <button type="button" class="htag htag-5" data-skill="sc-5" aria-haspopup="dialog">3D &amp; Animation</button>
+        <button type="button" class="htag htag-6" data-skill="sc-6" aria-haspopup="dialog">My Design Tools</button>
       </div>
       <div class="hero-btns">
         <a href="#projects" class="btn btn-fill">See my work ↓</a>
@@ -2389,95 +3273,85 @@
 
   <div class="stripe-band full-bleed"></div>
 
-  <!-- SKILLS -->
-  <div class="section-wrap" id="skills">
-    <div class="section-label reveal">✦ 01 — Skill Tree</div>
-    <h2 class="section-title ul-coral reveal">What I bring <span>to the table</span></h2>
-    <div class="skills-grid">
-      <div class="skill-card sc-1 reveal">
-        <span class="sc-icon">🎨</span>
-        <div class="sc-title">Visual Design</div>
-        <div class="sc-desc">Crafting interfaces that feel polished, intentional, and delightful. Typography, layout,
-          color, motion.</div>
-        <div class="sc-tools"><span class="tool-chip">Figma</span><span class="tool-chip">Webflow</span><span
-            class="tool-chip">Adobe Creative Cloud</span></div>
-        <div class="sc-xp">
-          <div class="sc-xp-track">
-            <div class="sc-xp-fill"></div>
+  <!-- VIBE -->
+  <div class="section-wrap" id="vibe">
+    <div class="section-label reveal">✦ 01 — Soundtrack</div>
+    <h2 class="section-title ul-lemon reveal">Set the <span>vibe</span></h2>
+    <div class="vibe-deck reveal" id="vibeDeck" style="--vibe-color: var(--coral)">
+      <div class="vibe-stage">
+        <div class="cassette-deck" data-vibe-ui="cassette-walkman">
+          <div class="walkman-top" role="group" aria-label="Cassette controls">
+            <button type="button" class="vibe-btn" id="vibePrev" aria-label="Previous tape" disabled>⏮</button>
+            <button type="button" class="vibe-btn vibe-btn-play" id="vibePlay" aria-pressed="false" disabled>
+              <span id="vibePlayIcon">▶</span>
+              <span id="vibePlayLabel">Play</span>
+            </button>
+            <button type="button" class="vibe-btn" id="vibeNext" aria-label="Next tape" disabled>⏭</button>
+            <button type="button" class="vibe-btn vibe-btn-eject" id="vibeEject" disabled>⏏</button>
+          </div>
+          <div class="cassette-slot" id="cassetteSlot">
+            <div class="cassette-slot-empty">Drag a tape here</div>
+            <div class="deck-cassette" id="deckCassette" aria-hidden="true">
+              <div class="deck-cassette-label" id="vibeLabelText">Focus Flow</div>
+              <div class="deck-cassette-window">
+                <span class="cassette-reel reel-left" id="reelLeft"></span>
+                <span class="cassette-reel reel-right" id="reelRight"></span>
+              </div>
+              <div class="deck-cassette-footer">
+                <span>TYPE I</span>
+                <span id="vibeTapeCode">RTMC60</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="skill-card sc-2 reveal" style="transition-delay:.07s">
-        <span class="sc-icon">🔬</span>
-        <div class="sc-title">UX Research</div>
-        <div class="sc-desc">User interviews, journey maps, empathy mapping, usability testing, synthesising insights
-          into real design decisions.</div>
-        <div class="sc-tools"><span class="tool-chip">UserTesting</span><span class="tool-chip">Eye Tracking</span><span
-            class="tool-chip">Data Analysis</span></div>
-        <div class="sc-xp">
-          <div class="sc-xp-track">
-            <div class="sc-xp-fill"></div>
+
+        <div class="vibe-controls">
+          <div class="vibe-now">
+            <span class="vibe-now-label" id="vibeNowLabel">No tape loaded</span>
+            <div class="vibe-now-title" id="vibeNowTitle">Browse the rack</div>
+            <div class="vibe-now-meta" id="vibeNowMeta">Drag a cassette into the deck to play</div>
           </div>
+          <div class="vibe-progress" aria-hidden="true">
+            <div class="vibe-progress-fill" id="vibeProgressFill"></div>
+          </div>
+          <audio id="vibeAudio" preload="metadata"></audio>
+          <p class="vibe-credit">Music: Kevin MacLeod (incompetech.com) · CC BY</p>
         </div>
       </div>
-      <div class="skill-card sc-3 reveal" style="transition-delay:.14s">
-        <span class="sc-icon">⚛️</span>
-        <div class="sc-title">Front End Development</div>
-        <div class="sc-desc">Building fast, accessible, component-driven UIs. I write the markup I design — no
-          translation needed.</div>
-        <div class="sc-tools"><span class="tool-chip">HTML</span><span class="tool-chip">CSS</span><span
-            class="tool-chip">JavaScript</span><span class="tool-chip">TypeScript</span><span
-            class="tool-chip">Next.js</span><span class="tool-chip">React</span></div>
-        <div class="sc-xp">
-          <div class="sc-xp-track">
-            <div class="sc-xp-fill"></div>
-          </div>
-        </div>
-      </div>
-      <div class="skill-card sc-4 reveal" style="transition-delay:.21s">
-        <span class="sc-icon">🧩</span>
-        <div class="sc-title">Design Systems</div>
-        <div class="sc-desc">Tokens, components, documentation — bridging design and engineering at scale.</div>
-        <div class="sc-tools"><span class="tool-chip">Component Libraries</span><span class="tool-chip">Pattern
-            Libraries</span><span class="tool-chip">Documentaion and Principles</span></div>
-        <div class="sc-xp">
-          <div class="sc-xp-track">
-            <div class="sc-xp-fill"></div>
-          </div>
-        </div>
-      </div>
-      <div class="skill-card sc-5 reveal" style="transition-delay:.28s">
-        <span class="sc-icon">✨</span>
-        <div class="sc-title">CSS & Animation</div>
-        <div class="sc-desc">Micro-interactions, scroll-driven animations, CSS Variables, CSS Grid, and transitions that
-          elevate without distracting Making the web more beautiful and functional.</div>
-        <div class="sc-tools"><span class="tool-chip">CSS</span><span class="tool-chip">Parallax</span><span
-            class="tool-chip">GSAP</span></div>
-        <div class="sc-xp">
-          <div class="sc-xp-track">
-            <div class="sc-xp-fill"></div>
-          </div>
-        </div>
-      </div>
-      <div class="skill-card sc-6 reveal" style="transition-delay:.35s">
-        <span class="sc-icon">🧰</span>
-        <div class="sc-title">My Design Tools</div>
-        <div class="sc-desc">Figma, Webflow, Adobe Creative Cloud, Claude, Cursor, VS Code, Github, Dribble, Spline,
-          Jitter, Blender, and more.</div>
-        <div class="sc-tools"><span class="tool-chip">Figma</span><span class="tool-chip">VS Code</span><span
-            class="tool-chip">Adobe CC</span><span class="tool-chip">Claude</span><span
-            class="tool-chip">Github</span><span class="tool-chip">Cursor</span><span
-            class="tool-chip">Spline</span><span class="tool-chip">Webflow</span></div>
-        <div class="sc-xp">
-          <div class="sc-xp-track">
-            <div class="sc-xp-fill"></div>
-          </div>
+
+      <div>
+        <div class="tape-rack-label">Tape rack · drag into the deck</div>
+        <div class="tape-rack" role="listbox" aria-label="Drag a cassette tape into the deck">
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="0" style="--vibe-color: var(--coral)" draggable="true">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Focus Flow</div>
+            <div class="tape-card-meta">Calm focus</div>
+            <div class="tape-card-action">Drag to deck</div>
+          </button>
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="1" style="--vibe-color: var(--lemon)" draggable="true">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Creative Spark</div>
+            <div class="tape-card-meta">Bright energy</div>
+            <div class="tape-card-action">Drag to deck</div>
+          </button>
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="2" style="--vibe-color: var(--lilac)" draggable="true">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Late Night Code</div>
+            <div class="tape-card-meta">After dark</div>
+            <div class="tape-card-action">Drag to deck</div>
+          </button>
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="3" style="--vibe-color: var(--mint)" draggable="true">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Sunny Build</div>
+            <div class="tape-card-meta">Upbeat</div>
+            <div class="tape-card-action">Drag to deck</div>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="stripe-band full-bleed"></div>
+  <div class="stripe-band"></div>
 
   <!-- PROJECTS -->
   <div class="section-wrap" id="projects">
@@ -2501,10 +3375,10 @@
               and attendance settings with more confidence.</div>
             <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-claude">Claude Code</span></div>
+            <a class="pc-expand-btn" href="case-studies/time-attendance-onboarding-ai.html">Check Out Work <span
+            class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/time-attendance-onboarding-ai.html">Check Out Work <span
-            class="pc-chevron">→</span></a>
       </div>
 
       <div class="project-card reveal" id="p2">
@@ -2518,25 +3392,42 @@
                 <span class="pc-project-type">Client Project</span>
               </div>
             </div>
-            <div class="pc-desc">Designed a new automated meal and rest break deduction feature for BambooHR, creating
-              an intuitive experience for both HR managers and employees. Led the end-to-end UX process by conducting
-              user interviews, developing and testing interactive prototypes, and collaborating closely with developers
-              to seamlessly integrate the feature into the existing BambooHR interface. Throughout the project, I
-              balanced compliance requirements with usability to create a clear, efficient, and user-centered
-              experience.
+            <div class="pc-desc">Led end-to-end UX for BambooHR’s automated meal and rest break deductions—running user interviews, prototyping and testing flows, and partnering with developers—to ship a compliant, intuitive experience for HR managers and employees.
             </div>
             <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-res">User Research</span><span
                 class="pc-tag pct-test">Usability Testing</span><span class="pc-tag pct-claude">Claude Code</span></div>
+            <a class="pc-expand-btn" href="case-studies/bamboohr-automatic-meal-and-rest-breaks.html">Check Out Work <span
+            class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/bamboohr-automatic-meal-and-rest-breaks.html">Check Out Work <span
+      </div>
+
+      <div class="project-card reveal" id="p1">
+        <div class="pc-top">
+          <div class="pc-emoji"><img src="assets/bamboologo2.jfif" alt="BambooHR Logo"></div>
+          <div class="pc-info">
+            <div class="pc-header">
+              <div class="pc-title">BambooHR AI Agent</div>
+              <div class="pc-meta">
+                <button type="button" class="pc-xp-badge" data-xp="3000" data-project="p1" aria-label="Claim 3000 XP">+3000 XP</button>
+                <span class="pc-project-type">Client Project</span>
+              </div>
+            </div>
+            <div class="pc-desc">Designed and developed the UI for a BambooHR agentic AI system for meal and rest break management, keeping users informed and engaged while the agent gathered context and generated recommendations.
+            </div>
+            <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
+                class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-res">User Research</span><span
+                class="pc-tag pct-claude">Claude Code</span></div>
+            <a class="pc-expand-btn" href="case-studies/bambooai.html">Check Out Work <span
             class="pc-chevron">→</span></a>
+          </div>
+        </div>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.1s" id="p6">
         <div class="pc-top">
-          <div class="pc-emoji"><img src="assets/wildhorse.png" alt="Wildhorse Creek Ranch Outfitters Logo"></div>
+          <div class="pc-emoji"><img src="assets/wildhorse-logo.png" alt="Wildhorse Creek Ranch Outfitters Logo"></div>
           <div class="pc-info">
             <div class="pc-header">
               <div class="pc-title">Wildhorse Creek Ranch Outfitters Website</div>
@@ -2549,10 +3440,10 @@
               bookings.</div>
             <div class="pc-tags"><span class="pc-tag pct-js">JavaScript</span><span
                 class="pc-tag pct-ux">UX Design</span><span class="pc-tag pct-react">React</span></div>
+            <a class="pc-expand-btn" href="case-studies/wildhorse-ranch-outfitters.html">Check Out Work <span
+            class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/wildhorse-ranch-outfitters.html">Check Out Work <span
-            class="pc-chevron">→</span></a>
       </div>
 
       <div class="project-card reveal" id="p3">
@@ -2570,10 +3461,10 @@
               to help families stay connected, even on the busiest of days.</div>
             <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-res">User Research</span><span class="pc-tag pct-react">React</span></div>
+            <a class="pc-expand-btn" href="case-studies/domus-home-hub.html">Check Out Work <span
+            class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/domus-home-hub.html">Check Out Work <span
-            class="pc-chevron">→</span></a>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.1s" id="p5">
@@ -2592,35 +3483,10 @@
               would help them improve their productivity.</div>
             <div class="pc-tags"><span class="pc-tag pct-ds">Design System</span><span
                 class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-test">Usability Testing</span></div>
+            <a class="pc-expand-btn" href="case-studies/agriculture-ai-integration.html">Check Out Work <span
+            class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/agriculture-ai-integration.html">Check Out Work <span
-            class="pc-chevron">→</span></a>
-      </div>
-
-      <div class="project-card reveal" id="p1">
-        <div class="pc-top">
-          <div class="pc-emoji"><img src="assets/bamboologo.png" alt="BambooAI Logo"></div>
-          <div class="pc-info">
-            <div class="pc-header">
-              <div class="pc-title">BambooHR AI Agent</div>
-              <div class="pc-meta">
-                <button type="button" class="pc-xp-badge" data-xp="3000" data-project="p1" aria-label="Claim 3000 XP">+3000 XP</button>
-                <span class="pc-project-type">Client Project</span>
-              </div>
-            </div>
-            <div class="pc-desc">Designed and developed the user interface for an agentic AI system focused on meal and
-              rest break management. The primary design challenge was creating an engaging user experience that kept
-              users informed and invested while the AI agent gathered information, processed context, and generated
-              recommendations.
-            </div>
-            <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
-                class="pc-tag pct-figma">Figma</span><span class="pc-tag pct-res">User Research</span><span
-                class="pc-tag pct-claude">Claude Code</span></div>
-          </div>
-        </div>
-        <a class="pc-expand-btn" href="case-studies/bambooai.html">Check Out Work <span
-            class="pc-chevron">→</span></a>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.3s" id="p7">
@@ -2639,10 +3505,10 @@
             </div>
             <div class="pc-tags"><span class="pc-tag pct-html">HTML</span><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-next">Next.js</span></div>
+            <a class="pc-expand-btn" href="case-studies/edas-site-redesign.html">Check Out Work <span
+            class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/edas-site-redesign.html">Check Out Work <span
-            class="pc-chevron">→</span></a>
       </div>
 
       <div class="project-card reveal" id="p4">
@@ -2659,10 +3525,10 @@
             <div class="pc-desc">End-to-end design and development of a new website for Kinship, a digital end of life planning platform.</div>
             <div class="pc-tags"><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-type">Typography/Color</span><span class="pc-tag pct-ds">Design System</span></div>
+            <a class="pc-expand-btn" href="case-studies/kinship-website.html">Check Out Work <span
+          class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/kinship-website.html">Check Out Work <span
-          class="pc-chevron">→</span></a>
       </div>
 
       <div class="project-card reveal" style="transition-delay:.3s" id="p8">
@@ -2681,10 +3547,10 @@
               engagement.</div>
             <div class="pc-tags"><span class="pc-tag pct-html">HTML</span><span class="pc-tag pct-ux">UX Design</span><span
                 class="pc-tag pct-next">Next.js</span></div>
+            <a class="pc-expand-btn" href="case-studies/aol-site-redesign.html">Check Out Work <span
+            class="pc-chevron">→</span></a>
           </div>
         </div>
-        <a class="pc-expand-btn" href="case-studies/aol-site-redesign.html">Check Out Work <span
-            class="pc-chevron">→</span></a>
       </div>
 
     </div>
@@ -2722,11 +3588,12 @@
         <div class="ach-desc">Actionable reviews to uncover friction and improve usability</div>
       </div>
     </div>
+  </div>
 
-    <div class="stripe-band full-bleed"></div>
+  <div class="stripe-band"></div>
 
-    <!-- ABOUT -->
-    <div class="section-wrap" id="about">
+  <!-- ABOUT -->
+  <div class="section-wrap" id="about">
       <div class="section-label reveal">✦ 04 — Player Profile</div>
       <h2 class="section-title ul-lemon reveal">A little <span>about me</span></h2>
       <div class="about-grid">
@@ -2761,12 +3628,12 @@
           </div>
         </div>
       </div>
-    </div>
+  </div>
 
-    <div class="stripe-band full-bleed"></div>
+  <div class="stripe-band"></div>
 
-    <!-- CONTACT -->
-    <div class="section-wrap" id="contact">
+  <!-- CONTACT -->
+  <div class="section-wrap" id="contact">
       <div class="section-label reveal">✦ 05 — Initiate Contact</div>
       <h2 class="section-title ul-coral reveal">Let's <span>build something</span> together</h2>
       <div class="contact-grid">
@@ -2794,6 +3661,15 @@
           </div>
         </a>
       </div>
+  </div>
+
+  <!-- Skill detail modal -->
+    <div class="skill-modal" id="skillModal" hidden>
+      <div class="skill-modal-backdrop" data-skill-close tabindex="-1"></div>
+      <div class="skill-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="skillModalTitle">
+        <button type="button" class="skill-modal-close" id="skillModalClose" aria-label="Close skill details">×</button>
+        <div class="skill-modal-card" id="skillModalCard"></div>
+      </div>
     </div>
 
     <!-- Agent guide -->
@@ -2820,9 +3696,44 @@
     </div>
 
     <footer>
-      <p>Designed &amp; hand-coded ✦ by McKenna Wilson · 2026</p>
+      <p>Designed &amp; coded ✦ by McKenna Wilson · 2026</p>
     </footer>
 
+    <section class="bonus-game" id="bonusGame" aria-label="Bonus hopping dino game">
+      <div class="dino-boot" id="dinoBoot" hidden aria-live="polite" aria-busy="true">
+        <div class="dino-spinner" role="status" aria-label="Loading"></div>
+      </div>
+
+      <div class="dino-game-content" id="dinoGameContent" hidden>
+        <div class="section-label">✦ Bonus Level</div>
+        <h2 class="section-title ul-coral" style="margin-bottom: 24px;">Hopping <span>Dino</span></h2>
+        <div class="bonus-game-frame is-locked" id="dinoGameShell">
+          <div class="bonus-game-shell">
+            <div class="bonus-game-hud">
+              <div class="bonus-game-stat">Score <strong id="dinoGameScore">00000</strong></div>
+              <div class="bonus-game-stat">Best <strong id="dinoGameBest">00000</strong></div>
+              <div class="bonus-game-stat">Speed <strong id="dinoGameSpeed">1.0x</strong></div>
+            </div>
+            <div class="bonus-game-stage">
+              <canvas id="dinoGameCanvas" width="900" height="220" aria-label="Hopping dino runner. Press space or tap to jump over cactus obstacles."></canvas>
+              <div class="bonus-game-overlay" id="dinoGameOverlay" hidden>
+                <h3 id="dinoGameOverlayTitle">Secret level unlocked</h3>
+                <p id="dinoGameOverlayText">A tiny endless runner — jump the cacti, keep hopping, chase a high score.</p>
+                <button type="button" class="btn btn-fill" id="dinoGameStart">Press Start</button>
+              </div>
+            </div>
+          </div>
+          <div class="dino-lock-modal" id="dinoLockModal" role="dialog" aria-modal="true" aria-labelledby="dinoLockTitle">
+            <div class="dino-lock-card">
+              <h3 id="dinoLockTitle">Go collect all XP to unlock game</h3>
+            </div>
+          </div>
+        </div>
+        <p class="bonus-game-tip">Space / ↑ / click / tap to jump</p>
+      </div>
+    </section>
+
+    <script src="assets/vibes/vibe-persist.js?v=20261105d"></script>
     <script>
       // Cursor (desktop only)
       if (window.matchMedia('(min-width: 821px)').matches) {
@@ -2916,20 +3827,45 @@
       const sv = document.getElementById('scoreVal');
       const navScore = document.getElementById('navScore');
       const XP_STORAGE_KEY = 'mckenna_claimed_projects';
+      const SCROLL_PROGRESS_KEY = 'mckenna_max_scroll_progress';
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const navEntry = performance.getEntriesByType('navigation')[0];
       const isPageRefresh = navEntry && navEntry.type === 'reload';
 
       if (isPageRefresh) {
         sessionStorage.removeItem(XP_STORAGE_KEY);
+        sessionStorage.removeItem(SCROLL_PROGRESS_KEY);
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         window.scrollTo(0, 0);
       }
 
-      function getScrollXP() {
+      const SCROLL_XP_MAX = 6300;
+      let maxScrollProgress = 0;
+      try {
+        maxScrollProgress = Math.min(1, Math.max(0, Number(sessionStorage.getItem(SCROLL_PROGRESS_KEY)) || 0));
+      } catch {
+        maxScrollProgress = 0;
+      }
+
+      function getCurrentScrollProgress() {
         const maxScroll = document.body.scrollHeight - window.innerHeight;
-        const p = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-        return Math.round(p * 6300);
+        return maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0;
+      }
+
+      // Only grows on the first pass downward — scrolling back up does not shrink XP.
+      function getScrollProgress() {
+        const current = getCurrentScrollProgress();
+        if (current > maxScrollProgress) {
+          maxScrollProgress = current;
+          try {
+            sessionStorage.setItem(SCROLL_PROGRESS_KEY, String(maxScrollProgress));
+          } catch {}
+        }
+        return maxScrollProgress;
+      }
+
+      function getScrollXP() {
+        return Math.round(getScrollProgress() * SCROLL_XP_MAX);
       }
 
       function getClaimedProjects() {
@@ -2945,6 +3881,14 @@
         sessionStorage.setItem(XP_STORAGE_KEY, JSON.stringify(ids));
       }
 
+      function getClaimableXPMax() {
+        let total = 0;
+        document.querySelectorAll('.pc-xp-badge[data-project]').forEach(btn => {
+          total += Number(btn.dataset.xp) || 0;
+        });
+        return total;
+      }
+
       function getClaimedXP() {
         const claimed = new Set(getClaimedProjects());
         let total = 0;
@@ -2952,6 +3896,24 @@
           if (claimed.has(btn.dataset.project)) total += Number(btn.dataset.xp) || 0;
         });
         return total;
+      }
+
+      // Scroll fills the first half of the meter; claimed project XP fills the second half.
+      function getXPProgress() {
+        const claimableMax = getClaimableXPMax();
+        const scrollHalf = getScrollProgress() * 0.5;
+        const claimHalf = claimableMax > 0 ? (getClaimedXP() / claimableMax) * 0.5 : 0;
+        return Math.min(1, scrollHalf + claimHalf);
+      }
+
+      function isXPFull() {
+        return getXPProgress() >= 0.999;
+      }
+      window.getXPProgress = getXPProgress;
+      window.isXPFull = isXPFull;
+
+      function updateProgressBar() {
+        if (pb) pb.style.transform = `scaleX(${getXPProgress()})`;
       }
 
       function animateScoreTo(target, duration = 550) {
@@ -2972,6 +3934,8 @@
         const target = getScrollXP() + getClaimedXP();
         if (animate) animateScoreTo(target);
         else sv.textContent = target.toLocaleString();
+        updateProgressBar();
+        window.dispatchEvent(new CustomEvent('mckenna:xp-updated'));
       }
 
       function markBadgeCollected(btn) {
@@ -3059,6 +4023,7 @@
             navScore.classList.add('xp-bump');
             setTimeout(() => navScore.classList.remove('xp-bump'), 600);
           }
+          window.dispatchEvent(new CustomEvent('mckenna:xp-claimed'));
           return true;
         }).finally(() => {
           btn._claimPromise = null;
@@ -3066,6 +4031,7 @@
 
         return btn._claimPromise;
       }
+
 
       document.querySelectorAll('.pc-xp-badge[data-project]').forEach(btn => {
         btn.addEventListener('click', e => {
@@ -3075,40 +4041,66 @@
         });
       });
 
-      document.querySelectorAll('.pc-expand-btn[href]').forEach(link => {
-        link.addEventListener('click', e => {
+      function openProjectCaseStudy(card) {
+        if (!card || card.dataset.navigating === 'true') return;
+
+        const link = card.querySelector('.pc-expand-btn[href]');
+        const href = link?.getAttribute('href');
+        if (!href) return;
+
+        if (typeof window.persistVibeForNavigation === 'function') {
+          window.persistVibeForNavigation();
+        }
+
+        const badge = card.querySelector('.pc-xp-badge[data-project]');
+        const alreadyClaimed = !badge
+          || badge.classList.contains('collected')
+          || getClaimedProjects().includes(badge.dataset.project);
+
+        if (alreadyClaimed) {
+          window.location.href = href;
+          return;
+        }
+
+        card.dataset.navigating = 'true';
+        if (link) link.setAttribute('aria-busy', 'true');
+
+        claimProjectXP(badge).then(() => {
+          if (typeof window.persistVibeForNavigation === 'function') {
+            window.persistVibeForNavigation();
+          }
+          setTimeout(() => { window.location.href = href; }, 300);
+        });
+      }
+
+      document.querySelectorAll('.project-card').forEach(card => {
+        const link = card.querySelector('.pc-expand-btn[href]');
+        if (!link) return;
+
+        const title = card.querySelector('.pc-title')?.textContent?.trim();
+        card.setAttribute('role', 'link');
+        card.tabIndex = 0;
+        if (title) card.setAttribute('aria-label', `Open case study: ${title}`);
+
+        card.addEventListener('click', e => {
+          if (e.target.closest('.pc-xp-badge')) return;
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
           e.preventDefault();
-          if (link.dataset.navigating === 'true') return;
+          openProjectCaseStudy(card);
+        });
 
-          const href = link.getAttribute('href');
-          if (!href) return;
-
-          const badge = link.closest('.project-card')?.querySelector('.pc-xp-badge[data-project]');
-          const alreadyClaimed = !badge
-            || badge.classList.contains('collected')
-            || getClaimedProjects().includes(badge.dataset.project);
-
-          if (alreadyClaimed) {
-            window.location.href = href;
-            return;
-          }
-
-          link.dataset.navigating = 'true';
-          link.setAttribute('aria-busy', 'true');
-
-          claimProjectXP(badge).then(() => {
-            setTimeout(() => { window.location.href = href; }, 300);
-          });
+        card.addEventListener('keydown', e => {
+          if (e.target.closest('.pc-xp-badge')) return;
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          openProjectCaseStudy(card);
         });
       });
 
       restoreClaimedXP();
+      updateProgressBar();
 
       window.addEventListener('scroll', () => {
-        const maxScroll = document.body.scrollHeight - window.innerHeight;
-        const p = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-        pb.style.transform = `scaleX(${p})`;
         updateScore();
       });
 
@@ -3158,22 +4150,117 @@
         });
       }
 
-      document.querySelectorAll('.skill-card').forEach(card => {
-        card.addEventListener('click', () => {
-          card.classList.remove('skill-pop');
-          void card.offsetWidth;
-          card.classList.add('skill-pop');
-          spawnSkillSparkles(card);
-          replaySkillBar(card);
-          setTimeout(() => card.classList.remove('skill-pop'), 520);
+      // Hero skill badge → modal
+      const skillModal = document.getElementById('skillModal');
+      const skillModalCard = document.getElementById('skillModalCard');
+      const skillModalClose = document.getElementById('skillModalClose');
+      let skillModalLastFocus = null;
+
+      const skillDetails = {
+        'sc-1': {
+          icon: '🎨',
+          title: 'Visual Design',
+          desc: 'Crafting interfaces that feel polished, intentional, and delightful. Typography, layout, color, motion.',
+          tools: ['Figma', 'Webflow', 'Adobe Creative Cloud']
+        },
+        'sc-2': {
+          icon: '🔬',
+          title: 'UX Research',
+          desc: 'User interviews, journey maps, empathy mapping, usability testing, synthesising insights into real design decisions.',
+          tools: ['UserTesting', 'Eye Tracking', 'Data Analysis']
+        },
+        'sc-3': {
+          icon: '⚛️',
+          title: 'Front End Development',
+          desc: 'Building fast, accessible, component-driven UIs. I write the markup I design — no translation needed.',
+          tools: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'Next.js', 'React']
+        },
+        'sc-4': {
+          icon: '🧩',
+          title: 'Design Systems',
+          desc: 'Tokens, components, documentation — bridging design and engineering at scale.',
+          tools: ['Component Libraries', 'Pattern Libraries', 'Documentation and Principles']
+        },
+        'sc-5': {
+          icon: '✨',
+          title: '3D & Animation',
+          desc: 'Micro-interactions, scroll-driven animations, CSS Variables, CSS Grid, and transitions that elevate without distracting. Making the web more beautiful and functional.',
+          tools: ['CSS', 'Parallax', 'GSAP']
+        },
+        'sc-6': {
+          icon: '🧰',
+          title: 'My Design Tools',
+          desc: 'Figma, Webflow, Adobe Creative Cloud, Claude, Cursor, VS Code, Github, Dribble, Spline, Jitter, Blender, and more.',
+          tools: ['Figma', 'VS Code', 'Adobe CC', 'Claude', 'Github', 'Cursor', 'Spline', 'Webflow']
+        }
+      };
+
+      function closeSkillModal() {
+        if (!skillModal || !skillModal.classList.contains('open')) return;
+        skillModal.classList.remove('open');
+        document.body.classList.remove('skill-modal-open');
+        document.querySelectorAll('.htag[aria-pressed="true"]').forEach(tag => {
+          tag.setAttribute('aria-pressed', 'false');
         });
+        setTimeout(() => {
+          if (!skillModal.classList.contains('open')) {
+            skillModal.hidden = true;
+            if (skillModalCard) {
+              skillModalCard.classList.remove('is-ready');
+              skillModalCard.innerHTML = '';
+              skillModalCard.className = 'skill-modal-card';
+            }
+          }
+        }, 200);
+        if (skillModalLastFocus && typeof skillModalLastFocus.focus === 'function') {
+          skillModalLastFocus.focus();
+        }
+      }
+
+      function openSkillModal(skillId, triggerEl) {
+        const skill = skillDetails[skillId];
+        if (!skillModal || !skillModalCard || !skill) return;
+
+        skillModalLastFocus = triggerEl || document.activeElement;
+        const toolsHtml = skill.tools.map(t => '<span class="tool-chip">' + t + '</span>').join('');
+
+        skillModalCard.className = 'skill-modal-card ' + skillId;
+        skillModalCard.innerHTML =
+          '<span class="sc-icon">' + skill.icon + '</span>' +
+          '<div class="sc-title" id="skillModalTitle">' + skill.title + '</div>' +
+          '<div class="sc-desc">' + skill.desc + '</div>' +
+          '<div class="sc-tools">' + toolsHtml + '</div>' +
+          '<div class="sc-xp"><div class="sc-xp-track"><div class="sc-xp-fill"></div></div></div>';
+
+        document.querySelectorAll('.htag[data-skill]').forEach(tag => {
+          tag.setAttribute('aria-pressed', tag.dataset.skill === skillId ? 'true' : 'false');
+        });
+
+        skillModal.hidden = false;
+        document.body.classList.add('skill-modal-open');
+        requestAnimationFrame(() => {
+          skillModal.classList.add('open');
+          requestAnimationFrame(() => skillModalCard.classList.add('is-ready'));
+        });
+        skillModalClose?.focus();
+      }
+
+      document.querySelectorAll('.htag[data-skill]').forEach(tag => {
+        tag.setAttribute('aria-pressed', 'false');
+        tag.addEventListener('click', () => openSkillModal(tag.dataset.skill, tag));
+      });
+
+      skillModalClose?.addEventListener('click', closeSkillModal);
+      skillModal?.querySelector('[data-skill-close]')?.addEventListener('click', closeSkillModal);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeSkillModal();
       });
 
       // Toast
       const toastEl = document.getElementById('toast');
       const toastData = {
-        skills: ['🌲', 'SKILL SECTION UNLOCKED!', 'Your powers have been revealed'],
         projects: ['📜', 'QUEST LOG OPENED!', 'Case studies incoming'],
+        vibe: ['🎧', 'SOUNDTRACK UNLOCKED!', 'Load a tape'],
         achievements: ['🏆', 'BADGE ROOM ENTERED!', 'So many trophies...'],
         about: ['👾', 'PLAYER PROFILE LOADED!', 'Getting personal'],
         contact: ['💌', 'COMMS ARRAY ONLINE!', 'Let\'s collab'],
@@ -3188,6 +4275,7 @@
         toastEl.classList.add('show');
         tt = setTimeout(() => toastEl.classList.remove('show'), 3200);
       }
+      window.showToast = showToast;
       document.querySelectorAll('.section-wrap[id]').forEach(sec => {
         new IntersectionObserver(entries => {
           entries.forEach(e => {
@@ -3208,6 +4296,399 @@
         btn.childNodes[0].textContent = open ? 'Close case study ' : 'Check Out Work ';
       }
 
+      // Vibe cassette player
+      (function initVibePlayer() {
+        const persist = window.VibePersist;
+        if (!persist) return;
+        const tracks = persist.TRACKS.map(track => ({
+          ...track,
+          src: persist.trackSrc(track, 'assets/vibes')
+        }));
+
+        const deck = document.getElementById('vibeDeck');
+        const audio = document.getElementById('vibeAudio');
+        const playBtn = document.getElementById('vibePlay');
+        const playIcon = document.getElementById('vibePlayIcon');
+        const playLabel = document.getElementById('vibePlayLabel');
+        const ejectBtn = document.getElementById('vibeEject');
+        const prevBtn = document.getElementById('vibePrev');
+        const nextBtn = document.getElementById('vibeNext');
+        const titleEl = document.getElementById('vibeNowTitle');
+        const metaEl = document.getElementById('vibeNowMeta');
+        const nowLabel = document.getElementById('vibeNowLabel');
+        const labelEl = document.getElementById('vibeLabelText');
+        const progressFill = document.getElementById('vibeProgressFill');
+        const tapeBtns = Array.from(document.querySelectorAll('.tape-card[data-vibe]'));
+        const cassetteSlot = document.getElementById('cassetteSlot');
+        if (!deck || !audio || !playBtn || !tapeBtns.length || !cassetteSlot) return;
+
+        let index = -1;
+        let loaded = false;
+        let raf = 0;
+        let swapping = false;
+        let dragState = null;
+        let suppressPersist = false;
+        let wantPlaying = false;
+        let ignorePausePersist = false;
+        let clearGestureResume = null;
+
+        function persistNow(overrides = {}) {
+          if (suppressPersist) return;
+          if (!loaded || index < 0) {
+            persist.clearState();
+            return;
+          }
+          persist.saveState({
+            index,
+            time: audio.currentTime || 0,
+            playing: wantPlaying,
+            loaded: true,
+            ...overrides
+          });
+        }
+
+        function persistForNavigation() {
+          if (!loaded || index < 0) return;
+          persist.saveState({
+            index,
+            time: audio.currentTime || 0,
+            playing: wantPlaying || !audio.paused,
+            loaded: true
+          });
+        }
+
+        function setControlsEnabled(on) {
+          playBtn.disabled = !on;
+          if (ejectBtn) ejectBtn.disabled = !on;
+          if (prevBtn) prevBtn.disabled = !on;
+          if (nextBtn) nextBtn.disabled = !on;
+        }
+
+        function setPlayingUI(isPlaying) {
+          deck.classList.toggle('is-playing', isPlaying);
+          playBtn.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+          if (playIcon) playIcon.textContent = isPlaying ? '❚❚' : '▶';
+          if (playLabel) playLabel.textContent = isPlaying ? 'Pause' : 'Play';
+        }
+
+        function updateProgress() {
+          if (!audio.duration || !isFinite(audio.duration)) {
+            if (progressFill) progressFill.style.width = '0%';
+          } else if (progressFill) {
+            progressFill.style.width = ((audio.currentTime / audio.duration) * 100) + '%';
+          }
+          if (!audio.paused) raf = requestAnimationFrame(updateProgress);
+        }
+
+        function markRack() {
+          tapeBtns.forEach((btn, btnIndex) => {
+            const active = loaded && btnIndex === index;
+            btn.classList.toggle('is-loaded', active);
+            btn.setAttribute('aria-selected', active ? 'true' : 'false');
+            const action = btn.querySelector('.tape-card-action');
+            if (action) action.textContent = active ? 'Loaded ✓' : 'Drag to deck';
+          });
+        }
+
+        function pointInSlot(clientX, clientY) {
+          const rect = cassetteSlot.getBoundingClientRect();
+          return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+        }
+
+        function endPointerDrag(clientX, clientY) {
+          if (!dragState) return;
+          const { vibe, ghost, source } = dragState;
+          const dropped = pointInSlot(clientX, clientY);
+          ghost.remove();
+          source.classList.remove('is-dragging');
+          cassetteSlot.classList.remove('is-drop-target');
+          dragState = null;
+          if (dropped) insertTape(vibe, { autoplay: true });
+        }
+
+        function startPointerDrag(btn, event) {
+          if (event.button != null && event.button !== 0) return;
+          if (swapping) return;
+          event.preventDefault();
+
+          const vibe = Number(btn.dataset.vibe);
+          const ghost = btn.cloneNode(true);
+          ghost.classList.add('tape-drag-ghost');
+          ghost.removeAttribute('draggable');
+          ghost.style.setProperty('--vibe-color', getComputedStyle(btn).getPropertyValue('--vibe-color') || 'var(--coral)');
+          document.body.appendChild(ghost);
+
+          const offsetX = 40;
+          const offsetY = 24;
+          ghost.style.left = (event.clientX - offsetX) + 'px';
+          ghost.style.top = (event.clientY - offsetY) + 'px';
+
+          btn.classList.add('is-dragging');
+          dragState = { vibe, ghost, source: btn, offsetX, offsetY, moved: false, startX: event.clientX, startY: event.clientY };
+
+          const onMove = (e) => {
+            if (!dragState) return;
+            const x = e.clientX ?? e.touches?.[0]?.clientX;
+            const y = e.clientY ?? e.touches?.[0]?.clientY;
+            if (x == null || y == null) return;
+            if (Math.abs(x - dragState.startX) > 4 || Math.abs(y - dragState.startY) > 4) {
+              dragState.moved = true;
+            }
+            dragState.ghost.style.left = (x - dragState.offsetX) + 'px';
+            dragState.ghost.style.top = (y - dragState.offsetY) + 'px';
+            cassetteSlot.classList.toggle('is-drop-target', pointInSlot(x, y));
+          };
+
+          const onUp = (e) => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+            const x = e.clientX ?? e.changedTouches?.[0]?.clientX ?? dragState?.startX;
+            const y = e.clientY ?? e.changedTouches?.[0]?.clientY ?? dragState?.startY;
+            const moved = dragState?.moved;
+            const vibeId = dragState?.vibe;
+            endPointerDrag(x, y);
+            // Short click still loads the tape for accessibility
+            if (!moved && vibeId != null) insertTape(vibeId, { autoplay: true });
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
+        }
+
+        function showEmptyState({ clearPersist = true } = {}) {
+          loaded = false;
+          index = -1;
+          wantPlaying = false;
+          if (typeof clearGestureResume === 'function') clearGestureResume();
+          clearGestureResume = null;
+          deck.classList.remove('has-tape', 'is-playing', 'is-ejecting');
+          setPlayingUI(false);
+          setControlsEnabled(false);
+          if (nowLabel) nowLabel.textContent = 'No tape loaded';
+          if (titleEl) titleEl.textContent = 'Browse the rack';
+          if (metaEl) metaEl.textContent = 'Drag a cassette into the deck to play';
+          if (progressFill) progressFill.style.width = '0%';
+          markRack();
+          if (clearPersist) persist.clearState();
+        }
+
+        function beginPlayback() {
+          wantPlaying = true;
+          return audio.play().then(() => {
+            setPlayingUI(true);
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(updateProgress);
+            persistNow({ playing: true });
+            if (typeof clearGestureResume === 'function') clearGestureResume();
+            clearGestureResume = null;
+          }).catch(() => {
+            setPlayingUI(false);
+            // Keep playing intent across pages even if autoplay is blocked.
+            persistNow({ playing: true });
+            if (typeof clearGestureResume === 'function') clearGestureResume();
+            clearGestureResume = persist.armGestureResume(audio, () => {
+              setPlayingUI(true);
+              cancelAnimationFrame(raf);
+              raf = requestAnimationFrame(updateProgress);
+              persistNow({ playing: true });
+            });
+          });
+        }
+
+        function insertTape(i, { autoplay = true, startAt = 0, animate = true } = {}) {
+          if (swapping) return;
+          const next = (i + tracks.length) % tracks.length;
+          const track = tracks[next];
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+          const doLoad = () => {
+            index = next;
+            loaded = true;
+            swapping = false;
+            deck.classList.remove('is-ejecting');
+            deck.classList.add('has-tape');
+            deck.style.setProperty('--vibe-color', track.color);
+            ignorePausePersist = true;
+            audio.src = track.src;
+            audio.load();
+            window.setTimeout(() => { ignorePausePersist = false; }, 0);
+            if (labelEl) labelEl.textContent = track.title;
+            if (nowLabel) nowLabel.textContent = 'Now playing';
+            if (titleEl) titleEl.textContent = track.title;
+            if (metaEl) metaEl.textContent = track.meta;
+            if (progressFill) progressFill.style.width = '0%';
+            setControlsEnabled(true);
+            markRack();
+
+            const seekAndMaybePlay = () => {
+              if (startAt > 0 && isFinite(audio.duration)) {
+                try {
+                  audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+                } catch {}
+              }
+              if (autoplay) beginPlayback();
+              else {
+                wantPlaying = false;
+                setPlayingUI(false);
+                persistNow({ playing: false, time: audio.currentTime || startAt || 0 });
+              }
+            };
+
+            if (audio.readyState >= 1) seekAndMaybePlay();
+            else audio.addEventListener('loadedmetadata', seekAndMaybePlay, { once: true });
+          };
+
+          if (loaded && index === next && animate) {
+            if (audio.paused && autoplay) beginPlayback();
+            return;
+          }
+
+          swapping = true;
+          ignorePausePersist = true;
+          audio.pause();
+          ignorePausePersist = false;
+          setPlayingUI(false);
+          cancelAnimationFrame(raf);
+
+          if (loaded && animate && !reduceMotion) {
+            deck.classList.add('is-ejecting');
+            window.setTimeout(doLoad, 280);
+          } else {
+            doLoad();
+          }
+        }
+
+        function ejectTape() {
+          if (!loaded || swapping) return;
+          swapping = true;
+          wantPlaying = false;
+          ignorePausePersist = true;
+          audio.pause();
+          ignorePausePersist = false;
+          setPlayingUI(false);
+          cancelAnimationFrame(raf);
+          persist.clearState();
+          deck.classList.add('is-ejecting');
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.setTimeout(() => {
+            audio.removeAttribute('src');
+            audio.load();
+            showEmptyState();
+            swapping = false;
+          }, reduceMotion ? 0 : 280);
+        }
+
+        playBtn.addEventListener('click', () => {
+          if (!loaded) return;
+          if (audio.paused) {
+            beginPlayback();
+          } else {
+            wantPlaying = false;
+            audio.pause();
+            setPlayingUI(false);
+            cancelAnimationFrame(raf);
+            persistNow({ playing: false });
+          }
+        });
+
+        ejectBtn?.addEventListener('click', ejectTape);
+        prevBtn?.addEventListener('click', () => {
+          if (!loaded) return;
+          insertTape(index - 1, { autoplay: !audio.paused });
+        });
+        nextBtn?.addEventListener('click', () => {
+          if (!loaded) return;
+          insertTape(index + 1, { autoplay: !audio.paused });
+        });
+
+        tapeBtns.forEach(btn => {
+          btn.addEventListener('pointerdown', (event) => startPointerDrag(btn, event));
+
+          // Native HTML5 DnD fallback (desktop)
+          btn.addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData('text/vibe', btn.dataset.vibe);
+            event.dataTransfer.effectAllowed = 'copy';
+            btn.classList.add('is-dragging');
+          });
+          btn.addEventListener('dragend', () => {
+            btn.classList.remove('is-dragging');
+            cassetteSlot.classList.remove('is-drop-target');
+          });
+        });
+
+        cassetteSlot.addEventListener('dragover', (event) => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'copy';
+          cassetteSlot.classList.add('is-drop-target');
+        });
+        cassetteSlot.addEventListener('dragleave', () => {
+          cassetteSlot.classList.remove('is-drop-target');
+        });
+        cassetteSlot.addEventListener('drop', (event) => {
+          event.preventDefault();
+          cassetteSlot.classList.remove('is-drop-target');
+          const vibe = event.dataTransfer.getData('text/vibe');
+          if (vibe !== '') insertTape(Number(vibe), { autoplay: true });
+        });
+
+        audio.addEventListener('ended', () => {
+          if (!loaded) return;
+          insertTape(index + 1, { autoplay: true });
+        });
+        audio.addEventListener('pause', () => {
+          if (ignorePausePersist) return;
+          if (!audio.ended) setPlayingUI(false);
+          // Only clear playing intent for real user pauses, not unload/navigation.
+          if (!wantPlaying) persistNow({ playing: false });
+        });
+        audio.addEventListener('play', () => {
+          wantPlaying = true;
+          persistNow({ playing: true });
+        });
+        audio.addEventListener('timeupdate', () => {
+          if (!audio.paused) persistNow();
+        });
+
+        window.addEventListener('pagehide', () => persistForNavigation());
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') persistForNavigation();
+        });
+
+        // Save before case-study navigations so playback can resume immediately.
+        document.addEventListener('click', (event) => {
+          const link = event.target.closest('a[href*="case-studies/"]');
+          if (!link) return;
+          wantPlaying = wantPlaying || !audio.paused;
+          persistForNavigation();
+        }, true);
+
+        window.persistVibeForNavigation = persistForNavigation;
+
+        // Read saved state BEFORE emptying UI — showEmptyState used to wipe it first.
+        const saved = persist.loadState();
+        if (saved && saved.loaded) {
+          showEmptyState({ clearPersist: false });
+          suppressPersist = true;
+          wantPlaying = !!saved.playing;
+          insertTape(saved.index, {
+            autoplay: !!saved.playing,
+            startAt: saved.time || 0,
+            animate: false
+          });
+          suppressPersist = false;
+          persist.saveState({
+            index: saved.index,
+            time: saved.time || 0,
+            playing: !!saved.playing,
+            loaded: true
+          });
+        } else {
+          showEmptyState();
+        }
+      })();
+
     </script>
     <script src="agent-guide.js"></script>
     <script>
@@ -3215,18 +4696,422 @@
       if (window.__skipLoaderPending && window.showAgentGuide) showAgentGuide();
 
       const agentWidget = document.getElementById('agentWidget');
-      const skillsSection = document.getElementById('skills');
-      if (agentWidget && skillsSection) {
-        const dismissAgentHintPastSkills = () => {
-          if (skillsSection.getBoundingClientRect().bottom <= 0) {
+      const projectsSection = document.getElementById('projects');
+      if (agentWidget && projectsSection) {
+        const dismissAgentHintPastProjects = () => {
+          if (projectsSection.getBoundingClientRect().bottom <= 0) {
             agentWidget.classList.add('hint-dismissed');
-            window.removeEventListener('scroll', dismissAgentHintPastSkills);
+            window.removeEventListener('scroll', dismissAgentHintPastProjects);
           }
         };
 
-        dismissAgentHintPastSkills();
-        window.addEventListener('scroll', dismissAgentHintPastSkills, { passive: true });
+        dismissAgentHintPastProjects();
+        window.addEventListener('scroll', dismissAgentHintPastProjects, { passive: true });
       }
+
+      // Bonus hopping dino runner (reveals at page bottom; play unlocks after all XP)
+      (function initHoppingDinoGame() {
+        const section = document.getElementById('bonusGame');
+        const boot = document.getElementById('dinoBoot');
+        const gameContent = document.getElementById('dinoGameContent');
+        const shell = document.getElementById('dinoGameShell');
+        const lockModal = document.getElementById('dinoLockModal');
+        const canvas = document.getElementById('dinoGameCanvas');
+        const overlay = document.getElementById('dinoGameOverlay');
+        const startBtn = document.getElementById('dinoGameStart');
+        const scoreEl = document.getElementById('dinoGameScore');
+        const bestEl = document.getElementById('dinoGameBest');
+        const speedEl = document.getElementById('dinoGameSpeed');
+        const overlayTitle = document.getElementById('dinoGameOverlayTitle');
+        const overlayText = document.getElementById('dinoGameOverlayText');
+        if (!section || !boot || !gameContent || !shell || !lockModal || !canvas || !overlay || !startBtn) return;
+
+        const ctx = canvas.getContext('2d');
+        const BEST_KEY = 'mckenna_dino_hop_best';
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let best = Number(localStorage.getItem(BEST_KEY) || 0);
+        bestEl.textContent = String(best).padStart(5, '0');
+
+        let revealed = false;
+        let booting = false;
+        let playable = false;
+        let running = false;
+        let raf = 0;
+        let width = 900;
+        let height = 220;
+        let dpr = 1;
+        let groundY = 170;
+        let score = 0;
+        let speed = 6;
+        let spawnTimer = 0;
+        let groundOffset = 0;
+        let frame = 0;
+        let obstacles = [];
+        let clouds = [];
+        let dino = null;
+
+        function padScore(n) {
+          return String(Math.floor(n)).padStart(5, '0');
+        }
+
+        function hasFullXP() {
+          return typeof window.isXPFull === 'function' && window.isXPFull();
+        }
+
+        function setPlayable(unlocked) {
+          playable = unlocked;
+          shell.classList.toggle('is-locked', !unlocked);
+          lockModal.hidden = unlocked;
+          if (unlocked) {
+            overlay.hidden = false;
+            if (overlayTitle) overlayTitle.textContent = 'Secret level unlocked';
+            if (overlayText) overlayText.textContent = 'A tiny endless runner — jump the cacti, keep hopping, chase a high score.';
+          } else {
+            overlay.hidden = true;
+            if (running) {
+              running = false;
+              cancelAnimationFrame(raf);
+            }
+          }
+        }
+
+        function syncXpLock() {
+          if (!revealed) return;
+          const ready = hasFullXP();
+          if (ready && !playable) {
+            setPlayable(true);
+            if (typeof window.showToast === 'function') {
+              window.showToast('🦕', 'SECRET LEVEL UNLOCKED!', 'Hopping Dino is ready');
+            }
+          } else if (!ready) {
+            setPlayable(false);
+          }
+        }
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          width = Math.max(320, Math.floor(rect.width));
+          height = Math.max(180, Math.floor(rect.height));
+          canvas.width = Math.floor(width * dpr);
+          canvas.height = Math.floor(height * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          groundY = height - 44;
+          if (dino) {
+            dino.baseY = groundY;
+            if (!dino.jumping) dino.y = groundY;
+          }
+        }
+
+        function makeDino() {
+          return {
+            x: 72,
+            y: groundY,
+            baseY: groundY,
+            w: 44,
+            h: 48,
+            vy: 0,
+            jumping: false,
+            gravity: 0.75,
+            jumpForce: -13.2
+          };
+        }
+
+        function revealGame() {
+          boot.hidden = true;
+          boot.setAttribute('aria-busy', 'false');
+          gameContent.hidden = false;
+          revealed = true;
+          requestAnimationFrame(() => {
+            gameContent.classList.add('is-ready');
+            resize();
+            dino = makeDino();
+            seedClouds();
+            drawScene(false);
+            syncXpLock();
+          });
+        }
+
+        function runBootSequence() {
+          if (booting) return;
+          booting = true;
+          boot.hidden = false;
+          boot.setAttribute('aria-busy', 'true');
+          gameContent.hidden = true;
+          gameContent.classList.remove('is-ready');
+
+          const duration = prefersReducedMotion ? 120 : 900;
+          setTimeout(revealGame, duration);
+        }
+
+        function unlockGame() {
+          if (revealed || booting) return;
+          section.classList.add('is-unlocked');
+          requestAnimationFrame(() => {
+            section.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+          });
+          runBootSequence();
+        }
+
+        function seedClouds() {
+          clouds = [
+            { x: width * 0.2, y: 36, s: 1 },
+            { x: width * 0.55, y: 58, s: 0.8 },
+            { x: width * 0.85, y: 42, s: 1.1 }
+          ];
+        }
+
+        function resetRound() {
+          score = 0;
+          speed = 6;
+          spawnTimer = 70;
+          groundOffset = 0;
+          frame = 0;
+          obstacles = [];
+          dino = makeDino();
+          seedClouds();
+          scoreEl.textContent = '00000';
+          speedEl.textContent = '1.0x';
+        }
+
+        function jump() {
+          if (!running || !dino || dino.jumping) return;
+          dino.jumping = true;
+          dino.vy = dino.jumpForce;
+        }
+
+        function spawnObstacle() {
+          const tall = Math.random() > 0.55;
+          const cluster = Math.random() > 0.72 ? 2 : 1;
+          const h = tall ? 46 + Math.random() * 10 : 30 + Math.random() * 8;
+          const w = cluster === 2 ? 34 : 18;
+          obstacles.push({
+            x: width + 20,
+            y: groundY,
+            w,
+            h,
+            cluster
+          });
+        }
+
+        function drawCloud(c) {
+          ctx.fillStyle = 'rgba(26,18,7,0.12)';
+          const s = 16 * c.s;
+          ctx.beginPath();
+          ctx.arc(c.x, c.y, s, 0, Math.PI * 2);
+          ctx.arc(c.x + s * 0.9, c.y + 2, s * 0.75, 0, Math.PI * 2);
+          ctx.arc(c.x - s * 0.8, c.y + 3, s * 0.7, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        function drawGround() {
+          ctx.strokeStyle = '#1a1207';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(0, groundY);
+          ctx.lineTo(width, groundY);
+          ctx.stroke();
+
+          ctx.fillStyle = '#1a1207';
+          for (let x = -((groundOffset | 0) % 28); x < width; x += 28) {
+            ctx.fillRect(x, groundY + 6, 14, 2);
+            ctx.fillRect(x + 8, groundY + 14, 8, 2);
+          }
+        }
+
+        function drawDino(d, animFrame) {
+          const x = d.x;
+          const y = d.y - d.h;
+          const leg = d.jumping ? 0 : (animFrame % 2 === 0 ? -4 : 4);
+          ctx.fillStyle = '#1a1207';
+
+          // body
+          ctx.fillRect(x + 8, y + 14, 28, 22);
+          // head
+          ctx.fillRect(x + 24, y + 2, 22, 18);
+          // snout
+          ctx.fillRect(x + 42, y + 10, 10, 8);
+          // eye
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(x + 38, y + 6, 4, 4);
+          ctx.fillStyle = '#1a1207';
+          // tail
+          ctx.fillRect(x - 6, y + 20, 16, 6);
+          // arm
+          ctx.fillRect(x + 18, y + 24, 8, 4);
+          // legs
+          ctx.fillRect(x + 12, y + 34, 7, 14 + (leg < 0 ? leg : 0));
+          ctx.fillRect(x + 26, y + 34, 7, 14 + (leg > 0 ? -leg : 0));
+        }
+
+        function drawCactus(o) {
+          const baseX = o.x;
+          const top = o.y - o.h;
+          ctx.fillStyle = '#1a1207';
+          if (o.cluster === 2) {
+            ctx.fillRect(baseX, top + 8, 10, o.h - 8);
+            ctx.fillRect(baseX + 14, top, 12, o.h);
+            ctx.fillRect(baseX - 2, top + 16, 8, 6);
+            ctx.fillRect(baseX + 22, top + 12, 8, 6);
+          } else {
+            ctx.fillRect(baseX + 4, top, 10, o.h);
+            ctx.fillRect(baseX - 2, top + o.h * 0.35, 8, 6);
+            ctx.fillRect(baseX - 2, top + o.h * 0.35, 4, 16);
+            ctx.fillRect(baseX + 12, top + o.h * 0.45, 8, 6);
+            ctx.fillRect(baseX + 16, top + o.h * 0.45, 4, 14);
+          }
+        }
+
+        function drawScene(anim) {
+          ctx.clearRect(0, 0, width, height);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+          clouds.forEach(drawCloud);
+          drawGround();
+          obstacles.forEach(drawCactus);
+          if (dino) drawDino(dino, anim ? Math.floor(frame / 6) : 0);
+        }
+
+        function rectsOverlap(a, b) {
+          return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+        }
+
+        function endGame() {
+          running = false;
+          cancelAnimationFrame(raf);
+          const finalScore = Math.floor(score);
+          if (finalScore > best) {
+            best = finalScore;
+            localStorage.setItem(BEST_KEY, String(best));
+            bestEl.textContent = padScore(best);
+          }
+          overlayTitle.textContent = 'Game over';
+          overlayText.textContent = `You hopped to ${padScore(finalScore)}. Best: ${padScore(best)}.`;
+          startBtn.textContent = 'Play again';
+          overlay.hidden = false;
+        }
+
+        function tick() {
+          if (!running || !dino) return;
+          frame++;
+
+          // physics
+          if (dino.jumping) {
+            dino.vy += dino.gravity;
+            dino.y += dino.vy;
+            if (dino.y >= dino.baseY) {
+              dino.y = dino.baseY;
+              dino.vy = 0;
+              dino.jumping = false;
+            }
+          }
+
+          speed = 6 + Math.min(score / 180, 7);
+          groundOffset += speed;
+          score += speed * 0.12;
+          scoreEl.textContent = padScore(score);
+          speedEl.textContent = (speed / 6).toFixed(1) + 'x';
+
+          clouds.forEach(c => {
+            c.x -= speed * 0.15;
+            if (c.x < -40) c.x = width + 40 + Math.random() * 80;
+          });
+
+          spawnTimer--;
+          if (spawnTimer <= 0) {
+            spawnObstacle();
+            spawnTimer = 55 + Math.random() * 50 - Math.min(score / 20, 25);
+          }
+
+          const next = [];
+          const dinoBox = {
+            x: dino.x + 8,
+            y: dino.y - dino.h + 8,
+            w: dino.w - 10,
+            h: dino.h - 10
+          };
+
+          for (const o of obstacles) {
+            o.x -= speed;
+            const box = {
+              x: o.x,
+              y: o.y - o.h,
+              w: o.w,
+              h: o.h - 2
+            };
+            if (rectsOverlap(dinoBox, box)) {
+              drawScene(true);
+              endGame();
+              return;
+            }
+            if (o.x + o.w > -20) next.push(o);
+          }
+          obstacles = next;
+
+          drawScene(true);
+          raf = requestAnimationFrame(tick);
+        }
+
+        function isGameReady() {
+          return playable && revealed && gameContent && !gameContent.hidden && !!boot?.hidden;
+        }
+
+        function startGame() {
+          if (!isGameReady()) return;
+          resize();
+          resetRound();
+          overlay.hidden = true;
+          running = true;
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(tick);
+        }
+
+        function onJumpInput(e) {
+          if (e.type === 'keydown') {
+            if (!(e.code === 'Space' || e.key === 'ArrowUp' || e.key === ' ')) return;
+            e.preventDefault();
+          }
+          if (!isGameReady()) return;
+          if (!running) {
+            if (overlay && !overlay.hidden && e.type === 'keydown') startGame();
+            return;
+          }
+          jump();
+        }
+
+        startBtn.addEventListener('click', startGame);
+        canvas.addEventListener('pointerdown', e => {
+          if (!isGameReady()) return;
+          if (!running) {
+            startGame();
+            return;
+          }
+          e.preventDefault();
+          jump();
+        });
+        window.addEventListener('keydown', onJumpInput, { passive: false });
+        window.addEventListener('resize', () => {
+          if (!revealed) return;
+          resize();
+          if (!running) drawScene(false);
+        });
+        window.addEventListener('mckenna:xp-claimed', syncXpLock);
+        window.addEventListener('mckenna:xp-updated', syncXpLock);
+
+        const unlockObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) unlockGame();
+          });
+        }, { threshold: 0.55 });
+        const footer = document.querySelector('footer');
+        if (footer) unlockObserver.observe(footer);
+
+        window.addEventListener('scroll', () => {
+          if (revealed || booting) return;
+          const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 120;
+          if (nearBottom) unlockGame();
+        }, { passive: true });
+      })();
     </script>
 </body>
 
