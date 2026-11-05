@@ -85,7 +85,7 @@ function initStoryReel() {
   const pauseLabel = pauseBtn ? pauseBtn.querySelector('.pause-label') : null;
   const pauseIcon = pauseBtn ? pauseBtn.querySelector('.pause-icon') : null;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const STEP_MS = 4200;
+  const STEP_MS = 7000;
   let step = 0;
   let timer = null;
   let playing = false;
