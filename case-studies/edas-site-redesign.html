@@ -10,10 +10,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="case-study.css?v=12">
+  <link rel="stylesheet" href="case-study.css?v=13">
   <style>
-    .content-grid > .domus-gallery {
-      grid-column: 1 / -1;
+    .domus-gallery {
+      margin-top: 26px;
     }
     .domus-gallery h2 {
       text-align: center;
@@ -23,6 +23,10 @@
       margin: 0 auto 22px;
       max-width: 100%;
       height: auto;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      background: #fff;
     }
     .hero-actions {
       display: flex;
@@ -44,6 +48,42 @@
     .hero-actions .btn-figma:hover {
       background: var(--sky);
     }
+
+    /* EDAS story visuals */
+    .scene-problem .legacy-blocks {
+      display: grid;
+      gap: 8px;
+    }
+    .scene-problem .legacy-blocks .block {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: #ddd;
+      height: 18px;
+      opacity: 0.55;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .scene-problem .legacy-blocks .block:nth-child(1) { width: 88%; height: 28px; }
+    .scene-problem .legacy-blocks .block:nth-child(2) { width: 62%; }
+    .scene-problem .legacy-blocks .block:nth-child(3) { width: 74%; }
+    .scene-problem .legacy-blocks .block:nth-child(4) { width: 40%; opacity: 0.35; }
+    .scene-outcome .comp-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .scene-outcome .comp {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .scene-outcome .comp:nth-child(1) { background: var(--lilac); }
+    .scene-outcome .comp:nth-child(2) { background: var(--sky); }
+    .scene-outcome .comp:nth-child(3) { background: var(--mint); }
+    .scene-outcome .comp:nth-child(4) { background: var(--lemon); }
   </style>
 </head>
 <body>
@@ -98,37 +138,106 @@
       </div>
     </section>
 
-    <section class="content-grid">
-      <article class="panel" style="grid-column:1/-1">
-        <h2>Problem</h2>
-        <p>The legacy EDAS experience had an outdated visual system, weak hierarchy, and fragmented content paths that made common tasks harder than necessary.</p>
+    <section class="story-reel" id="storyReel" aria-label="Project story animation">
+      <div class="story-reel-header">
+        <h2>How it unfolded</h2>
+        <span class="story-reel-hint">Auto-plays on scroll · click to jump</span>
+      </div>
 
-        <h2>Approach</h2>
-        <p>I simplified the structure, created a new component-driven layout system, and introduced clearer CTA patterns that aligned to user intent across major page types.</p>
-        <ul>
-          <li>Reorganized IA for primary user goals.</li>
-          <li>Designed reusable components and templates.</li>
-          <li>Improved accessibility, spacing, and typography scale.</li>
-        </ul>
+      <div class="story-tabs" role="tablist" aria-label="Story stages">
+        <button type="button" class="story-tab is-active" role="tab" aria-selected="true" data-step="0">1 · Problem</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="1">2 · Approach</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="2">3 · Outcome</button>
+        <button type="button" class="story-pause" id="storyPauseBtn" aria-pressed="false" aria-label="Pause story">
+          <span class="pause-icon" aria-hidden="true">❚❚</span>
+          <span class="pause-label">Pause</span>
+        </button>
+      </div>
 
-        <h2>Outcome</h2>
-        <p>The redesign delivered a cleaner and more coherent experience while giving internal teams a scalable foundation for future content and features.</p>
-      </article>
+      <div class="story-stage">
+        <div class="story-scene scene-problem is-active" data-step="0" role="tabpanel">
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card hr-panel">
+              <div class="viz-label">Legacy EDAS</div>
+              <div class="legacy-blocks">
+                <div class="block"></div>
+                <div class="block"></div>
+                <div class="block"></div>
+                <div class="block"></div>
+              </div>
+              <div class="toggle-row"><span>Hierarchy</span><span style="color:var(--coral);font-size:11px">weak</span></div>
+              <div class="toggle-row"><span>Content paths</span><span style="font-size:11px;opacity:.65">fragmented</span></div>
+            </div>
+            <div class="confused">?</div>
+            <div class="mismatch">harder than needed</div>
+          </div>
+          <div class="story-copy">
+            <h3>Problem</h3>
+            <p>The legacy EDAS experience had an outdated visual system, weak hierarchy, and fragmented content paths that made common tasks harder than necessary.</p>
+          </div>
+        </div>
 
-      <article class="panel domus-gallery">
-        <h2>Low Fidelity Wireframes</h2>
-        <img src="../assets/edas1.png" alt="Proto persona for Domus Home Hub">
-        <h2>Style Guide</h2>
-        <img src="../assets/edas_des1.png" alt="User task flow diagram for Domus Home Hub">
-        <img src="../assets/edas_des2.png" alt="Paper wireframes for the Domus Home Hub">
-        <img src="../assets/edas_des3.png" alt="Low fidelity paper wireframes for the Domus Home Hub">
-        <h2>Component Library Guide</h2>
-        <img src="../assets/edas_des4.png" alt="Style guide for the Domus Home Hub">
-        <h2>Final High Fidelity Prototypes</h2>
-        <img src="../assets/edas_desfinal.png" alt="High fidelity prototype screens for the Domus Home Hub">
-      </article>
+        <div class="story-scene scene-approach" data-step="1" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <span class="spark">✦</span>
+            <div class="stack">
+              <div class="chip">Reorganize IA around goals</div>
+              <div class="chip">Reusable components + templates</div>
+              <div class="chip">A11y, spacing, type scale</div>
+            </div>
+            <div class="count-up">
+              <div class="stat"><strong>IA</strong><span>clarity</span></div>
+              <div class="stat"><strong>UI</strong><span>system</span></div>
+              <div class="stat"><strong>CTA</strong><span>intent</span></div>
+            </div>
+          </div>
+          <div class="story-copy">
+            <h3>Approach</h3>
+            <p>I simplified the structure, created a new component-driven layout system, and introduced clearer CTA patterns that aligned to user intent across major page types.</p>
+            <ul>
+              <li>Reorganized IA for primary user goals.</li>
+              <li>Designed reusable components and templates.</li>
+              <li>Improved accessibility, spacing, and typography scale.</li>
+            </ul>
+          </div>
+        </div>
 
+        <div class="story-scene scene-outcome" data-step="2" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card">
+              <div class="viz-label">Scalable foundation</div>
+              <div class="comp-row">
+                <span class="comp">Header</span>
+                <span class="comp">Cards</span>
+                <span class="comp">CTA</span>
+                <span class="comp">Forms</span>
+              </div>
+            </div>
+            <div class="ai-bubble">Cleaner experience + reusable building blocks for future pages.</div>
+            <div class="check"><i>✓</i> Coherent UI · ready to scale</div>
+          </div>
+          <div class="story-copy">
+            <h3>Outcome</h3>
+            <p>The redesign delivered a cleaner and more coherent experience while giving internal teams a scalable foundation for future content and features.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
     </section>
+
+    <article class="panel domus-gallery">
+      <h2>Low Fidelity Wireframes</h2>
+      <img src="../assets/edas1.png" alt="Low fidelity wireframes for EDAS">
+      <h2>Style Guide</h2>
+      <img src="../assets/edas_des1.png" alt="EDAS style guide page 1">
+      <img src="../assets/edas_des2.png" alt="EDAS style guide page 2">
+      <img src="../assets/edas_des3.png" alt="EDAS style guide page 3">
+      <h2>Component Library Guide</h2>
+      <img src="../assets/edas_des4.png" alt="EDAS component library guide">
+      <h2>Final High Fidelity Prototypes</h2>
+      <img src="../assets/edas_desfinal.png" alt="EDAS high fidelity prototypes">
+    </article>
 
   </main>
   <script src="case-study.js?v=6"></script>
