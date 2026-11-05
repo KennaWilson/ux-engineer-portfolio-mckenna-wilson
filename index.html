@@ -3818,10 +3818,15 @@
         window.scrollTo(0, 0);
       }
 
-      function getScrollXP() {
+      const SCROLL_XP_MAX = 6300;
+
+      function getScrollProgress() {
         const maxScroll = document.body.scrollHeight - window.innerHeight;
-        const p = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-        return Math.round(p * 6300);
+        return maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0;
+      }
+
+      function getScrollXP() {
+        return Math.round(getScrollProgress() * SCROLL_XP_MAX);
       }
 
       function getClaimedProjects() {
@@ -3837,6 +3842,14 @@
         sessionStorage.setItem(XP_STORAGE_KEY, JSON.stringify(ids));
       }
 
+      function getClaimableXPMax() {
+        let total = 0;
+        document.querySelectorAll('.pc-xp-badge[data-project]').forEach(btn => {
+          total += Number(btn.dataset.xp) || 0;
+        });
+        return total;
+      }
+
       function getClaimedXP() {
         const claimed = new Set(getClaimedProjects());
         let total = 0;
@@ -3844,6 +3857,24 @@
           if (claimed.has(btn.dataset.project)) total += Number(btn.dataset.xp) || 0;
         });
         return total;
+      }
+
+      // Scroll fills the first half of the meter; claimed project XP fills the second half.
+      function getXPProgress() {
+        const claimableMax = getClaimableXPMax();
+        const scrollHalf = getScrollProgress() * 0.5;
+        const claimHalf = claimableMax > 0 ? (getClaimedXP() / claimableMax) * 0.5 : 0;
+        return Math.min(1, scrollHalf + claimHalf);
+      }
+
+      function isXPFull() {
+        return getXPProgress() >= 0.999;
+      }
+      window.getXPProgress = getXPProgress;
+      window.isXPFull = isXPFull;
+
+      function updateProgressBar() {
+        if (pb) pb.style.transform = `scaleX(${getXPProgress()})`;
       }
 
       function animateScoreTo(target, duration = 550) {
@@ -3864,6 +3895,8 @@
         const target = getScrollXP() + getClaimedXP();
         if (animate) animateScoreTo(target);
         else sv.textContent = target.toLocaleString();
+        updateProgressBar();
+        window.dispatchEvent(new CustomEvent('mckenna:xp-updated'));
       }
 
       function markBadgeCollected(btn) {
@@ -3960,13 +3993,6 @@
         return btn._claimPromise;
       }
 
-      function allProjectXPCollected() {
-        const badges = document.querySelectorAll('.pc-xp-badge[data-project]');
-        if (!badges.length) return false;
-        const claimed = new Set(getClaimedProjects());
-        return Array.from(badges).every(btn => claimed.has(btn.dataset.project));
-      }
-      window.allProjectXPCollected = allProjectXPCollected;
 
       document.querySelectorAll('.pc-xp-badge[data-project]').forEach(btn => {
         btn.addEventListener('click', e => {
@@ -4026,11 +4052,9 @@
       });
 
       restoreClaimedXP();
+      updateProgressBar();
 
       window.addEventListener('scroll', () => {
-        const maxScroll = document.body.scrollHeight - window.innerHeight;
-        const p = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-        pb.style.transform = `scaleX(${p})`;
         updateScore();
       });
 
@@ -4596,8 +4620,8 @@
           return String(Math.floor(n)).padStart(5, '0');
         }
 
-        function hasAllXP() {
-          return typeof window.allProjectXPCollected === 'function' && window.allProjectXPCollected();
+        function hasFullXP() {
+          return typeof window.isXPFull === 'function' && window.isXPFull();
         }
 
         function setPlayable(unlocked) {
@@ -4619,7 +4643,7 @@
 
         function syncXpLock() {
           if (!revealed) return;
-          const ready = hasAllXP();
+          const ready = hasFullXP();
           if (ready && !playable) {
             setPlayable(true);
             if (typeof window.showToast === 'function') {
@@ -4938,6 +4962,7 @@
           if (!running) drawScene(false);
         });
         window.addEventListener('mckenna:xp-claimed', syncXpLock);
+        window.addEventListener('mckenna:xp-updated', syncXpLock);
 
         const unlockObserver = new IntersectionObserver(entries => {
           entries.forEach(entry => {
