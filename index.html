@@ -3715,6 +3715,7 @@
       </div>
     </section>
 
+    <script src="assets/vibes/vibe-persist.js"></script>
     <script>
       // Cursor (desktop only)
       if (window.matchMedia('(min-width: 821px)').matches) {
@@ -4272,32 +4273,12 @@
 
       // Vibe cassette player
       (function initVibePlayer() {
-        const tracks = [
-          {
-            title: 'Focus Flow',
-            meta: 'Dreamer · Kevin MacLeod · calm focus',
-            src: 'assets/vibes/focus-flow.mp3',
-            color: 'var(--coral)'
-          },
-          {
-            title: 'Creative Spark',
-            meta: 'Wallpaper · Kevin MacLeod · bright energy',
-            src: 'assets/vibes/creative-spark.mp3',
-            color: 'var(--lemon)'
-          },
-          {
-            title: 'Late Night Code',
-            meta: 'Lobby Time · Kevin MacLeod · after-dark groove',
-            src: 'assets/vibes/late-night-code.mp3',
-            color: 'var(--lilac)'
-          },
-          {
-            title: 'Sunny Build',
-            meta: 'George Street Shuffle · Kevin MacLeod · upbeat',
-            src: 'assets/vibes/sunny-build.mp3',
-            color: 'var(--mint)'
-          }
-        ];
+        const persist = window.VibePersist;
+        if (!persist) return;
+        const tracks = persist.TRACKS.map(track => ({
+          ...track,
+          src: persist.trackSrc(track, 'assets/vibes')
+        }));
 
         const deck = document.getElementById('vibeDeck');
         const audio = document.getElementById('vibeAudio');
@@ -4321,6 +4302,22 @@
         let raf = 0;
         let swapping = false;
         let dragState = null;
+        let suppressPersist = false;
+
+        function persistNow(overrides = {}) {
+          if (suppressPersist) return;
+          if (!loaded || index < 0) {
+            persist.clearState();
+            return;
+          }
+          persist.saveState({
+            index,
+            time: audio.currentTime || 0,
+            playing: !audio.paused,
+            loaded: true,
+            ...overrides
+          });
+        }
 
         function setControlsEnabled(on) {
           playBtn.disabled = !on;
@@ -4433,9 +4430,10 @@
           if (metaEl) metaEl.textContent = 'Drag a cassette into the deck to play';
           if (progressFill) progressFill.style.width = '0%';
           markRack();
+          persist.clearState();
         }
 
-        function insertTape(i, { autoplay = true } = {}) {
+        function insertTape(i, { autoplay = true, startAt = 0, animate = true } = {}) {
           if (swapping) return;
           const next = (i + tracks.length) % tracks.length;
           const track = tracks[next];
@@ -4458,23 +4456,37 @@
             setControlsEnabled(true);
             markRack();
 
-            if (autoplay) {
-              audio.play().then(() => {
-                setPlayingUI(true);
-                cancelAnimationFrame(raf);
-                raf = requestAnimationFrame(updateProgress);
-              }).catch(() => setPlayingUI(false));
-            } else {
-              setPlayingUI(false);
-            }
+            const seekAndMaybePlay = () => {
+              if (startAt > 0 && isFinite(audio.duration)) {
+                audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+              }
+              if (autoplay) {
+                audio.play().then(() => {
+                  setPlayingUI(true);
+                  cancelAnimationFrame(raf);
+                  raf = requestAnimationFrame(updateProgress);
+                  persistNow({ playing: true });
+                }).catch(() => {
+                  setPlayingUI(false);
+                  persistNow({ playing: false });
+                });
+              } else {
+                setPlayingUI(false);
+                persistNow({ playing: false, time: audio.currentTime || startAt || 0 });
+              }
+            };
+
+            if (audio.readyState >= 1) seekAndMaybePlay();
+            else audio.addEventListener('loadedmetadata', seekAndMaybePlay, { once: true });
           };
 
-          if (loaded && index === next) {
+          if (loaded && index === next && animate) {
             if (audio.paused && autoplay) {
               audio.play().then(() => {
                 setPlayingUI(true);
                 cancelAnimationFrame(raf);
                 raf = requestAnimationFrame(updateProgress);
+                persistNow({ playing: true });
               }).catch(() => setPlayingUI(false));
             }
             return;
@@ -4485,7 +4497,7 @@
           setPlayingUI(false);
           cancelAnimationFrame(raf);
 
-          if (loaded && !reduceMotion) {
+          if (loaded && animate && !reduceMotion) {
             deck.classList.add('is-ejecting');
             window.setTimeout(doLoad, 280);
           } else {
@@ -4499,6 +4511,7 @@
           audio.pause();
           setPlayingUI(false);
           cancelAnimationFrame(raf);
+          persist.clearState();
           deck.classList.add('is-ejecting');
           const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
           window.setTimeout(() => {
@@ -4516,11 +4529,13 @@
               setPlayingUI(true);
               cancelAnimationFrame(raf);
               raf = requestAnimationFrame(updateProgress);
+              persistNow({ playing: true });
             }).catch(() => setPlayingUI(false));
           } else {
             audio.pause();
             setPlayingUI(false);
             cancelAnimationFrame(raf);
+            persistNow({ playing: false });
           }
         });
 
@@ -4570,9 +4585,45 @@
         });
         audio.addEventListener('pause', () => {
           if (!audio.ended) setPlayingUI(false);
+          persistNow({ playing: false });
+        });
+        audio.addEventListener('play', () => {
+          persistNow({ playing: true });
+        });
+        audio.addEventListener('timeupdate', () => {
+          if (!audio.paused) persistNow();
         });
 
+        window.addEventListener('pagehide', () => persistNow());
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') persistNow();
+        });
+
+        // Save before case-study navigations so playback can resume immediately.
+        document.addEventListener('click', (event) => {
+          const link = event.target.closest('a[href*="case-studies/"]');
+          if (!link) return;
+          persistNow({ playing: loaded && !audio.paused });
+        }, true);
+
         showEmptyState();
+
+        const saved = persist.loadState();
+        if (saved && saved.loaded) {
+          suppressPersist = true;
+          insertTape(saved.index, {
+            autoplay: !!saved.playing,
+            startAt: saved.time || 0,
+            animate: false
+          });
+          suppressPersist = false;
+          persistNow({
+            index: saved.index,
+            time: saved.time || 0,
+            playing: !!saved.playing,
+            loaded: true
+          });
+        }
       })();
 
     </script>

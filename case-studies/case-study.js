@@ -195,10 +195,143 @@ function initStoryReel() {
   }
 }
 
+function initVibeContinuePlayer() {
+  const persist = window.VibePersist;
+  if (!persist) return;
+
+  const state = persist.loadState();
+  if (!state || !state.loaded) return;
+
+  const track = persist.TRACKS[state.index];
+  if (!track) return;
+
+  const root = document.createElement('div');
+  root.className = 'vibe-continue';
+  root.id = 'vibeContinue';
+  root.innerHTML = [
+    '<audio id="vibeContinueAudio" preload="auto"></audio>',
+    '<button type="button" class="vibe-continue-toggle" id="vibeContinueToggle" aria-label="Pause vibe">❚❚</button>',
+    '<div class="vibe-continue-copy">',
+    '<span class="vibe-continue-label">Now playing</span>',
+    `<strong class="vibe-continue-title" id="vibeContinueTitle">${track.title}</strong>`,
+    '</div>',
+    '<button type="button" class="vibe-continue-next" id="vibeContinueNext" aria-label="Next tape">⏭</button>',
+    '<button type="button" class="vibe-continue-stop" id="vibeContinueStop" aria-label="Stop vibe">✕</button>',
+  ].join('');
+  document.body.appendChild(root);
+
+  const audio = root.querySelector('#vibeContinueAudio');
+  const toggleBtn = root.querySelector('#vibeContinueToggle');
+  const nextBtn = root.querySelector('#vibeContinueNext');
+  const stopBtn = root.querySelector('#vibeContinueStop');
+  const titleEl = root.querySelector('#vibeContinueTitle');
+  let index = state.index;
+
+  function srcFor(i) {
+    return persist.trackSrc(persist.TRACKS[i], '../assets/vibes');
+  }
+
+  function persistNow(overrides = {}) {
+    persist.saveState({
+      index,
+      time: audio.currentTime || 0,
+      playing: !audio.paused,
+      loaded: true,
+      ...overrides
+    });
+  }
+
+  function setToggleUI(playing) {
+    toggleBtn.textContent = playing ? '❚❚' : '▶';
+    toggleBtn.setAttribute('aria-label', playing ? 'Pause vibe' : 'Play vibe');
+    root.classList.toggle('is-playing', playing);
+  }
+
+  function loadTrack(i, { autoplay = true, startAt = 0 } = {}) {
+    index = (i + persist.TRACKS.length) % persist.TRACKS.length;
+    const nextTrack = persist.TRACKS[index];
+    titleEl.textContent = nextTrack.title;
+    audio.src = srcFor(index);
+    audio.load();
+
+    const finish = () => {
+      if (startAt > 0 && isFinite(audio.duration)) {
+        audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+      }
+      if (autoplay) {
+        audio.play().then(() => {
+          setToggleUI(true);
+          root.classList.remove('needs-gesture');
+          const label = root.querySelector('.vibe-continue-label');
+          if (label) label.textContent = 'Now playing';
+          persistNow({ playing: true });
+        }).catch(() => {
+          setToggleUI(false);
+          root.classList.add('needs-gesture');
+          const label = root.querySelector('.vibe-continue-label');
+          if (label) label.textContent = 'Tap play to continue';
+          persistNow({ playing: true }); // keep intent so home can resume
+        });
+      } else {
+        setToggleUI(false);
+        persistNow({ playing: false, time: startAt || 0 });
+      }
+    };
+
+    if (audio.readyState >= 1) finish();
+    else audio.addEventListener('loadedmetadata', finish, { once: true });
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play().then(() => {
+        setToggleUI(true);
+        persistNow({ playing: true });
+      }).catch(() => setToggleUI(false));
+    } else {
+      audio.pause();
+      setToggleUI(false);
+      persistNow({ playing: false });
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    loadTrack(index + 1, { autoplay: true, startAt: 0 });
+  });
+
+  stopBtn.addEventListener('click', () => {
+    audio.pause();
+    persist.clearState();
+    root.remove();
+  });
+
+  audio.addEventListener('ended', () => {
+    loadTrack(index + 1, { autoplay: true, startAt: 0 });
+  });
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.paused) persistNow();
+  });
+  window.addEventListener('pagehide', () => persistNow());
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') persistNow();
+  });
+
+  // Keep music going when jumping to another case study.
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+    persistNow({ playing: !audio.paused });
+  }, true);
+
+  loadTrack(index, { autoplay: !!state.playing, startAt: state.time || 0 });
+  requestAnimationFrame(() => root.classList.add('is-visible'));
+}
+
 function initCaseStudies() {
   initCaseStudyHomeTransition();
   initCaseStudyNavMenu();
   initStoryReel();
+  initVibeContinuePlayer();
 }
 
 if (document.readyState === 'loading') {
