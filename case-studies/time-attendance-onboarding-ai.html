@@ -101,6 +101,7 @@
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 16px;
+      align-items: center;
     }
 
     .story-tab {
@@ -126,6 +127,42 @@
     .story-tab.is-active[data-step="0"] { background: var(--coral); color: #fff; }
     .story-tab.is-active[data-step="1"] { background: var(--lemon); }
     .story-tab.is-active[data-step="2"] { background: var(--mint); }
+
+    .story-pause {
+      appearance: none;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 800;
+      padding: 8px 14px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--ink);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      margin-left: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .story-pause:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--ink);
+      background: var(--cream);
+    }
+
+    .story-pause.is-paused {
+      background: var(--ink);
+      color: var(--lemon);
+    }
+
+    .story-pause .pause-icon {
+      font-size: 11px;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
 
     .story-stage {
       position: relative;
@@ -530,6 +567,10 @@
         <button type="button" class="story-tab is-active" role="tab" aria-selected="true" data-step="0">1 · Problem</button>
         <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="1">2 · Approach</button>
         <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="2">3 · Outcome</button>
+        <button type="button" class="story-pause" id="storyPauseBtn" aria-pressed="false" aria-label="Pause story">
+          <span class="pause-icon" aria-hidden="true">❚❚</span>
+          <span class="pause-label">Pause</span>
+        </button>
       </div>
 
       <div class="story-stage">
@@ -683,11 +724,26 @@
       const tabs = Array.from(reel.querySelectorAll('.story-tab'));
       const scenes = Array.from(reel.querySelectorAll('.story-scene'));
       const progress = document.getElementById('storyProgressBar');
+      const pauseBtn = document.getElementById('storyPauseBtn');
+      const pauseLabel = pauseBtn ? pauseBtn.querySelector('.pause-label') : null;
+      const pauseIcon = pauseBtn ? pauseBtn.querySelector('.pause-icon') : null;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const STEP_MS = 4200;
       let step = 0;
       let timer = null;
       let playing = false;
+      let paused = false;
+      let resumeTimer = null;
+      let inView = false;
+
+      function setPausedUI(isPaused) {
+        if (!pauseBtn) return;
+        pauseBtn.classList.toggle('is-paused', isPaused);
+        pauseBtn.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+        pauseBtn.setAttribute('aria-label', isPaused ? 'Play story' : 'Pause story');
+        if (pauseLabel) pauseLabel.textContent = isPaused ? 'Play' : 'Pause';
+        if (pauseIcon) pauseIcon.textContent = isPaused ? '▶' : '❚❚';
+      }
 
       function setStep(next, { restartProgress = true } = {}) {
         step = ((next % scenes.length) + scenes.length) % scenes.length;
@@ -707,13 +763,16 @@
 
         if (progress) {
           const pct = ((step + 1) / scenes.length) * 100;
-          if (restartProgress) {
+          if (restartProgress && !paused) {
             progress.style.transition = 'none';
-            progress.style.width = '0%';
+            progress.style.width = ((step / scenes.length) * 100) + '%';
             void progress.offsetWidth;
             progress.style.transition = 'width ' + (STEP_MS / 1000) + 's linear';
+            progress.style.width = pct + '%';
+          } else {
+            progress.style.transition = 'width 0.35s ease';
+            progress.style.width = pct + '%';
           }
-          progress.style.width = pct + '%';
         }
       }
 
@@ -723,10 +782,14 @@
           clearInterval(timer);
           timer = null;
         }
+        if (resumeTimer) {
+          clearTimeout(resumeTimer);
+          resumeTimer = null;
+        }
       }
 
       function play() {
-        if (reduceMotion || playing) return;
+        if (reduceMotion || playing || paused || !inView) return;
         playing = true;
         setStep(step, { restartProgress: true });
         timer = setInterval(() => {
@@ -734,30 +797,49 @@
         }, STEP_MS);
       }
 
+      function pauseStory() {
+        paused = true;
+        stop();
+        setPausedUI(true);
+        if (progress) progress.style.transition = 'none';
+      }
+
+      function resumeStory() {
+        paused = false;
+        setPausedUI(false);
+        play();
+      }
+
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
           stop();
           setStep(Number(tab.dataset.step), { restartProgress: false });
-          if (progress) {
-            progress.style.transition = 'width 0.35s ease';
-            progress.style.width = ((step + 1) / scenes.length) * 100 + '%';
-          }
-          // Resume autoplay after a pause so users can explore then continue
-          window.setTimeout(play, 1600);
+          if (paused) return;
+          resumeTimer = window.setTimeout(play, 1600);
         });
       });
 
+      if (pauseBtn) {
+        pauseBtn.addEventListener('click', () => {
+          if (paused) resumeStory();
+          else pauseStory();
+        });
+      }
+
       setStep(0, { restartProgress: false });
+      setPausedUI(false);
 
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
           entries.forEach(entry => {
-            if (entry.isIntersecting) play();
+            inView = entry.isIntersecting;
+            if (inView) play();
             else stop();
           });
         }, { threshold: 0.35 });
         io.observe(reel);
       } else {
+        inView = true;
         play();
       }
     })();
