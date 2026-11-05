@@ -5,7 +5,7 @@
     {
       title: 'Focus Flow',
       meta: 'Concentration · Kevin MacLeod · calm focus',
-      file: 'focus-flow.mp3',
+      file: 'concentration.mp3',
       color: 'var(--coral)'
     },
     {
@@ -28,9 +28,11 @@
     }
   ];
 
+  const ASSET_VERSION = '20261105c';
+
   function trackSrc(track, basePath) {
     const base = basePath.replace(/\/?$/, '/');
-    return base + track.file;
+    return base + track.file + '?v=' + ASSET_VERSION;
   }
 
   function loadState() {
