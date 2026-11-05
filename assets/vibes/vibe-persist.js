@@ -4,7 +4,7 @@
   const TRACKS = [
     {
       title: 'Focus Flow',
-      meta: 'Dreamer · Kevin MacLeod · calm focus',
+      meta: 'Concentration · Kevin MacLeod · calm focus',
       file: 'focus-flow.mp3',
       color: 'var(--coral)'
     },
