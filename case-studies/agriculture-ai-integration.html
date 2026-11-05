@@ -10,8 +10,11 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="case-study.css?v=12">
+  <link rel="stylesheet" href="case-study.css?v=13">
   <style>
+    .domus-gallery {
+      margin-top: 26px;
+    }
     .domus-gallery h2 {
       text-align: center;
       text-decoration: none;
@@ -21,6 +24,10 @@
       margin: 0 auto 22px;
       max-width: 100%;
       height: auto;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      background: #fff;
     }
     .hero-actions {
       display: flex;
@@ -41,6 +48,61 @@
     }
     .hero-actions .btn-live:hover {
       background: #ff5c39;
+    }
+
+    /* Agriculture story visuals */
+    .scene-problem .data-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 90px;
+      margin-top: 6px;
+    }
+    .scene-problem .data-bars i {
+      flex: 1;
+      display: block;
+      border: 2px solid var(--ink);
+      border-radius: 6px 6px 2px 2px;
+      background: var(--sky);
+      font-style: normal;
+      animation: barPulse 1.6s ease-in-out infinite;
+    }
+    .scene-problem .data-bars i:nth-child(1) { height: 45%; animation-delay: 0s; }
+    .scene-problem .data-bars i:nth-child(2) { height: 78%; animation-delay: 0.15s; background: var(--lilac); }
+    .scene-problem .data-bars i:nth-child(3) { height: 32%; animation-delay: 0.3s; background: var(--lemon); }
+    .scene-problem .data-bars i:nth-child(4) { height: 92%; animation-delay: 0.45s; background: var(--mint); }
+    .scene-problem .data-bars i:nth-child(5) { height: 58%; animation-delay: 0.6s; background: var(--peach); }
+    @keyframes barPulse {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.86); }
+    }
+    .scene-outcome .rec-card {
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .scene-outcome .rec-card .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .scene-outcome .confidence {
+      background: var(--mint);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 10px;
+    }
+    .scene-outcome .why {
+      font-size: 12px;
+      opacity: 0.8;
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -97,23 +159,88 @@
       </div>
     </section>
 
-    <section class="content-grid">
-      <article class="panel" style="grid-column:1/-1">
-        <h2>Problem</h2>
-        <p>Farmers had access to plenty of raw data, but no clear path from data to action. Existing tools were technical and time-consuming to interpret during busy workdays.</p>
+    <section class="story-reel" id="storyReel" aria-label="Project story animation">
+      <div class="story-reel-header">
+        <h2>How it unfolded</h2>
+        <span class="story-reel-hint">Auto-plays on scroll · click to jump</span>
+      </div>
 
-        <h2>Approach</h2>
-        <p>I ran collaborative sessions with farmers to map decisions across planting, irrigation, and harvest cycles. We designed an explainable recommendation engine UI that surfaced confidence, rationale, and next steps.</p>
-        <ul>
-          <li>Conducted contextual interviews with farm operators.</li>
-          <li>Created task-first dashboards with visual alert states.</li>
-          <li>Designed AI recommendation cards with plain-language summaries.</li>
-        </ul>
+      <div class="story-tabs" role="tablist" aria-label="Story stages">
+        <button type="button" class="story-tab is-active" role="tab" aria-selected="true" data-step="0">1 · Problem</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="1">2 · Approach</button>
+        <button type="button" class="story-tab" role="tab" aria-selected="false" data-step="2">3 · Outcome</button>
+        <button type="button" class="story-pause" id="storyPauseBtn" aria-pressed="false" aria-label="Pause story">
+          <span class="pause-icon" aria-hidden="true">❚❚</span>
+          <span class="pause-label">Pause</span>
+        </button>
+      </div>
 
-        <h2>Outcome</h2>
-        <p>Users adopted the feature rapidly because recommendations felt trustworthy and practical, not black-box or overly technical.</p>
-     </article>
-  </section>
+      <div class="story-stage">
+        <div class="story-scene scene-problem is-active" data-step="0" role="tabpanel">
+          <div class="story-viz" aria-hidden="true">
+            <div class="viz-card hr-panel">
+              <div class="viz-label">Raw field data</div>
+              <div class="data-bars" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <div class="toggle-row"><span>Path to action</span><span style="color:var(--coral);font-size:11px">unclear</span></div>
+              <div class="toggle-row"><span>Busy workday fit</span><span style="font-size:11px;opacity:.65">too technical</span></div>
+            </div>
+            <div class="confused">?</div>
+            <div class="mismatch">data ≠ decisions</div>
+          </div>
+          <div class="story-copy">
+            <h3>Problem</h3>
+            <p>Farmers had access to plenty of raw data, but no clear path from data to action. Existing tools were technical and time-consuming to interpret during busy workdays.</p>
+          </div>
+        </div>
+
+        <div class="story-scene scene-approach" data-step="1" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <span class="spark">✦</span>
+            <div class="stack">
+              <div class="chip">Map planting → irrigation → harvest</div>
+              <div class="chip">Task-first dashboards + alerts</div>
+              <div class="chip">Explainable AI rec cards</div>
+            </div>
+            <div class="count-up">
+              <div class="stat"><strong>Why</strong><span>rationale</span></div>
+              <div class="stat"><strong>%</strong><span>confidence</span></div>
+              <div class="stat"><strong>Next</strong><span>steps</span></div>
+            </div>
+          </div>
+          <div class="story-copy">
+            <h3>Approach</h3>
+            <p>I ran collaborative sessions with farmers to map decisions across planting, irrigation, and harvest cycles. We designed an explainable recommendation engine UI that surfaced confidence, rationale, and next steps.</p>
+            <ul>
+              <li>Conducted contextual interviews with farm operators.</li>
+              <li>Created task-first dashboards with visual alert states.</li>
+              <li>Designed AI recommendation cards with plain-language summaries.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="story-scene scene-outcome" data-step="2" role="tabpanel" hidden>
+          <div class="story-viz" aria-hidden="true">
+            <div class="rec-card">
+              <div class="meta">
+                <span>Irrigate Field B</span>
+                <span class="confidence">92% sure</span>
+              </div>
+              <p class="why">Soil moisture is trending low before forecast heat — water early morning.</p>
+            </div>
+            <div class="ai-bubble">Plain-language next steps — trustworthy, not a black box.</div>
+            <div class="check"><i>✓</i> Practical recommendations farmers actually used</div>
+          </div>
+          <div class="story-copy">
+            <h3>Outcome</h3>
+            <p>Users adopted the feature rapidly because recommendations felt trustworthy and practical, not black-box or overly technical.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
+    </section>
 
   <article class="panel domus-gallery">
     <h2>Early Version Prototypes</h2>
