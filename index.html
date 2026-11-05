@@ -3808,21 +3808,41 @@
       const sv = document.getElementById('scoreVal');
       const navScore = document.getElementById('navScore');
       const XP_STORAGE_KEY = 'mckenna_claimed_projects';
+      const SCROLL_PROGRESS_KEY = 'mckenna_max_scroll_progress';
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const navEntry = performance.getEntriesByType('navigation')[0];
       const isPageRefresh = navEntry && navEntry.type === 'reload';
 
       if (isPageRefresh) {
         sessionStorage.removeItem(XP_STORAGE_KEY);
+        sessionStorage.removeItem(SCROLL_PROGRESS_KEY);
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         window.scrollTo(0, 0);
       }
 
       const SCROLL_XP_MAX = 6300;
+      let maxScrollProgress = 0;
+      try {
+        maxScrollProgress = Math.min(1, Math.max(0, Number(sessionStorage.getItem(SCROLL_PROGRESS_KEY)) || 0));
+      } catch {
+        maxScrollProgress = 0;
+      }
 
-      function getScrollProgress() {
+      function getCurrentScrollProgress() {
         const maxScroll = document.body.scrollHeight - window.innerHeight;
         return maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0;
+      }
+
+      // Only grows on the first pass downward — scrolling back up does not shrink XP.
+      function getScrollProgress() {
+        const current = getCurrentScrollProgress();
+        if (current > maxScrollProgress) {
+          maxScrollProgress = current;
+          try {
+            sessionStorage.setItem(SCROLL_PROGRESS_KEY, String(maxScrollProgress));
+          } catch {}
+        }
+        return maxScrollProgress;
       }
 
       function getScrollXP() {
