@@ -54,7 +54,7 @@ nav.case-nav {
   display: contents;
 }
 
-.nav-links {
+nav.case-nav .nav-links {
   display: flex;
   gap: 6px;
   align-items: center;
@@ -62,7 +62,7 @@ nav.case-nav {
   justify-content: center;
 }
 
-.nav-links a {
+nav.case-nav .nav-links a {
   font-size: 13px;
   font-weight: 700;
   color: var(--ink);
@@ -73,36 +73,21 @@ nav.case-nav {
   transition: all 0.15s;
 }
 
-.nav-links a:hover {
+nav.case-nav .nav-links a:hover {
   background: var(--lemon);
   border-color: var(--ink);
   box-shadow: var(--shadow);
   transform: translateY(-2px);
 }
 
-.nav-links .next-case-btn {
-  background: var(--coral);
-  color: #fff;
-  border-color: var(--ink);
-  box-shadow: var(--shadow);
-}
-
-.nav-links .next-case-btn:hover {
-  background: #ff5c39;
-  color: var(--ink);
-  border-color: var(--ink);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-.nav-actions {
+nav.case-nav .nav-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
 }
 
-.nav-score {
+nav.case-nav .nav-score {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -116,7 +101,7 @@ nav.case-nav {
   flex-shrink: 0;
 }
 
-.nav-score .star {
+nav.case-nav .nav-score .star {
   animation: spinStar 4s linear infinite;
   display: inline-block;
 }
@@ -125,7 +110,7 @@ nav.case-nav {
   to { transform: rotate(360deg); }
 }
 
-.nav-actions .btn,
+nav.case-nav .nav-actions .btn,
 .nav-footer .btn {
   flex: 0 0 auto;
   min-width: 0;
@@ -134,6 +119,7 @@ nav.case-nav {
   justify-content: center;
   text-align: center;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -341,39 +327,36 @@ body.home-transitioning {
     flex-wrap: wrap;
   }
 
-  .nav-menu {
+  nav.case-nav .nav-menu {
     display: block;
     width: 100%;
     order: 3;
   }
 
-  .nav-links {
-    justify-content: stretch;
+  nav.case-nav .nav-links {
+    justify-content: center;
     width: 100%;
   }
 
-  .nav-links a {
-    flex: 1 1 0;
-    text-align: center;
-  }
-
-  .nav-actions {
+  nav.case-nav .nav-actions {
     margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 }
 
 @media (max-width: 720px) {
-  .nav-actions .btn,
+  nav.case-nav .nav-actions .btn,
   .nav-footer .btn {
     font-size: 12px;
     padding: 9px 12px;
   }
 
-  .nav-logo {
+  nav.case-nav .nav-logo {
     font-size: 18px;
   }
 
-  .nav-score {
+  nav.case-nav .nav-score {
     font-size: 11px;
     padding: 6px 12px;
   }
