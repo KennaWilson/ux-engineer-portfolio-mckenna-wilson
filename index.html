@@ -4436,7 +4436,7 @@
           window.addEventListener('pointercancel', onUp);
         }
 
-        function showEmptyState() {
+        function showEmptyState({ clearPersist = true } = {}) {
           loaded = false;
           index = -1;
           deck.classList.remove('has-tape', 'is-playing', 'is-ejecting');
@@ -4447,7 +4447,7 @@
           if (metaEl) metaEl.textContent = 'Drag a cassette into the deck to play';
           if (progressFill) progressFill.style.width = '0%';
           markRack();
-          persist.clearState();
+          if (clearPersist) persist.clearState();
         }
 
         function insertTape(i, { autoplay = true, startAt = 0, animate = true } = {}) {
@@ -4623,10 +4623,10 @@
           persistNow({ playing: loaded && !audio.paused });
         }, true);
 
-        showEmptyState();
-
+        // Read saved state BEFORE emptying UI — showEmptyState used to wipe it first.
         const saved = persist.loadState();
         if (saved && saved.loaded) {
+          showEmptyState({ clearPersist: false });
           suppressPersist = true;
           insertTape(saved.index, {
             autoplay: !!saved.playing,
@@ -4640,6 +4640,8 @@
             playing: !!saved.playing,
             loaded: true
           });
+        } else {
+          showEmptyState();
         }
       })();
 

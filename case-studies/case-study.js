@@ -311,16 +311,27 @@ function initVibeContinuePlayer() {
   audio.addEventListener('timeupdate', () => {
     if (!audio.paused) persistNow();
   });
-  window.addEventListener('pagehide', () => persistNow());
+  window.addEventListener('pagehide', () => {
+    persistNow({
+      playing: !audio.paused || root.classList.contains('is-playing'),
+      loaded: true
+    });
+  });
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') persistNow();
+    if (document.visibilityState === 'hidden') {
+      persistNow({
+        playing: !audio.paused || root.classList.contains('is-playing'),
+        loaded: true
+      });
+    }
   });
 
-  // Keep music going when jumping to another case study.
+  // Keep music going when jumping home or to another case study.
   document.addEventListener('click', (event) => {
     const link = event.target.closest('a[href]');
     if (!link) return;
-    persistNow({ playing: !audio.paused });
+    const wasPlaying = !audio.paused || root.classList.contains('is-playing');
+    persistNow({ playing: wasPlaying, loaded: true, time: audio.currentTime || 0 });
   }, true);
 
   loadTrack(index, { autoplay: !!state.playing, startAt: state.time || 0 });
