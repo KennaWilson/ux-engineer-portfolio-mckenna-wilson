@@ -3732,7 +3732,7 @@
       </div>
     </section>
 
-    <script src="assets/vibes/vibe-persist.js?v=20261105c"></script>
+    <script src="assets/vibes/vibe-persist.js?v=20261105d"></script>
     <script>
       // Cursor (desktop only)
       if (window.matchMedia('(min-width: 821px)').matches) {
@@ -4047,6 +4047,10 @@
         const href = link?.getAttribute('href');
         if (!href) return;
 
+        if (typeof window.persistVibeForNavigation === 'function') {
+          window.persistVibeForNavigation();
+        }
+
         const badge = card.querySelector('.pc-xp-badge[data-project]');
         const alreadyClaimed = !badge
           || badge.classList.contains('collected')
@@ -4061,6 +4065,9 @@
         if (link) link.setAttribute('aria-busy', 'true');
 
         claimProjectXP(badge).then(() => {
+          if (typeof window.persistVibeForNavigation === 'function') {
+            window.persistVibeForNavigation();
+          }
           setTimeout(() => { window.location.href = href; }, 300);
         });
       }
@@ -4320,6 +4327,9 @@
         let swapping = false;
         let dragState = null;
         let suppressPersist = false;
+        let wantPlaying = false;
+        let ignorePausePersist = false;
+        let clearGestureResume = null;
 
         function persistNow(overrides = {}) {
           if (suppressPersist) return;
@@ -4330,9 +4340,19 @@
           persist.saveState({
             index,
             time: audio.currentTime || 0,
-            playing: !audio.paused,
+            playing: wantPlaying,
             loaded: true,
             ...overrides
+          });
+        }
+
+        function persistForNavigation() {
+          if (!loaded || index < 0) return;
+          persist.saveState({
+            index,
+            time: audio.currentTime || 0,
+            playing: wantPlaying || !audio.paused,
+            loaded: true
           });
         }
 
@@ -4439,6 +4459,9 @@
         function showEmptyState({ clearPersist = true } = {}) {
           loaded = false;
           index = -1;
+          wantPlaying = false;
+          if (typeof clearGestureResume === 'function') clearGestureResume();
+          clearGestureResume = null;
           deck.classList.remove('has-tape', 'is-playing', 'is-ejecting');
           setPlayingUI(false);
           setControlsEnabled(false);
@@ -4448,6 +4471,29 @@
           if (progressFill) progressFill.style.width = '0%';
           markRack();
           if (clearPersist) persist.clearState();
+        }
+
+        function beginPlayback() {
+          wantPlaying = true;
+          return audio.play().then(() => {
+            setPlayingUI(true);
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(updateProgress);
+            persistNow({ playing: true });
+            if (typeof clearGestureResume === 'function') clearGestureResume();
+            clearGestureResume = null;
+          }).catch(() => {
+            setPlayingUI(false);
+            // Keep playing intent across pages even if autoplay is blocked.
+            persistNow({ playing: true });
+            if (typeof clearGestureResume === 'function') clearGestureResume();
+            clearGestureResume = persist.armGestureResume(audio, () => {
+              setPlayingUI(true);
+              cancelAnimationFrame(raf);
+              raf = requestAnimationFrame(updateProgress);
+              persistNow({ playing: true });
+            });
+          });
         }
 
         function insertTape(i, { autoplay = true, startAt = 0, animate = true } = {}) {
@@ -4463,8 +4509,10 @@
             deck.classList.remove('is-ejecting');
             deck.classList.add('has-tape');
             deck.style.setProperty('--vibe-color', track.color);
+            ignorePausePersist = true;
             audio.src = track.src;
             audio.load();
+            window.setTimeout(() => { ignorePausePersist = false; }, 0);
             if (labelEl) labelEl.textContent = track.title;
             if (nowLabel) nowLabel.textContent = 'Now playing';
             if (titleEl) titleEl.textContent = track.title;
@@ -4475,19 +4523,13 @@
 
             const seekAndMaybePlay = () => {
               if (startAt > 0 && isFinite(audio.duration)) {
-                audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+                try {
+                  audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+                } catch {}
               }
-              if (autoplay) {
-                audio.play().then(() => {
-                  setPlayingUI(true);
-                  cancelAnimationFrame(raf);
-                  raf = requestAnimationFrame(updateProgress);
-                  persistNow({ playing: true });
-                }).catch(() => {
-                  setPlayingUI(false);
-                  persistNow({ playing: false });
-                });
-              } else {
+              if (autoplay) beginPlayback();
+              else {
+                wantPlaying = false;
                 setPlayingUI(false);
                 persistNow({ playing: false, time: audio.currentTime || startAt || 0 });
               }
@@ -4498,19 +4540,14 @@
           };
 
           if (loaded && index === next && animate) {
-            if (audio.paused && autoplay) {
-              audio.play().then(() => {
-                setPlayingUI(true);
-                cancelAnimationFrame(raf);
-                raf = requestAnimationFrame(updateProgress);
-                persistNow({ playing: true });
-              }).catch(() => setPlayingUI(false));
-            }
+            if (audio.paused && autoplay) beginPlayback();
             return;
           }
 
           swapping = true;
+          ignorePausePersist = true;
           audio.pause();
+          ignorePausePersist = false;
           setPlayingUI(false);
           cancelAnimationFrame(raf);
 
@@ -4525,7 +4562,10 @@
         function ejectTape() {
           if (!loaded || swapping) return;
           swapping = true;
+          wantPlaying = false;
+          ignorePausePersist = true;
           audio.pause();
+          ignorePausePersist = false;
           setPlayingUI(false);
           cancelAnimationFrame(raf);
           persist.clearState();
@@ -4542,13 +4582,9 @@
         playBtn.addEventListener('click', () => {
           if (!loaded) return;
           if (audio.paused) {
-            audio.play().then(() => {
-              setPlayingUI(true);
-              cancelAnimationFrame(raf);
-              raf = requestAnimationFrame(updateProgress);
-              persistNow({ playing: true });
-            }).catch(() => setPlayingUI(false));
+            beginPlayback();
           } else {
+            wantPlaying = false;
             audio.pause();
             setPlayingUI(false);
             cancelAnimationFrame(raf);
@@ -4601,40 +4637,47 @@
           insertTape(index + 1, { autoplay: true });
         });
         audio.addEventListener('pause', () => {
+          if (ignorePausePersist) return;
           if (!audio.ended) setPlayingUI(false);
-          persistNow({ playing: false });
+          // Only clear playing intent for real user pauses, not unload/navigation.
+          if (!wantPlaying) persistNow({ playing: false });
         });
         audio.addEventListener('play', () => {
+          wantPlaying = true;
           persistNow({ playing: true });
         });
         audio.addEventListener('timeupdate', () => {
           if (!audio.paused) persistNow();
         });
 
-        window.addEventListener('pagehide', () => persistNow());
+        window.addEventListener('pagehide', () => persistForNavigation());
         document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'hidden') persistNow();
+          if (document.visibilityState === 'hidden') persistForNavigation();
         });
 
         // Save before case-study navigations so playback can resume immediately.
         document.addEventListener('click', (event) => {
           const link = event.target.closest('a[href*="case-studies/"]');
           if (!link) return;
-          persistNow({ playing: loaded && !audio.paused });
+          wantPlaying = wantPlaying || !audio.paused;
+          persistForNavigation();
         }, true);
+
+        window.persistVibeForNavigation = persistForNavigation;
 
         // Read saved state BEFORE emptying UI — showEmptyState used to wipe it first.
         const saved = persist.loadState();
         if (saved && saved.loaded) {
           showEmptyState({ clearPersist: false });
           suppressPersist = true;
+          wantPlaying = !!saved.playing;
           insertTape(saved.index, {
             autoplay: !!saved.playing,
             startAt: saved.time || 0,
             animate: false
           });
           suppressPersist = false;
-          persistNow({
+          persist.saveState({
             index: saved.index,
             time: saved.time || 0,
             playing: !!saved.playing,

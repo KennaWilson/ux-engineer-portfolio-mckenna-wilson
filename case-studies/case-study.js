@@ -20,11 +20,17 @@ function initCaseStudyHomeTransition() {
     if (!isHomeReturn) return;
 
     event.preventDefault();
+    if (typeof window.persistVibeForNavigation === 'function') {
+      window.persistVibeForNavigation();
+    }
     document.body.classList.add('home-transitioning');
     overlay.classList.add('show');
 
     requestAnimationFrame(() => {
       window.setTimeout(() => {
+        if (typeof window.persistVibeForNavigation === 'function') {
+          window.persistVibeForNavigation();
+        }
         window.location.href = url.href;
       }, 900);
     });
@@ -210,13 +216,13 @@ function initVibeContinuePlayer() {
   root.id = 'vibeContinue';
   root.innerHTML = [
     '<audio id="vibeContinueAudio" preload="auto"></audio>',
-    '<button type="button" class="vibe-continue-toggle" id="vibeContinueToggle" aria-label="Pause vibe">❚❚</button>',
+    '<button type="button" class="vibe-continue-toggle" id="vibeContinueToggle" aria-label="Pause soundtrack">❚❚</button>',
     '<div class="vibe-continue-copy">',
     '<span class="vibe-continue-label">Now playing</span>',
     `<strong class="vibe-continue-title" id="vibeContinueTitle">${track.title}</strong>`,
     '</div>',
     '<button type="button" class="vibe-continue-next" id="vibeContinueNext" aria-label="Next tape">⏭</button>',
-    '<button type="button" class="vibe-continue-stop" id="vibeContinueStop" aria-label="Stop vibe">✕</button>',
+    '<button type="button" class="vibe-continue-stop" id="vibeContinueStop" aria-label="Stop soundtrack">✕</button>',
   ].join('');
   document.body.appendChild(root);
 
@@ -225,29 +231,66 @@ function initVibeContinuePlayer() {
   const nextBtn = root.querySelector('#vibeContinueNext');
   const stopBtn = root.querySelector('#vibeContinueStop');
   const titleEl = root.querySelector('#vibeContinueTitle');
+  const labelEl = root.querySelector('.vibe-continue-label');
   let index = state.index;
+  let wantPlaying = !!state.playing;
+  let clearGestureResume = null;
 
   function srcFor(i) {
     return persist.trackSrc(persist.TRACKS[i], '../assets/vibes');
   }
 
-  function persistNow(overrides = {}) {
+  function persistNow(overrides) {
+    persist.saveState(Object.assign({
+      index,
+      time: audio.currentTime || 0,
+      playing: wantPlaying,
+      loaded: true
+    }, overrides || {}));
+  }
+
+  function persistForNavigation() {
     persist.saveState({
       index,
       time: audio.currentTime || 0,
-      playing: !audio.paused,
-      loaded: true,
-      ...overrides
+      playing: wantPlaying || !audio.paused,
+      loaded: true
     });
   }
+  window.persistVibeForNavigation = persistForNavigation;
 
   function setToggleUI(playing) {
     toggleBtn.textContent = playing ? '❚❚' : '▶';
-    toggleBtn.setAttribute('aria-label', playing ? 'Pause vibe' : 'Play vibe');
+    toggleBtn.setAttribute('aria-label', playing ? 'Pause soundtrack' : 'Play soundtrack');
     root.classList.toggle('is-playing', playing);
+    root.classList.toggle('needs-gesture', !playing && wantPlaying);
+    if (labelEl) {
+      labelEl.textContent = playing ? 'Now playing' : (wantPlaying ? 'Resuming…' : 'Paused');
+    }
   }
 
-  function loadTrack(i, { autoplay = true, startAt = 0 } = {}) {
+  function beginPlayback() {
+    wantPlaying = true;
+    return audio.play().then(() => {
+      setToggleUI(true);
+      persistNow({ playing: true });
+      if (typeof clearGestureResume === 'function') clearGestureResume();
+      clearGestureResume = null;
+    }).catch(() => {
+      setToggleUI(false);
+      persistNow({ playing: true });
+      if (typeof clearGestureResume === 'function') clearGestureResume();
+      clearGestureResume = persist.armGestureResume(audio, () => {
+        setToggleUI(true);
+        persistNow({ playing: true });
+      });
+    });
+  }
+
+  function loadTrack(i, options) {
+    const opts = options || {};
+    const autoplay = opts.autoplay !== false;
+    const startAt = opts.startAt || 0;
     index = (i + persist.TRACKS.length) % persist.TRACKS.length;
     const nextTrack = persist.TRACKS[index];
     titleEl.textContent = nextTrack.title;
@@ -256,23 +299,13 @@ function initVibeContinuePlayer() {
 
     const finish = () => {
       if (startAt > 0 && isFinite(audio.duration)) {
-        audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+        try {
+          audio.currentTime = Math.min(startAt, Math.max(0, audio.duration - 0.25));
+        } catch (err) {}
       }
-      if (autoplay) {
-        audio.play().then(() => {
-          setToggleUI(true);
-          root.classList.remove('needs-gesture');
-          const label = root.querySelector('.vibe-continue-label');
-          if (label) label.textContent = 'Now playing';
-          persistNow({ playing: true });
-        }).catch(() => {
-          setToggleUI(false);
-          root.classList.add('needs-gesture');
-          const label = root.querySelector('.vibe-continue-label');
-          if (label) label.textContent = 'Tap play to continue';
-          persistNow({ playing: true }); // keep intent so home can resume
-        });
-      } else {
+      if (autoplay) beginPlayback();
+      else {
+        wantPlaying = false;
         setToggleUI(false);
         persistNow({ playing: false, time: startAt || 0 });
       }
@@ -283,12 +316,9 @@ function initVibeContinuePlayer() {
   }
 
   toggleBtn.addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play().then(() => {
-        setToggleUI(true);
-        persistNow({ playing: true });
-      }).catch(() => setToggleUI(false));
-    } else {
+    if (audio.paused) beginPlayback();
+    else {
+      wantPlaying = false;
       audio.pause();
       setToggleUI(false);
       persistNow({ playing: false });
@@ -300,38 +330,32 @@ function initVibeContinuePlayer() {
   });
 
   stopBtn.addEventListener('click', () => {
+    wantPlaying = false;
     audio.pause();
     persist.clearState();
+    if (typeof clearGestureResume === 'function') clearGestureResume();
     root.remove();
   });
 
   audio.addEventListener('ended', () => {
     loadTrack(index + 1, { autoplay: true, startAt: 0 });
   });
+  audio.addEventListener('play', () => {
+    wantPlaying = true;
+    persistNow({ playing: true });
+  });
   audio.addEventListener('timeupdate', () => {
     if (!audio.paused) persistNow();
   });
-  window.addEventListener('pagehide', () => {
-    persistNow({
-      playing: !audio.paused || root.classList.contains('is-playing'),
-      loaded: true
-    });
-  });
+  window.addEventListener('pagehide', persistForNavigation);
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      persistNow({
-        playing: !audio.paused || root.classList.contains('is-playing'),
-        loaded: true
-      });
-    }
+    if (document.visibilityState === 'hidden') persistForNavigation();
   });
 
-  // Keep music going when jumping home or to another case study.
   document.addEventListener('click', (event) => {
     const link = event.target.closest('a[href]');
     if (!link) return;
-    const wasPlaying = !audio.paused || root.classList.contains('is-playing');
-    persistNow({ playing: wasPlaying, loaded: true, time: audio.currentTime || 0 });
+    persistForNavigation();
   }, true);
 
   loadTrack(index, { autoplay: !!state.playing, startAt: state.time || 0 });
