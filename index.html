@@ -1452,128 +1452,171 @@
       font-weight: 600;
     }
 
-    /* Vibe / Record player */
+    /* Vibe / Cassette player */
     .vibe-deck {
       display: grid;
-      grid-template-columns: minmax(240px, 320px) 1fr;
-      gap: 36px;
-      align-items: center;
+      gap: 28px;
       background: #fff;
       border: var(--border-w) solid var(--ink);
       border-radius: var(--radius);
       box-shadow: var(--shadow-lg);
-      padding: 32px;
+      padding: 28px;
     }
 
-    .vibe-player {
+    .vibe-stage {
+      display: grid;
+      grid-template-columns: minmax(260px, 380px) 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .cassette-deck {
       position: relative;
-      width: min(100%, 280px);
-      margin: 0 auto;
-      aspect-ratio: 1;
-    }
-
-    .vibe-platter {
-      position: absolute;
-      inset: 8%;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 50% 50%, #2a2118 0 12%, transparent 12.5%),
-        repeating-radial-gradient(circle at 50% 50%,
-          #1a1207 0 2px,
-          #2c241c 2px 4px,
-          #1a1207 4px 7px);
+      background: linear-gradient(180deg, #f4efe6 0%, #e8dfd0 100%);
       border: var(--border-w) solid var(--ink);
+      border-radius: 18px;
       box-shadow: var(--shadow);
-      display: grid;
-      place-items: center;
+      padding: 18px 16px 16px;
+      overflow: hidden;
     }
 
-    .vibe-platter.is-spinning {
-      animation: vinylSpin 3.6s linear infinite;
-    }
-
-    .vibe-label {
-      width: 42%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      border: var(--border-w) solid var(--ink);
-      background: var(--vibe-color, var(--coral));
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 10px;
-      box-shadow: 2px 2px 0 var(--ink);
-      z-index: 1;
-    }
-
-    .vibe-label-text {
+    .cassette-deck::before {
+      content: 'WALKMAN · PORTFOLIO DECK';
+      display: block;
       font-family: var(--mono);
-      font-size: 9px;
-      font-weight: 600;
-      line-height: 1.25;
+      font-size: 10px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--ink);
+      opacity: 0.45;
+      margin-bottom: 12px;
     }
 
-    .vibe-arm {
+    .cassette-slot {
+      position: relative;
+      min-height: 168px;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(26,18,7,0.08), rgba(26,18,7,0.18)),
+        repeating-linear-gradient(90deg, transparent 0 10px, rgba(26,18,7,0.05) 10px 11px);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .cassette-slot-empty {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      text-align: center;
+      padding: 16px;
+      transition: opacity 0.25s;
+    }
+
+    .vibe-deck.has-tape .cassette-slot-empty {
+      opacity: 0;
+      pointer-events: none;
       position: absolute;
-      top: 6%;
-      right: 10%;
-      width: 12px;
-      height: 46%;
-      transform-origin: 50% 8%;
-      transform: rotate(-18deg);
-      transition: transform 0.35s ease;
-      z-index: 2;
+    }
+
+    .deck-cassette {
+      width: min(100%, 280px);
+      aspect-ratio: 1.7 / 1;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 10px;
+      background: var(--vibe-color, var(--coral));
+      box-shadow: var(--shadow);
+      position: relative;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-120%) rotate(-4deg) scale(0.92);
+      transition: transform 0.45s cubic-bezier(.34,1.3,.64,1), opacity 0.3s ease;
       pointer-events: none;
     }
 
-    .vibe-deck.is-playing .vibe-arm {
-      transform: rotate(18deg);
+    .vibe-deck.has-tape .deck-cassette {
+      opacity: 1;
+      transform: translateY(0) rotate(0) scale(1);
     }
 
-    .vibe-arm-pivot {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--lemon);
-      border: var(--border-w) solid var(--ink);
-      transform: translate(-50%, -30%);
-      box-shadow: 2px 2px 0 var(--ink);
+    .vibe-deck.is-ejecting .deck-cassette {
+      transform: translateY(-130%) rotate(3deg) scale(0.94);
+      opacity: 0;
     }
 
-    .vibe-arm-shaft {
-      position: absolute;
-      top: 14px;
-      left: 50%;
-      width: 6px;
-      height: 78%;
-      background: var(--ink);
-      transform: translateX(-50%);
-      border-radius: 3px;
+    .deck-cassette-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      background: rgba(255,255,255,0.75);
+      border: 2px solid var(--ink);
+      border-radius: 6px;
+      padding: 4px 8px;
     }
 
-    .vibe-arm-head {
+    .deck-cassette-window {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: #1a1207;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      place-items: center;
+      padding: 10px 16px;
+      position: relative;
+    }
+
+    .deck-cassette-window::after {
+      content: '';
       position: absolute;
-      bottom: 0;
-      left: 50%;
-      width: 18px;
-      height: 24px;
-      background: var(--coral);
-      border: var(--border-w) solid var(--ink);
+      inset: 40% 18%;
+      border: 2px solid rgba(253,248,240,0.35);
       border-radius: 4px;
-      transform: translateX(-50%);
-      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .cassette-reel {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #fdf8f0;
+      background:
+        repeating-conic-gradient(from 0deg, #fdf8f0 0 12deg, transparent 12deg 24deg),
+        #2a2118;
+      box-shadow: inset 0 0 0 8px #1a1207;
+    }
+
+    .vibe-deck.is-playing .cassette-reel {
+      animation: reelSpin 1.2s linear infinite;
+    }
+
+    .vibe-deck.is-playing .cassette-reel.reel-right {
+      animation-duration: 1.05s;
+      animation-direction: reverse;
+    }
+
+    .deck-cassette-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.75;
     }
 
     .vibe-controls {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       min-width: 0;
     }
 
@@ -1643,35 +1686,8 @@
       color: var(--lemon);
     }
 
-    .vibe-tracks {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .vibe-track {
-      font-family: var(--sans);
-      font-weight: 800;
-      font-size: 12px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: var(--border-w) solid var(--ink);
-      background: var(--cream);
-      color: var(--ink);
-      box-shadow: 3px 3px 0 var(--ink);
-      cursor: none;
-      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-    }
-
-    .vibe-track:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 5px 5px 0 var(--ink);
-    }
-
-    .vibe-track.is-active {
-      background: var(--vibe-color, var(--lemon));
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0 var(--ink);
+    .vibe-btn-eject {
+      background: var(--lemon);
     }
 
     .vibe-progress {
@@ -1696,25 +1712,117 @@
       opacity: 0.4;
     }
 
-    @keyframes vinylSpin {
+    .tape-rack-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      margin-bottom: 10px;
+    }
+
+    .tape-rack {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .tape-card {
+      appearance: none;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 12px;
+      background: var(--vibe-color, var(--cream));
+      box-shadow: var(--shadow);
+      padding: 10px;
+      cursor: none;
+      text-align: left;
+      color: var(--ink);
+      display: grid;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.25s;
+      min-height: 118px;
+    }
+
+    .tape-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tape-card.is-loaded {
+      outline: 3px solid var(--ink);
+      outline-offset: 2px;
+      opacity: 0.55;
+    }
+
+    .tape-card-shell {
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.7);
+      padding: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      place-items: center;
+      min-height: 48px;
+    }
+
+    .tape-card-shell span {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background: #fff;
+    }
+
+    .tape-card-title {
+      font-family: var(--display);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .tape-card-meta {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    .tape-card-action {
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    @keyframes reelSpin {
       to { transform: rotate(360deg); }
     }
 
-    @media (max-width: 760px) {
-      .vibe-deck {
+    @media (max-width: 900px) {
+      .vibe-stage {
         grid-template-columns: 1fr;
-        padding: 24px;
-        gap: 24px;
       }
 
-      .vibe-player {
-        width: min(100%, 240px);
+      .tape-rack {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .tape-rack {
+        grid-template-columns: 1fr 1fr;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .vibe-platter.is-spinning {
-        animation: none;
+      .vibe-deck.is-playing .cassette-reel,
+      .deck-cassette {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .vibe-deck.has-tape .deck-cassette {
+        transform: none;
       }
     }
 
@@ -3062,43 +3170,75 @@
     <div class="section-label reveal">✦ 01 — Soundtrack</div>
     <h2 class="section-title ul-lemon reveal">Set the <span>vibe</span>. Browse the work.</h2>
     <div class="vibe-deck reveal" id="vibeDeck" style="--vibe-color: var(--coral)">
-      <div class="vibe-player" aria-hidden="true">
-        <div class="vibe-platter" id="vibePlatter">
-          <div class="vibe-label">
-            <span class="vibe-label-text" id="vibeLabelText">Focus Flow</span>
+      <div class="vibe-stage">
+        <div class="cassette-deck" aria-hidden="true">
+          <div class="cassette-slot" id="cassetteSlot">
+            <div class="cassette-slot-empty">Insert a tape from the rack →</div>
+            <div class="deck-cassette" id="deckCassette">
+              <div class="deck-cassette-label" id="vibeLabelText">Focus Flow</div>
+              <div class="deck-cassette-window">
+                <span class="cassette-reel reel-left" id="reelLeft"></span>
+                <span class="cassette-reel reel-right" id="reelRight"></span>
+              </div>
+              <div class="deck-cassette-footer">
+                <span>SIDE A</span>
+                <span>◈ TAPE IN</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="vibe-arm">
-          <span class="vibe-arm-pivot"></span>
-          <span class="vibe-arm-shaft"></span>
-          <span class="vibe-arm-head"></span>
+
+        <div class="vibe-controls">
+          <div class="vibe-now">
+            <span class="vibe-now-label" id="vibeNowLabel">No tape loaded</span>
+            <div class="vibe-now-title" id="vibeNowTitle">Browse the rack</div>
+            <div class="vibe-now-meta" id="vibeNowMeta">Pick a cassette and plug it into the deck</div>
+          </div>
+          <div class="vibe-transport">
+            <button type="button" class="vibe-btn vibe-btn-play" id="vibePlay" aria-pressed="false" disabled>
+              <span id="vibePlayIcon">▶</span>
+              <span id="vibePlayLabel">Play</span>
+            </button>
+            <button type="button" class="vibe-btn vibe-btn-eject" id="vibeEject" disabled>⏏ Eject</button>
+            <button type="button" class="vibe-btn" id="vibePrev" aria-label="Previous tape" disabled>⏮ Prev</button>
+            <button type="button" class="vibe-btn" id="vibeNext" aria-label="Next tape" disabled>Next ⏭</button>
+          </div>
+          <div class="vibe-progress" aria-hidden="true">
+            <div class="vibe-progress-fill" id="vibeProgressFill"></div>
+          </div>
+          <audio id="vibeAudio" preload="metadata"></audio>
+          <p class="vibe-credit">Music: Kevin MacLeod (incompetech.com) · CC BY</p>
         </div>
       </div>
-      <div class="vibe-controls">
-        <div class="vibe-now">
-          <span class="vibe-now-label">Now spinning</span>
-          <div class="vibe-now-title" id="vibeNowTitle">Focus Flow</div>
-          <div class="vibe-now-meta" id="vibeNowMeta">Dreamer · Kevin MacLeod · calm focus</div>
-        </div>
-        <div class="vibe-tracks" role="listbox" aria-label="Choose a vibe">
-          <button type="button" class="vibe-track is-active" role="option" aria-selected="true" data-vibe="0" style="--vibe-color: var(--coral)">Focus Flow</button>
-          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="1" style="--vibe-color: var(--lemon)">Creative Spark</button>
-          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="2" style="--vibe-color: var(--lilac)">Late Night Code</button>
-          <button type="button" class="vibe-track" role="option" aria-selected="false" data-vibe="3" style="--vibe-color: var(--mint)">Sunny Build</button>
-        </div>
-        <div class="vibe-transport">
-          <button type="button" class="vibe-btn vibe-btn-play" id="vibePlay" aria-pressed="false">
-            <span id="vibePlayIcon">▶</span>
-            <span id="vibePlayLabel">Play</span>
+
+      <div>
+        <div class="tape-rack-label">Tape rack · click to load</div>
+        <div class="tape-rack" role="listbox" aria-label="Choose a cassette tape">
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="0" style="--vibe-color: var(--coral)">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Focus Flow</div>
+            <div class="tape-card-meta">Calm focus</div>
+            <div class="tape-card-action">Load tape →</div>
           </button>
-          <button type="button" class="vibe-btn" id="vibePrev" aria-label="Previous vibe">⏮ Prev</button>
-          <button type="button" class="vibe-btn" id="vibeNext" aria-label="Next vibe">Next ⏭</button>
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="1" style="--vibe-color: var(--lemon)">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Creative Spark</div>
+            <div class="tape-card-meta">Bright energy</div>
+            <div class="tape-card-action">Load tape →</div>
+          </button>
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="2" style="--vibe-color: var(--lilac)">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Late Night Code</div>
+            <div class="tape-card-meta">After dark</div>
+            <div class="tape-card-action">Load tape →</div>
+          </button>
+          <button type="button" class="tape-card" role="option" aria-selected="false" data-vibe="3" style="--vibe-color: var(--mint)">
+            <div class="tape-card-shell" aria-hidden="true"><span></span><span></span></div>
+            <div class="tape-card-title">Sunny Build</div>
+            <div class="tape-card-meta">Upbeat</div>
+            <div class="tape-card-action">Load tape →</div>
+          </button>
         </div>
-        <div class="vibe-progress" aria-hidden="true">
-          <div class="vibe-progress-fill" id="vibeProgressFill"></div>
-        </div>
-        <audio id="vibeAudio" preload="metadata"></audio>
-        <p class="vibe-credit">Music: Kevin MacLeod (incompetech.com) · CC BY</p>
       </div>
     </div>
   </div>
@@ -3950,7 +4090,7 @@
       const toastEl = document.getElementById('toast');
       const toastData = {
         projects: ['📜', 'QUEST LOG OPENED!', 'Case studies incoming'],
-        vibe: ['🎧', 'SOUNDTRACK UNLOCKED!', 'Pick your vibe'],
+        vibe: ['🎧', 'SOUNDTRACK UNLOCKED!', 'Load a tape'],
         achievements: ['🏆', 'BADGE ROOM ENTERED!', 'So many trophies...'],
         about: ['👾', 'PLAYER PROFILE LOADED!', 'Getting personal'],
         contact: ['💌', 'COMMS ARRAY ONLINE!', 'Let\'s collab'],
@@ -3986,7 +4126,7 @@
         btn.childNodes[0].textContent = open ? 'Close case study ' : 'Check Out Work ';
       }
 
-      // Vibe record player
+      // Vibe cassette player
       (function initVibePlayer() {
         const tracks = [
           {
@@ -4017,25 +4157,34 @@
 
         const deck = document.getElementById('vibeDeck');
         const audio = document.getElementById('vibeAudio');
-        const platter = document.getElementById('vibePlatter');
         const playBtn = document.getElementById('vibePlay');
         const playIcon = document.getElementById('vibePlayIcon');
         const playLabel = document.getElementById('vibePlayLabel');
+        const ejectBtn = document.getElementById('vibeEject');
         const prevBtn = document.getElementById('vibePrev');
         const nextBtn = document.getElementById('vibeNext');
         const titleEl = document.getElementById('vibeNowTitle');
         const metaEl = document.getElementById('vibeNowMeta');
+        const nowLabel = document.getElementById('vibeNowLabel');
         const labelEl = document.getElementById('vibeLabelText');
         const progressFill = document.getElementById('vibeProgressFill');
-        const trackBtns = Array.from(document.querySelectorAll('.vibe-track[data-vibe]'));
-        if (!deck || !audio || !playBtn || !trackBtns.length) return;
+        const tapeBtns = Array.from(document.querySelectorAll('.tape-card[data-vibe]'));
+        if (!deck || !audio || !playBtn || !tapeBtns.length) return;
 
-        let index = 0;
+        let index = -1;
+        let loaded = false;
         let raf = 0;
+        let swapping = false;
+
+        function setControlsEnabled(on) {
+          playBtn.disabled = !on;
+          if (ejectBtn) ejectBtn.disabled = !on;
+          if (prevBtn) prevBtn.disabled = !on;
+          if (nextBtn) nextBtn.disabled = !on;
+        }
 
         function setPlayingUI(isPlaying) {
           deck.classList.toggle('is-playing', isPlaying);
-          platter?.classList.toggle('is-spinning', isPlaying);
           playBtn.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
           if (playIcon) playIcon.textContent = isPlaying ? '❚❚' : '▶';
           if (playLabel) playLabel.textContent = isPlaying ? 'Pause' : 'Play';
@@ -4050,36 +4199,106 @@
           if (!audio.paused) raf = requestAnimationFrame(updateProgress);
         }
 
-        function loadTrack(i, { autoplay = false } = {}) {
-          index = (i + tracks.length) % tracks.length;
-          const track = tracks[index];
-          const wasPlaying = autoplay || !audio.paused;
-          audio.src = track.src;
-          audio.load();
-          deck.style.setProperty('--vibe-color', track.color);
-          if (titleEl) titleEl.textContent = track.title;
-          if (metaEl) metaEl.textContent = track.meta;
-          if (labelEl) labelEl.textContent = track.title;
-          trackBtns.forEach((btn, btnIndex) => {
-            const active = btnIndex === index;
-            btn.classList.toggle('is-active', active);
+        function markRack() {
+          tapeBtns.forEach((btn, btnIndex) => {
+            const active = loaded && btnIndex === index;
+            btn.classList.toggle('is-loaded', active);
             btn.setAttribute('aria-selected', active ? 'true' : 'false');
+            const action = btn.querySelector('.tape-card-action');
+            if (action) action.textContent = active ? 'Loaded ✓' : 'Load tape →';
           });
+        }
+
+        function showEmptyState() {
+          loaded = false;
+          index = -1;
+          deck.classList.remove('has-tape', 'is-playing', 'is-ejecting');
+          setPlayingUI(false);
+          setControlsEnabled(false);
+          if (nowLabel) nowLabel.textContent = 'No tape loaded';
+          if (titleEl) titleEl.textContent = 'Browse the rack';
+          if (metaEl) metaEl.textContent = 'Pick a cassette and plug it into the deck';
           if (progressFill) progressFill.style.width = '0%';
-          if (wasPlaying) {
-            audio.play().then(() => {
-              setPlayingUI(true);
-              cancelAnimationFrame(raf);
-              raf = requestAnimationFrame(updateProgress);
-            }).catch(() => setPlayingUI(false));
+          markRack();
+        }
+
+        function insertTape(i, { autoplay = true } = {}) {
+          if (swapping) return;
+          const next = (i + tracks.length) % tracks.length;
+          const track = tracks[next];
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+          const doLoad = () => {
+            index = next;
+            loaded = true;
+            swapping = false;
+            deck.classList.remove('is-ejecting');
+            deck.classList.add('has-tape');
+            deck.style.setProperty('--vibe-color', track.color);
+            audio.src = track.src;
+            audio.load();
+            if (labelEl) labelEl.textContent = track.title;
+            if (nowLabel) nowLabel.textContent = 'Now playing';
+            if (titleEl) titleEl.textContent = track.title;
+            if (metaEl) metaEl.textContent = track.meta;
+            if (progressFill) progressFill.style.width = '0%';
+            setControlsEnabled(true);
+            markRack();
+
+            if (autoplay) {
+              audio.play().then(() => {
+                setPlayingUI(true);
+                cancelAnimationFrame(raf);
+                raf = requestAnimationFrame(updateProgress);
+              }).catch(() => setPlayingUI(false));
+            } else {
+              setPlayingUI(false);
+            }
+          };
+
+          if (loaded && index === next) {
+            if (audio.paused && autoplay) {
+              audio.play().then(() => {
+                setPlayingUI(true);
+                cancelAnimationFrame(raf);
+                raf = requestAnimationFrame(updateProgress);
+              }).catch(() => setPlayingUI(false));
+            }
+            return;
+          }
+
+          swapping = true;
+          audio.pause();
+          setPlayingUI(false);
+          cancelAnimationFrame(raf);
+
+          if (loaded && !reduceMotion) {
+            deck.classList.add('is-ejecting');
+            window.setTimeout(doLoad, 280);
           } else {
-            setPlayingUI(false);
+            doLoad();
           }
         }
 
+        function ejectTape() {
+          if (!loaded || swapping) return;
+          swapping = true;
+          audio.pause();
+          setPlayingUI(false);
+          cancelAnimationFrame(raf);
+          deck.classList.add('is-ejecting');
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.setTimeout(() => {
+            audio.removeAttribute('src');
+            audio.load();
+            showEmptyState();
+            swapping = false;
+          }, reduceMotion ? 0 : 280);
+        }
+
         playBtn.addEventListener('click', () => {
+          if (!loaded) return;
           if (audio.paused) {
-            if (!audio.src) loadTrack(index);
             audio.play().then(() => {
               setPlayingUI(true);
               cancelAnimationFrame(raf);
@@ -4092,22 +4311,31 @@
           }
         });
 
-        prevBtn?.addEventListener('click', () => loadTrack(index - 1, { autoplay: !audio.paused }));
-        nextBtn?.addEventListener('click', () => loadTrack(index + 1, { autoplay: !audio.paused }));
-        trackBtns.forEach(btn => {
+        ejectBtn?.addEventListener('click', ejectTape);
+        prevBtn?.addEventListener('click', () => {
+          if (!loaded) return;
+          insertTape(index - 1, { autoplay: !audio.paused });
+        });
+        nextBtn?.addEventListener('click', () => {
+          if (!loaded) return;
+          insertTape(index + 1, { autoplay: !audio.paused });
+        });
+
+        tapeBtns.forEach(btn => {
           btn.addEventListener('click', () => {
-            loadTrack(Number(btn.dataset.vibe), { autoplay: true });
+            insertTape(Number(btn.dataset.vibe), { autoplay: true });
           });
         });
 
         audio.addEventListener('ended', () => {
-          loadTrack(index + 1, { autoplay: true });
+          if (!loaded) return;
+          insertTape(index + 1, { autoplay: true });
         });
         audio.addEventListener('pause', () => {
           if (!audio.ended) setPlayingUI(false);
         });
 
-        loadTrack(0);
+        showEmptyState();
       })();
 
     </script>
