@@ -31,10 +31,10 @@ nav.case-nav {
   top: 0;
   z-index: 10;
   padding: 14px var(--page-gutter);
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  column-gap: 16px;
   background: var(--cream);
   border-bottom: var(--border-w) solid var(--ink);
 }
@@ -47,21 +47,21 @@ nav.case-nav .nav-logo {
   font-weight: 900;
   color: var(--ink);
   white-space: nowrap;
-  flex-shrink: 0;
+  justify-self: start;
 }
 
 nav.case-nav .nav-menu {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   min-width: 0;
-  flex: 1;
+  grid-column: 2;
 }
 
 nav.case-nav .nav-links {
   display: flex;
   gap: 6px;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   flex-wrap: nowrap;
 }
 
@@ -335,15 +335,18 @@ body.home-transitioning {
 
   nav.case-nav {
     padding: 12px 16px;
-    flex-wrap: wrap;
+    grid-template-columns: 1fr;
+    row-gap: 10px;
   }
 
   nav.case-nav .nav-logo {
     font-size: 18px;
+    justify-self: center;
   }
 
   nav.case-nav .nav-menu {
     width: 100%;
+    grid-column: 1;
     justify-content: center;
   }
 
